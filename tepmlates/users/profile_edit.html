@@ -1,0 +1,634 @@
+{% extends 'base.html' %}
+{% block title %}Profilni tahrirlash — UyIjara{% endblock %}
+
+{% block extra_css %}
+<style>
+.edit-wrap {
+    max-width: 660px;
+    margin: 0 auto;
+    padding: 28px 20px 60px;
+}
+.edit-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+.edit-header h1 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--primary);
+    margin: 0;
+}
+
+/* Avatar */
+.avatar-section {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+.av-circle {
+    width: 74px;
+    height: 74px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    font-weight: 700;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+    border: 3px solid var(--border);
+}
+.av-circle img { width: 100%; height: 100%; object-fit: cover; }
+.av-info h4 { font-weight: 700; font-size: 0.93rem; color: var(--primary); margin-bottom: 3px; }
+.av-info p  { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 10px; }
+
+/* Section */
+.edit-section {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+.es-head {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    background: #fafaf8;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.es-ico {
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    flex-shrink: 0;
+}
+.es-head h3 { font-size: 0.9rem; font-weight: 700; color: var(--primary); }
+.es-body { padding: 20px; }
+.form-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+/* ══════════════════════════
+   KARTA PREVIEW
+══════════════════════════ */
+.card-visual {
+    border-radius: 16px;
+    padding: 20px 22px 18px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
+    min-height: 168px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 10px 32px rgba(28,43,74,0.22);
+    transition: background 0.4s ease;
+    background: linear-gradient(145deg, #1c2b4a 0%, #2d4070 100%);
+    cursor: default;
+    user-select: none;
+}
+.card-visual::before {
+    content: '';
+    position: absolute;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    top: -100px;
+    right: -70px;
+    pointer-events: none;
+}
+.card-visual::after {
+    content: '';
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+    bottom: -50px;
+    left: -30px;
+    pointer-events: none;
+}
+/* Gradient per type */
+.cv-humo       { background: linear-gradient(145deg, #5b21b6 0%, #7c3aed 50%, #6d28d9 100%); }
+.cv-uzcard     { background: linear-gradient(145deg, #065f46 0%, #059669 50%, #047857 100%); }
+.cv-visa       { background: linear-gradient(145deg, #1e3a8a 0%, #2563eb 50%, #1d4ed8 100%); }
+.cv-mastercard { background: linear-gradient(145deg, #7c2d12 0%, #ea580c 50%, #c2410c 100%); }
+
+.cv-top { display: flex; align-items: flex-start; justify-content: space-between; position: relative; z-index: 2; }
+.cv-chip {
+    width: 36px;
+    height: 28px;
+    background: linear-gradient(135deg, #d4af37, #f5d060, #b8962e);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    color: rgba(0,0,0,0.35);
+}
+.cv-logo {
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    opacity: 0.88;
+    text-align: right;
+}
+.cv-logo.visa-logo   { font-style: italic; font-size: 1.3rem; letter-spacing: -0.02em; }
+.cv-logo.mc-logo     { font-size: 1.3rem; letter-spacing: -0.15em; opacity: 0.9; }
+
+.cv-num {
+    font-size: 1.18rem;
+    letter-spacing: 0.22em;
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    margin-top: 16px;
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.18);
+}
+.cv-bottom {
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+    position: relative;
+    z-index: 2;
+    margin-top: 14px;
+}
+.cv-field .cv-lbl {
+    font-size: 0.58rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.55;
+    margin-bottom: 2px;
+}
+.cv-field .cv-val {
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Card back */
+.card-visual-back {
+    display: none;
+}
+.card-visual-back.show { display: flex; flex-direction: column; justify-content: space-around; }
+.cvb-stripe {
+    height: 42px;
+    background: rgba(0,0,0,0.55);
+    margin: 0 -22px;
+    position: relative;
+    z-index: 2;
+}
+.cvb-cvv-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    position: relative;
+    z-index: 2;
+}
+.cvb-lbl { font-size: 0.7rem; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.08em; }
+.cvb-val {
+    background: white;
+    color: #1a1a2e;
+    padding: 6px 22px;
+    border-radius: 5px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    min-width: 72px;
+    text-align: center;
+}
+
+/* Type pill */
+.card-type-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    vertical-align: middle;
+    margin-left: 8px;
+    transition: all 0.2s;
+}
+.ctp-humo       { background: #f3e8ff; color: #7c3aed; }
+.ctp-uzcard     { background: #d1fae5; color: #065f46; }
+.ctp-visa       { background: #dbeafe; color: #1e3a8a; }
+.ctp-mastercard { background: #ffedd5; color: #c2410c; }
+
+/* CVV group */
+#cvvGroup { display: none; }
+
+.expiry-cvv { display: grid; grid-template-columns: 1fr; gap: 14px; }
+.expiry-cvv.has-cvv { grid-template-columns: 1fr 1fr; }
+
+/* Actions */
+.edit-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 6px;
+}
+.edit-actions .btn { flex: 1; justify-content: center; }
+
+@media (max-width: 520px) {
+    .form-row2 { grid-template-columns: 1fr; }
+    .expiry-cvv.has-cvv { grid-template-columns: 1fr; }
+    .cv-num { font-size: 0.95rem; letter-spacing: 0.14em; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="edit-wrap">
+
+    <!-- Header -->
+    <div class="edit-header">
+        <a href="{% url 'profile' %}" class="btn btn-outline btn-sm">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+        <h1>Profilni tahrirlash</h1>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" id="editForm">
+        {% csrf_token %}
+
+        <!-- Avatar -->
+        <div class="avatar-section">
+            <div class="av-circle" id="avCircle">
+                {% if user.avatar %}
+                    <img src="{{ user.avatar.url }}" alt="" id="avImg">
+                {% else %}
+                    <span id="avInitials">{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}</span>
+                {% endif %}
+            </div>
+            <div class="av-info">
+                <h4>Profil rasmi</h4>
+                <p>JPG, PNG • Maksimal 5 MB</p>
+                <label class="btn btn-outline btn-sm" style="cursor:pointer;display:inline-flex;">
+                    <i class="fa-solid fa-camera"></i> Rasm tanlash
+                    <input type="file" name="avatar" accept="image/*"
+                           style="display:none;" onchange="previewAvatar(this)">
+                </label>
+            </div>
+        </div>
+
+        <!-- Shaxsiy -->
+        <div class="edit-section">
+            <div class="es-head">
+                <div class="es-ico"><i class="fa-solid fa-user"></i></div>
+                <h3>Shaxsiy ma'lumotlar</h3>
+            </div>
+            <div class="es-body">
+                <div class="form-row2">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">Ism <span>*</span></label>
+                        <div class="form-control-icon">
+                            <input type="text" name="first_name" class="form-control"
+                                   value="{{ user.first_name }}" required>
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">Familiya <span>*</span></label>
+                        <div class="form-control-icon">
+                            <input type="text" name="last_name" class="form-control"
+                                   value="{{ user.last_name }}" required>
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Karta -->
+        <div class="edit-section">
+            <div class="es-head">
+                <div class="es-ico"><i class="fa-solid fa-credit-card"></i></div>
+                <h3>Karta ma'lumotlari
+                    <span class="card-type-pill" id="typePill" style="display:none;"></span>
+                </h3>
+            </div>
+            <div class="es-body">
+
+                <!-- Karta visual (old tomon) -->
+                <div class="card-visual" id="cardFront">
+                    <div class="cv-top">
+                        <div class="cv-chip"><i class="fa-solid fa-microchip"></i></div>
+                        <div class="cv-logo" id="cvLogo">
+                            <i class="fa-solid fa-credit-card" style="opacity:0.4;"></i>
+                        </div>
+                    </div>
+                    <div class="cv-num" id="cvNum">•••• &nbsp;•••• &nbsp;•••• &nbsp;••••</div>
+                    <div class="cv-bottom">
+                        <div class="cv-field">
+                            <div class="cv-lbl">Karta egasi</div>
+                            <div class="cv-val" id="cvHolder">ISMINGIZ FAMILIYANGIZ</div>
+                        </div>
+                        <div class="cv-field">
+                            <div class="cv-lbl">Muddat</div>
+                            <div class="cv-val" id="cvExpiry">MM/YY</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Karta visual (orqa tomon — CVV) -->
+                <div class="card-visual cv-visa" id="cardBack" style="display:none;">
+                    <div style="position:relative;z-index:2;">
+                        <div class="cv-lbl" style="color:rgba(255,255,255,0.5);margin-bottom:8px;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.1em;">
+                            Kartaning orqa tomoni
+                        </div>
+                    </div>
+                    <div class="cvb-stripe"></div>
+                    <div class="cvb-cvv-row">
+                        <span class="cvb-lbl">CVV</span>
+                        <div class="cvb-val" id="cvvDisplay">•••</div>
+                    </div>
+                </div>
+
+                <!-- Karta raqami -->
+                <div class="form-group">
+                    <label class="form-label">Karta raqami</label>
+                    <div class="form-control-icon">
+                        <input type="text"
+                               name="card_number"
+                               id="cardNumInput"
+                               class="form-control"
+                               value="{{ user.card_number|default:'' }}"
+                               placeholder="0000 0000 0000 0000"
+                               maxlength="19"
+                               oninput="onCardNum(this)"
+                               autocomplete="cc-number">
+                        <i class="fa-solid fa-credit-card" id="cardInputIcon"></i>
+                    </div>
+                    <div style="font-size:0.73rem;color:var(--text-muted);margin-top:5px;">
+                        <i class="fa-solid fa-info-circle" style="color:var(--accent);"></i>
+                        Birinchi 4 raqamdan karta turi aniqlanadi
+                    </div>
+                </div>
+
+                <!-- Karta egasi -->
+                <div class="form-group">
+                    <label class="form-label">Karta egasi (lotin harfida)</label>
+                    <div class="form-control-icon">
+                        <input type="text"
+                               name="card_holder"
+                               id="holderInput"
+                               class="form-control"
+                               value="{{ user.card_holder|default:'' }}"
+                               placeholder="SARDOR KARIMOV"
+                               maxlength="26"
+                               oninput="onHolder(this)"
+                               style="text-transform:uppercase;"
+                               autocomplete="cc-name">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                </div>
+
+                <!-- Muddat + CVV -->
+                <div class="expiry-cvv" id="expiryCvvRow">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">Amal qilish muddati</label>
+                        <div class="form-control-icon">
+                            <input type="text"
+                                   name="card_expiry"
+                                   id="expiryInput"
+                                   class="form-control"
+                                   value="{{ user.card_expiry|default:'' }}"
+                                   placeholder="MM/YY"
+                                   maxlength="5"
+                                   oninput="onExpiry(this)"
+                                   autocomplete="cc-exp">
+                            <i class="fa-regular fa-calendar"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="cvvGroup" style="margin-bottom:0;">
+                        <label class="form-label">
+                            CVV
+                            <span style="font-size:0.7rem;color:var(--text-muted);font-weight:400;">
+                                (kartaning orqa tomoni)
+                            </span>
+                        </label>
+                        <div class="form-control-icon">
+                            <input type="password"
+                                   name="card_cvv"
+                                   id="cvvInput"
+                                   class="form-control"
+                                   placeholder="•••"
+                                   maxlength="3"
+                                   oninput="onCvv(this)"
+                                   onfocus="flipCard(true)"
+                                   onblur="flipCard(false)"
+                                   autocomplete="cc-csc">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Karta turlari info -->
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;
+                            padding:12px 14px;background:var(--bg);border-radius:10px;
+                            border:1px solid var(--border);">
+                    <span style="font-size:0.72rem;color:var(--text-muted);width:100%;margin-bottom:4px;font-weight:600;">
+                        <i class="fa-solid fa-circle-info" style="color:var(--accent);"></i>
+                        Qo'llab-quvvatlanadigan kartalar:
+                    </span>
+                    <span style="font-size:0.72rem;background:#f3e8ff;color:#7c3aed;padding:3px 10px;border-radius:20px;font-weight:700;">
+                        HUMO (9860)
+                    </span>
+                    <span style="font-size:0.72rem;background:#d1fae5;color:#065f46;padding:3px 10px;border-radius:20px;font-weight:700;">
+                        UzCard (8600)
+                    </span>
+                    <span style="font-size:0.72rem;background:#dbeafe;color:#1e3a8a;padding:3px 10px;border-radius:20px;font-weight:700;">
+                        Visa (4...)
+                    </span>
+                    <span style="font-size:0.72rem;background:#ffedd5;color:#c2410c;padding:3px 10px;border-radius:20px;font-weight:700;">
+                        Mastercard (51-55)
+                    </span>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="edit-actions">
+            <a href="{% url 'profile' %}" class="btn btn-outline btn-lg">
+                <i class="fa-solid fa-xmark"></i> Bekor
+            </a>
+            <button type="submit" class="btn btn-primary btn-lg" style="flex:2;">
+                <i class="fa-solid fa-floppy-disk"></i> Saqlash
+            </button>
+        </div>
+
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+/* ══════════════════════════════════
+   KARTA TURI ANIQLASH
+══════════════════════════════════ */
+const CARD_TYPES = {
+    humo:       { prefix: ['9860'],     label: 'HUMO',       cls: 'cv-humo',       logo: 'HUMO',         logoClass: '',          pill: 'ctp-humo',       hasCvv: false },
+    uzcard:     { prefix: ['8600'],     label: 'UzCard',     cls: 'cv-uzcard',     logo: 'UZCARD',       logoClass: '',          pill: 'ctp-uzcard',     hasCvv: false },
+    visa:       { prefix: ['4'],        label: 'VISA',       cls: 'cv-visa',       logo: 'Visa',         logoClass: 'visa-logo', pill: 'ctp-visa',       hasCvv: true  },
+    mastercard: { prefix: ['51','52','53','54','55'], label: 'MasterCard', cls: 'cv-mastercard', logo: '⬤⬤', logoClass: 'mc-logo', pill: 'ctp-mastercard', hasCvv: true },
+};
+
+function detectType(num) {
+    const n = num.replace(/\s/g, '');
+    for (const [key, cfg] of Object.entries(CARD_TYPES)) {
+        for (const p of cfg.prefix) {
+            if (n.startsWith(p)) return key;
+        }
+    }
+    return null;
+}
+
+let currentType = null;
+
+function applyType(type) {
+    const front  = document.getElementById('cardFront');
+    const logo   = document.getElementById('cvLogo');
+    const pill   = document.getElementById('typePill');
+    const cvvGrp = document.getElementById('cvvGroup');
+    const row    = document.getElementById('expiryCvvRow');
+    const back   = document.getElementById('cardBack');
+
+    // Eski klasslarni tozalash
+    front.classList.remove('cv-humo','cv-uzcard','cv-visa','cv-mastercard');
+    back.classList.remove('cv-humo','cv-uzcard','cv-visa','cv-mastercard');
+    pill.style.display = 'none';
+    pill.className = 'card-type-pill';
+
+    if (type && CARD_TYPES[type]) {
+        const cfg = CARD_TYPES[type];
+        front.classList.add(cfg.cls);
+        back.classList.add(cfg.cls);
+        logo.innerHTML = `<span class="${cfg.logoClass}">${cfg.logo}</span>`;
+        pill.textContent = cfg.label;
+        pill.classList.add(cfg.pill);
+        pill.style.display = 'inline-flex';
+
+        // CVV
+        if (cfg.hasCvv) {
+            cvvGrp.style.display = 'block';
+            row.classList.add('has-cvv');
+        } else {
+            cvvGrp.style.display = 'none';
+            row.classList.remove('has-cvv');
+            document.getElementById('cvvInput').value = '';
+            document.getElementById('cvvDisplay').textContent = '•••';
+        }
+    } else {
+        logo.innerHTML = '<i class="fa-solid fa-credit-card" style="opacity:0.4;"></i>';
+        cvvGrp.style.display = 'none';
+        row.classList.remove('has-cvv');
+    }
+    currentType = type;
+}
+
+/* ══════════════════════════════════
+   INPUT HANDLERS
+══════════════════════════════════ */
+function onCardNum(el) {
+    // Formatlash
+    let raw = el.value.replace(/\D/g, '').substring(0, 16);
+    el.value = raw.replace(/(.{4})/g, '$1 ').trim();
+
+    // Preview
+    const display = raw.padEnd(16, '•');
+    document.getElementById('cvNum').innerHTML =
+        display.slice(0,4) + ' &nbsp;' +
+        display.slice(4,8) + ' &nbsp;' +
+        display.slice(8,12) + ' &nbsp;' +
+        display.slice(12,16);
+
+    // Tur
+    const type = detectType(raw);
+    if (type !== currentType) applyType(type);
+}
+
+function onHolder(el) {
+    el.value = el.value.toUpperCase().replace(/[^A-Z\s]/g, '');
+    const val = el.value.trim() || 'ISMINGIZ FAMILIYANGIZ';
+    document.getElementById('cvHolder').textContent = val;
+}
+
+function onExpiry(el) {
+    let raw = el.value.replace(/\D/g, '').substring(0, 4);
+    if (raw.length > 2) raw = raw.slice(0, 2) + '/' + raw.slice(2);
+    el.value = raw;
+    document.getElementById('cvExpiry').textContent = raw || 'MM/YY';
+}
+
+function onCvv(el) {
+    el.value = el.value.replace(/\D/g, '').substring(0, 3);
+    const dots = '•'.repeat(el.value.length) || '•••';
+    document.getElementById('cvvDisplay').textContent = dots;
+}
+
+/* ══════════════════════════════════
+   KARTA FLIP
+══════════════════════════════════ */
+function flipCard(toBack) {
+    const front = document.getElementById('cardFront');
+    const back  = document.getElementById('cardBack');
+    if (toBack) { front.style.display = 'none'; back.style.display = 'flex'; }
+    else        { front.style.display = 'flex'; back.style.display = 'none'; }
+}
+
+/* ══════════════════════════════════
+   AVATAR PREVIEW
+══════════════════════════════════ */
+function previewAvatar(input) {
+    if (!input.files?.[0]) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+        const circle = document.getElementById('avCircle');
+        circle.innerHTML = `<img src="${e.target.result}" alt="" style="width:100%;height:100%;object-fit:cover;">`;
+    };
+    reader.readAsDataURL(input.files[0]);
+}
+
+/* ══════════════════════════════════
+   SAHIFA YUKLANGANIDA — mavjud
+   ma'lumotlarni ko'rsatish
+══════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+    const numEl    = document.getElementById('cardNumInput');
+    const holdEl   = document.getElementById('holderInput');
+    const expEl    = document.getElementById('expiryInput');
+
+    if (numEl.value)  onCardNum(numEl);
+    if (holdEl.value) onHolder(holdEl);
+    if (expEl.value)  onExpiry(expEl);
+});
+</script>
+{% endblock %}

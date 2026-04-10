@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+{% block title %}Ro'yxatdan o'tish — UyIjara{% endblock %}
+
+{% block extra_css %}
+.auth-wrapper {
+    min-height: calc(100vh - 68px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    background: linear-gradient(135deg, #f7f5f0 0%, #ede8e0 100%);
+}
+.auth-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 480px;
+    overflow: hidden;
+}
+.auth-header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    padding: 36px 36px 32px;
+    text-align: center;
+    color: white;
+}
+.auth-logo {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+}
+.auth-logo span { color: var(--accent); }
+.auth-header p { opacity: 0.75; font-size: 0.9rem; }
+.auth-body { padding: 36px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.auth-footer {
+    padding: 20px 36px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    background: var(--bg);
+}
+.auth-footer a { color: var(--accent); font-weight: 700; }
+
+.strength-bar {
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border);
+    margin-top: 8px;
+    overflow: hidden;
+}
+.strength-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: all 0.3s;
+    width: 0%;
+}
+.strength-text {
+    font-size: 0.75rem;
+    margin-top: 4px;
+    font-weight: 600;
+}
+
+@media (max-width: 480px) {
+    .form-row { grid-template-columns: 1fr; }
+}
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-logo">Uy<span>Ijara</span></div>
+            <p>Yangi hisob yarating</p>
+        </div>
+        <div class="auth-body">
+            <form method="post" id="regForm">
+                {% csrf_token %}
+                <div class="form-row" style="margin-bottom:16px;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">Ism <span>*</span></label>
+                        <div class="form-control-icon">
+                            <input type="text" name="first_name" class="form-control"
+                                   placeholder="Sardor" autofocus required>
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">Familiya <span>*</span></label>
+                        <div class="form-control-icon">
+                            <input type="text" name="last_name" class="form-control"
+                                   placeholder="Karimov" required>
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Telefon raqam <span>*</span></label>
+                    <div class="form-control-icon">
+                        <input type="text" name="phone" class="form-control"
+                               placeholder="+998901234567" required>
+                        <i class="fa-solid fa-phone"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Parol <span>*</span></label>
+                    <div class="form-control-icon" style="position:relative;">
+                        <input type="password" name="password1" class="form-control"
+                               placeholder="Kamida 8 ta belgi"
+                               id="pass1" oninput="checkStrength()"
+                               required minlength="8">
+                        <i class="fa-solid fa-lock"></i>
+                        <button type="button" onclick="togglePass('pass1','eye1')"
+                                style="position:absolute;right:12px;top:50%;transform:translateY(-50%);
+                                       background:none;border:none;color:var(--text-muted);cursor:pointer;">
+                            <i class="fa-solid fa-eye" id="eye1"></i>
+                        </button>
+                    </div>
+                    <div class="strength-bar">
+                        <div class="strength-fill" id="strengthFill"></div>
+                    </div>
+                    <div class="strength-text" id="strengthText" style="color:var(--text-muted);"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Parolni tasdiqlang <span>*</span></label>
+                    <div class="form-control-icon" style="position:relative;">
+                        <input type="password" name="password2" class="form-control"
+                               placeholder="Parolni qayta kiriting"
+                               id="pass2" oninput="checkMatch()"
+                               required>
+                        <i class="fa-solid fa-lock"></i>
+                        <button type="button" onclick="togglePass('pass2','eye2')"
+                                style="position:absolute;right:12px;top:50%;transform:translateY(-50%);
+                                       background:none;border:none;color:var(--text-muted);cursor:pointer;">
+                            <i class="fa-solid fa-eye" id="eye2"></i>
+                        </button>
+                    </div>
+                    <div id="matchText" style="font-size:0.75rem;margin-top:4px;font-weight:600;"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block btn-lg"
+                        id="regBtn">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Ro'yxatdan o'tish
+                </button>
+            </form>
+        </div>
+        <div class="auth-footer">
+            Hisobingiz bormi?
+            <a href="{% url 'login' %}">Kiring</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function togglePass(id, iconId) {
+        const input = document.getElementById(id);
+        const icon  = document.getElementById(iconId);
+        input.type  = input.type === 'password' ? 'text' : 'password';
+        icon.className = input.type === 'password' ? 'fa-solid fa-eye' : 'fa-solid fa-eye-slash';
+    }
+
+    function checkStrength() {
+        const val  = document.getElementById('pass1').value;
+        const fill = document.getElementById('strengthFill');
+        const text = document.getElementById('strengthText');
+        let score  = 0;
+        if (val.length >= 8)           score++;
+        if (/[A-Z]/.test(val))         score++;
+        if (/[0-9]/.test(val))         score++;
+        if (/[^A-Za-z0-9]/.test(val))  score++;
+        const levels = [
+            { w: '0%',   c: '#e53e3e', t: '' },
+            { w: '25%',  c: '#e53e3e', t: 'Juda zaif' },
+            { w: '50%',  c: '#ed8936', t: 'O\'rtacha' },
+            { w: '75%',  c: '#48bb78', t: 'Yaxshi' },
+            { w: '100%', c: '#38a169', t: 'Kuchli ✓' },
+        ];
+        fill.style.width      = levels[score].w;
+        fill.style.background = levels[score].c;
+        text.style.color      = levels[score].c;
+        text.textContent      = levels[score].t;
+    }
+
+    function checkMatch() {
+        const p1   = document.getElementById('pass1').value;
+        const p2   = document.getElementById('pass2').value;
+        const text = document.getElementById('matchText');
+        if (!p2) { text.textContent = ''; return; }
+        if (p1 === p2) {
+            text.textContent = '✓ Parollar mos';
+            text.style.color = '#38a169';
+        } else {
+            text.textContent = '✗ Parollar mos emas';
+            text.style.color = '#e53e3e';
+        }
+    }
+
+    document.getElementById('regForm').addEventListener('submit', function() {
+        const btn = document.getElementById('regBtn');
+        btn.innerHTML = '<div class="spinner"></div> Yaratilmoqda...';
+        btn.disabled = true;
+    });
+</script>
+{% endblock %}

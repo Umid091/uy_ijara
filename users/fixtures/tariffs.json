@@ -1,0 +1,22 @@
+[
+  {
+    "model": "users.tariff",
+    "pk": 1,
+    "fields": {
+      "name": "3 kunlik",
+      "duration_days": 3,
+      "price": "30000.00",
+      "is_active": true
+    }
+  },
+  {
+    "model": "users.tariff",
+    "pk": 2,
+    "fields": {
+      "name": "7 kunlik",
+      "duration_days": 7,
+      "price": "50000.00",
+      "is_active": true
+    }
+  }
+]

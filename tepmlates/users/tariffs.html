@@ -1,0 +1,296 @@
+{% extends 'base.html' %}
+{% block title %}Tariflar — UyIjara{% endblock %}
+
+{% block extra_css %}
+.tariffs-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px 24px;
+}
+.tariffs-header {
+    text-align: center;
+    margin-bottom: 48px;
+}
+.tariffs-header h1 {
+    font-family: var(--font-display);
+    font-size: 2.4rem;
+    color: var(--primary);
+    margin-bottom: 12px;
+}
+.tariffs-header p {
+    color: var(--text-muted);
+    font-size: 1rem;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.tariffs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.tariff-card {
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: var(--transition);
+    position: relative;
+}
+.tariff-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+.tariff-card.popular {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(232,98,42,0.1);
+}
+.popular-badge {
+    position: absolute;
+    top: -1px;
+    right: 24px;
+    background: var(--accent);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 14px;
+    border-radius: 0 0 10px 10px;
+    letter-spacing: 0.03em;
+}
+.tariff-top {
+    padding: 32px 28px 24px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+}
+.tariff-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--accent-soft);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--accent);
+    margin: 0 auto 16px;
+}
+.tariff-card.popular .tariff-icon {
+    background: var(--accent);
+    color: white;
+}
+.tariff-name {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    color: var(--primary);
+    margin-bottom: 8px;
+}
+.tariff-price {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 4px;
+}
+.tariff-price span {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--text-muted);
+}
+.tariff-duration {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.tariff-features {
+    padding: 24px 28px;
+}
+.tariff-feature {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 0.9rem;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+}
+.tariff-feature:last-child { border-bottom: none; }
+.tariff-feature i {
+    color: #22c55e;
+    font-size: 0.85rem;
+    width: 16px;
+    flex-shrink: 0;
+}
+
+.tariff-action {
+    padding: 0 28px 28px;
+}
+
+/* Current subscription banner */
+.current-sub-banner {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border: 1.5px solid #86efac;
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+.current-sub-banner .icon {
+    width: 48px;
+    height: 48px;
+    background: #22c55e;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+.current-sub-banner h4 { color: #166534; font-weight: 700; margin-bottom: 3px; }
+.current-sub-banner p { font-size: 0.85rem; color: #4ade80; }
+
+/* Features comparison */
+.features-section {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+.features-section h3 {
+    padding: 20px 24px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--primary);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+}
+.feature-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+}
+.feature-row:last-child { border-bottom: none; }
+.feature-row .f-name { color: var(--text); }
+.feature-row .f-check {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #22c55e;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+{% endblock %}
+
+{% block content %}
+<div class="tariffs-wrapper">
+
+    <!-- Header -->
+    <div class="tariffs-header">
+        <h1>Tariflarni tanlang</h1>
+        <p>Uy egasining raqamini ko'ring, o'z uyingizni e'lon qiling</p>
+    </div>
+
+    <!-- Active subscription -->
+    {% if subscription %}
+        <div class="current-sub-banner">
+            <div class="icon"><i class="fa-solid fa-crown"></i></div>
+            <div>
+                <h4>{{ subscription.tariff.name }} — Faol</h4>
+                <p>
+                    {{ subscription.days_left }} kun qoldi •
+                    {{ subscription.end_date|date:"d.m.Y" }} gacha amal qiladi
+                </p>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Tariffs grid -->
+    <div class="tariffs-grid">
+        {% for tariff in tariffs %}
+            <div class="tariff-card {% if tariff.duration_days == 7 %}popular{% endif %}">
+                {% if tariff.duration_days == 7 %}
+                    <div class="popular-badge">⚡ Mashhur</div>
+                {% endif %}
+                <div class="tariff-top">
+                    <div class="tariff-icon">
+                        {% if tariff.duration_days == 3 %}
+                            <i class="fa-solid fa-bolt"></i>
+                        {% else %}
+                            <i class="fa-solid fa-crown"></i>
+                        {% endif %}
+                    </div>
+                    <div class="tariff-name">{{ tariff.name }}</div>
+                    <div class="tariff-price">
+                        {{ tariff.price|floatformat:0 }}
+                        <span>so'm</span>
+                    </div>
+                    <div class="tariff-duration">
+                        {{ tariff.duration_days }} kunlik obuna
+                    </div>
+                </div>
+                <div class="tariff-features">
+                    <div class="tariff-feature">
+                        <i class="fa-solid fa-check-circle"></i>
+                        Uy egasining raqamini ko'rish
+                    </div>
+                    <div class="tariff-feature">
+                        <i class="fa-solid fa-check-circle"></i>
+                        Uy e'lon qilish
+                    </div>
+                    <div class="tariff-feature">
+                        <i class="fa-solid fa-check-circle"></i>
+                        Cheksiz uy ko'rish
+                    </div>
+                    <div class="tariff-feature">
+                        <i class="fa-solid fa-check-circle"></i>
+                        {{ tariff.duration_days }} kun davomida faol
+                    </div>
+                </div>
+                <div class="tariff-action">
+                    {% if subscription and subscription.tariff == tariff %}
+                        <button class="btn btn-outline btn-block" disabled>
+                            <i class="fa-solid fa-check"></i> Faol tarif
+                        </button>
+                    {% else %}
+                        <a href="{% url 'buy_tariff' tariff.id %}"
+                           class="btn btn-{% if tariff.duration_days == 7 %}primary{% else %}secondary{% endif %} btn-block">
+                            <i class="fa-solid fa-shopping-cart"></i>
+                            Sotib olish
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Features -->
+    <div class="features-section">
+        <h3><i class="fa-solid fa-list-check" style="color:var(--accent);margin-right:8px;"></i>Nima kiritilgan</h3>
+        <div class="feature-row">
+            <span class="f-name">Uy egasining telefon raqami</span>
+            <span class="f-check"><i class="fa-solid fa-check"></i> Ha</span>
+        </div>
+        <div class="feature-row">
+            <span class="f-name">Uy e'lon qilish</span>
+            <span class="f-check"><i class="fa-solid fa-check"></i> Ha</span>
+        </div>
+        <div class="feature-row">
+            <span class="f-name">Cheksiz uy ko'rish</span>
+            <span class="f-check"><i class="fa-solid fa-check"></i> Ha</span>
+        </div>
+        <div class="feature-row">
+            <span class="f-name">Makler himoyasi</span>
+            <span class="f-check"><i class="fa-solid fa-check"></i> Ha</span>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

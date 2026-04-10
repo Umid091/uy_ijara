@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% block title %}Kirish — UyIjara{% endblock %}
+
+{% block extra_css %}
+.auth-wrapper {
+    min-height: calc(100vh - 68px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    background: linear-gradient(135deg, #f7f5f0 0%, #ede8e0 100%);
+}
+.auth-card {
+    background: white;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 440px;
+    overflow: hidden;
+}
+.auth-header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    padding: 36px 36px 32px;
+    text-align: center;
+    color: white;
+}
+.auth-logo {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+}
+.auth-logo span { color: var(--accent); }
+.auth-header p {
+    opacity: 0.75;
+    font-size: 0.9rem;
+}
+.auth-body { padding: 36px; }
+.auth-footer {
+    padding: 20px 36px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    background: var(--bg);
+}
+.auth-footer a {
+    color: var(--accent);
+    font-weight: 700;
+}
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-logo">Uy<span>Ijara</span></div>
+            <p>Hisobingizga kiring</p>
+        </div>
+        <div class="auth-body">
+            <form method="post" id="loginForm">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="form-label">Telefon raqam <span>*</span></label>
+                    <div class="form-control-icon">
+                        <input type="text" name="phone" class="form-control"
+                               placeholder="+998901234567"
+                               autofocus required>
+                        <i class="fa-solid fa-phone"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Parol <span>*</span></label>
+                    <div class="form-control-icon" style="position:relative;">
+                        <input type="password" name="password" class="form-control"
+                               placeholder="••••••••" id="passInput" required>
+                        <i class="fa-solid fa-lock"></i>
+                        <button type="button"
+                                onclick="togglePass()"
+                                style="position:absolute;right:12px;top:50%;transform:translateY(-50%);
+                                       background:none;border:none;color:var(--text-muted);cursor:pointer;"
+                                id="eyeBtn">
+                            <i class="fa-solid fa-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block btn-lg"
+                        style="margin-top:8px;" id="loginBtn">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    Kirish
+                </button>
+            </form>
+        </div>
+        <div class="auth-footer">
+            Hisobingiz yo'qmi?
+            <a href="{% url 'register' %}">Ro'yxatdan o'ting</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function togglePass() {
+        const input = document.getElementById('passInput');
+        const icon = document.getElementById('eyeIcon');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.className = 'fa-solid fa-eye-slash';
+        } else {
+            input.type = 'password';
+            icon.className = 'fa-solid fa-eye';
+        }
+    }
+    document.getElementById('loginForm').addEventListener('submit', function() {
+        const btn = document.getElementById('loginBtn');
+        btn.innerHTML = '<div class="spinner"></div> Kirilmoqda...';
+        btn.disabled = true;
+    });
+</script>
+{% endblock %}

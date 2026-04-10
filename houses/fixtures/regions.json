@@ -1,0 +1,16 @@
+[
+  {"model": "houses.region", "pk": 1,  "fields": {"name": "Toshkent shahri"}},
+  {"model": "houses.region", "pk": 2,  "fields": {"name": "Toshkent viloyati"}},
+  {"model": "houses.region", "pk": 3,  "fields": {"name": "Samarqand viloyati"}},
+  {"model": "houses.region", "pk": 4,  "fields": {"name": "Buxoro viloyati"}},
+  {"model": "houses.region", "pk": 5,  "fields": {"name": "Andijon viloyati"}},
+  {"model": "houses.region", "pk": 6,  "fields": {"name": "Farg'ona viloyati"}},
+  {"model": "houses.region", "pk": 7,  "fields": {"name": "Namangan viloyati"}},
+  {"model": "houses.region", "pk": 8,  "fields": {"name": "Qashqadaryo viloyati"}},
+  {"model": "houses.region", "pk": 9,  "fields": {"name": "Surxondaryo viloyati"}},
+  {"model": "houses.region", "pk": 10, "fields": {"name": "Jizzax viloyati"}},
+  {"model": "houses.region", "pk": 11, "fields": {"name": "Sirdaryo viloyati"}},
+  {"model": "houses.region", "pk": 12, "fields": {"name": "Xorazm viloyati"}},
+  {"model": "houses.region", "pk": 13, "fields": {"name": "Navoiy viloyati"}},
+  {"model": "houses.region", "pk": 14, "fields": {"name": "Qoraqalpog'iston Respublikasi"}}
+]

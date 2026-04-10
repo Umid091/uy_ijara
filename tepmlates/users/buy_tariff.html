@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+{% block title %}{{ tariff.name }} sotib olish — UyIjara{% endblock %}
+
+{% block extra_css %}
+.buy-wrapper {
+    max-width: 560px;
+    margin: 48px auto;
+    padding: 0 24px;
+}
+.buy-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+.buy-header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    padding: 32px;
+    text-align: center;
+    color: white;
+}
+.buy-header .icon {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+    color: var(--accent);
+}
+.buy-header h2 {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    margin-bottom: 6px;
+}
+.buy-header p { opacity: 0.75; font-size: 0.9rem; }
+
+.buy-body { padding: 28px; }
+
+.tariff-summary {
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border);
+}
+.tariff-summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--border);
+}
+.tariff-summary-row:last-child { border-bottom: none; }
+.tariff-summary-row .key { color: var(--text-muted); }
+.tariff-summary-row .val { font-weight: 700; color: var(--primary); }
+.tariff-summary-row.total .val {
+    font-size: 1.2rem;
+    color: var(--accent);
+}
+
+/* Balance check */
+.balance-check {
+    padding: 14px 16px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.88rem;
+}
+.balance-check.ok {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    color: #166534;
+}
+.balance-check.low {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+}
+.balance-check i { font-size: 1.1rem; }
+{% endblock %}
+
+{% block content %}
+<div class="buy-wrapper">
+    <div class="buy-card">
+        <div class="buy-header">
+            <div class="icon">
+                {% if tariff.duration_days == 7 %}
+                    <i class="fa-solid fa-crown"></i>
+                {% else %}
+                    <i class="fa-solid fa-bolt"></i>
+                {% endif %}
+            </div>
+            <h2>{{ tariff.name }}</h2>
+            <p>{{ tariff.duration_days }} kunlik premium obuna</p>
+        </div>
+
+        <div class="buy-body">
+
+            <!-- Summary -->
+            <div class="tariff-summary">
+                <div class="tariff-summary-row">
+                    <span class="key">Tarif nomi</span>
+                    <span class="val">{{ tariff.name }}</span>
+                </div>
+                <div class="tariff-summary-row">
+                    <span class="key">Muddat</span>
+                    <span class="val">{{ tariff.duration_days }} kun</span>
+                </div>
+                <div class="tariff-summary-row">
+                    <span class="key">Sizning balansingiz</span>
+                    <span class="val">{{ user.balance|floatformat:0 }} so'm</span>
+                </div>
+                <div class="tariff-summary-row total">
+                    <span class="key" style="font-weight:700;">To'lov miqdori</span>
+                    <span class="val">{{ tariff.price|floatformat:0 }} so'm</span>
+                </div>
+            </div>
+
+            <!-- Balance check -->
+            {% if user.balance >= tariff.price %}
+                <div class="balance-check ok">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <div>
+                        <strong>Balans yetarli</strong> —
+                        To'lovdan keyin: {{ user.balance|floatformat:0 }} - {{ tariff.price|floatformat:0 }} so'm
+                    </div>
+                </div>
+            {% else %}
+                <div class="balance-check low">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <div>
+                        <strong>Balans yetarli emas.</strong>
+                        Yana {{ tariff.price|floatformat:0 }} - {{ user.balance|floatformat:0 }} so'm kerak.
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- No card warning -->
+            {% if not user.card_number %}
+                <div class="alert alert-warning" style="margin-bottom:16px;">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    Karta ma'lumotlari yo'q.
+                    <a href="{% url 'profile_edit' %}" style="font-weight:700;">Profildan</a>
+                    kartani qo'shing.
+                </div>
+            {% endif %}
+
+            <!-- Actions -->
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                {% if user.balance >= tariff.price %}
+                    <form method="post" id="buyForm">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary btn-block btn-lg"
+                                id="buyBtn">
+                            <i class="fa-solid fa-lock-open"></i>
+                            {{ tariff.price|floatformat:0 }} so'm to'lash
+                        </button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'profile' %}#balance"
+                       class="btn btn-primary btn-block btn-lg">
+                        <i class="fa-solid fa-wallet"></i>
+                        Balansni to'ldirish
+                    </a>
+                {% endif %}
+                <a href="{% url 'tariff_list' %}" class="btn btn-outline btn-block">
+                    <i class="fa-solid fa-arrow-left"></i> Orqaga
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const form = document.getElementById('buyForm');
+    if (form) {
+        form.addEventListener('submit', function() {
+            const btn = document.getElementById('buyBtn');
+            btn.innerHTML = '<div class="spinner"></div> To\'lanmoqda...';
+            btn.disabled = true;
+        });
+    }
+</script>
+{% endblock %}

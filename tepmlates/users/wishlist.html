@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% block title %}Saqlangan uylar — UyIjara{% endblock %}
+
+{% block extra_css %}
+.wishlist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+.wishlist-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: var(--transition);
+    position: relative;
+}
+.wishlist-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+    border-color: transparent;
+}
+.wishlist-img {
+    height: 200px;
+    position: relative;
+    overflow: hidden;
+    background: var(--bg);
+}
+.wishlist-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s;
+}
+.wishlist-card:hover .wishlist-img img { transform: scale(1.05); }
+.wishlist-img .no-img {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-light);
+    font-size: 2.5rem;
+    opacity: 0.3;
+}
+.wishlist-price {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    background: var(--accent);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+.remove-wish {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 34px;
+    height: 34px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e53e3e;
+    font-size: 0.9rem;
+    transition: var(--transition);
+    text-decoration: none;
+    backdrop-filter: blur(4px);
+}
+.remove-wish:hover { background: #e53e3e; color: white; transform: scale(1.1); }
+.wishlist-body { padding: 16px; }
+.wish-location {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.wish-location i { color: var(--accent); font-size: 0.75rem; }
+.wish-title {
+    font-weight: 700;
+    color: var(--primary);
+    font-size: 0.93rem;
+    margin-bottom: 12px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+}
+{% endblock %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="page-header" style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
+            <h1 class="page-title">Saqlangan uylar</h1>
+            <p class="page-subtitle">{{ wishlist.count }} ta uy saqlangan</p>
+        </div>
+        <a href="{% url 'house_list' %}" class="btn btn-outline">
+            <i class="fa-solid fa-plus"></i> Ko'proq uylar
+        </a>
+    </div>
+
+    {% if wishlist %}
+        <div class="wishlist-grid">
+            {% for item in wishlist %}
+                <div class="wishlist-card">
+                    <div class="wishlist-img">
+                        {% with img=item.house.main_image %}
+                            {% if img %}
+                                <img src="{{ img.image.url }}" alt="{{ item.house.full_address }}">
+                            {% else %}
+                                <div class="no-img"><i class="fa-solid fa-image"></i></div>
+                            {% endif %}
+                        {% endwith %}
+                        <div class="wishlist-price">${{ item.house.price_usd }}</div>
+                        <a href="{% url 'toggle_wishlist' item.house.pk %}"
+                           class="remove-wish"
+                           title="Saqlangan ro'yxatdan o'chirish">
+                            <i class="fa-solid fa-heart-crack"></i>
+                        </a>
+                    </div>
+                    <div class="wishlist-body">
+                        <div class="wish-location">
+                            <i class="fa-solid fa-location-dot"></i>
+                            {{ item.house.district.name }}, {{ item.house.region.name }}
+                        </div>
+                        <div class="wish-title">{{ item.house.full_address }}</div>
+                        <a href="{% url 'house_detail' item.house.pk %}"
+                           class="btn btn-primary btn-block">
+                            <i class="fa-solid fa-eye"></i> Ko'rish
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="icon"><i class="fa-solid fa-heart"></i></div>
+            <h3>Saqlangan uylar yo'q</h3>
+            <p>Yoqqan uylarni saqlang va keyinroq qarang</p>
+            <a href="{% url 'house_list' %}" class="btn btn-primary btn-lg">
+                <i class="fa-solid fa-house"></i> Uylarni ko'rish
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

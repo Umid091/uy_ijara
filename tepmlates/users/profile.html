@@ -1,0 +1,556 @@
+{% extends 'base.html' %}
+{% block title %}Profilim — UyIjara{% endblock %}
+
+{% block extra_css %}
+<style>
+.prof-page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 28px 20px 60px;
+}
+.prof-page-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    color: var(--primary);
+    margin-bottom: 22px;
+}
+
+/* User info card */
+.user-info-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+.uic-cover {
+    height: 100px;
+    background: linear-gradient(135deg, #1c2b4a 0%, #2d4070 100%);
+    position: relative;
+}
+.uic-av-wrap {
+    position: absolute;
+    bottom: -32px;
+    left: 28px;
+}
+.uic-av {
+    width: 76px; height: 76px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: white; font-weight: 700; font-size: 1.5rem;
+    display: flex; align-items: center; justify-content: center;
+    border: 4px solid white; overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+.uic-av img { width: 100%; height: 100%; object-fit: cover; }
+.uic-body {
+    padding: 44px 28px 24px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+.uic-info .uic-name {
+    font-family: var(--font-display);
+    font-size: 1.3rem; color: var(--primary); margin-bottom: 3px;
+}
+.uic-info .uic-phone {
+    font-size: 0.85rem; color: var(--text-muted);
+    display: flex; align-items: center; gap: 6px;
+}
+.uic-info .uic-phone i { color: var(--accent); font-size: 0.75rem; }
+.uic-actions { display: flex; gap: 8px; align-items: center; }
+
+/* Stats row */
+.stats-row {
+    display: flex;
+    gap: 0;
+    border-top: 1px solid var(--border);
+}
+.stat-item {
+    flex: 1;
+    padding: 16px;
+    text-align: center;
+    border-right: 1px solid var(--border);
+}
+.stat-item:last-child { border-right: none; }
+.stat-item .sn { font-size: 1.3rem; font-weight: 700; color: var(--primary); }
+.stat-item .sl { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+.stat-item a { text-decoration: none; color: inherit; display: block; transition: background 0.15s; border-radius: 8px; }
+.stat-item a:hover { background: var(--bg); }
+
+/* Subscription */
+.sub-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+.sub-card.active { border-color: #86efac; background: #f0fdf4; }
+.sub-card.inactive { border-color: #fde68a; background: #fffbeb; }
+.sub-left { display: flex; align-items: center; gap: 14px; }
+.sub-ico {
+    width: 46px; height: 46px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; flex-shrink: 0;
+}
+.sub-card.active .sub-ico   { background: #dcfce7; color: #16a34a; }
+.sub-card.inactive .sub-ico { background: #fef3c7; color: #d97706; }
+.sub-title { font-weight: 700; font-size: 0.95rem; }
+.sub-card.active .sub-title   { color: #166534; }
+.sub-card.inactive .sub-title { color: #92400e; }
+.sub-sub { font-size: 0.78rem; margin-top: 2px; }
+.sub-card.active .sub-sub   { color: #4ade80; }
+.sub-card.inactive .sub-sub { color: #d97706; opacity: 0.8; }
+
+/* Balance card */
+.bal-card {
+    background: linear-gradient(135deg, var(--accent) 0%, #ff7a3d 100%);
+    border-radius: 16px; padding: 20px 22px;
+    color: white; margin-bottom: 16px;
+    position: relative; overflow: hidden;
+}
+.bal-card::before {
+    content: ''; position: absolute;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    top: -80px; right: -60px;
+}
+.bl-lbl { font-size: 0.7rem; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+.bl-amt {
+    font-family: var(--font-display); font-size: 2.2rem;
+    font-weight: 700; line-height: 1; margin-bottom: 16px;
+    position: relative; z-index: 1;
+}
+.bl-amt small { font-family: var(--font); font-size: 1rem; opacity: 0.7; font-weight: 400; margin-left: 4px; }
+.topup-row { display: flex; gap: 8px; position: relative; z-index: 1; }
+.topup-row input {
+    flex: 1; padding: 10px 13px;
+    border: 1.5px solid rgba(255,255,255,0.35);
+    border-radius: 9px; background: rgba(255,255,255,0.16);
+    color: white; font-family: var(--font); font-size: 0.86rem; outline: none;
+}
+.topup-row input::placeholder { color: rgba(255,255,255,0.55); }
+.topup-row input:focus { border-color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.22); }
+.topup-row button {
+    padding: 10px 16px;
+    background: rgba(255,255,255,0.2);
+    border: 1.5px solid rgba(255,255,255,0.35);
+    border-radius: 9px; color: white; font-weight: 700;
+    cursor: pointer; font-size: 0.84rem; font-family: var(--font);
+    transition: all 0.17s; white-space: nowrap;
+}
+.topup-row button:hover { background: rgba(255,255,255,0.3); }
+
+/* Saved card */
+.saved-card {
+    border-radius: 15px; padding: 18px 20px 16px;
+    color: white; position: relative; overflow: hidden;
+    margin-bottom: 16px; min-height: 152px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    box-shadow: 0 8px 26px rgba(28,43,74,0.18);
+    background: linear-gradient(145deg, #1c2b4a 0%, #2d4070 100%);
+}
+.saved-card::before {
+    content: ''; position: absolute;
+    width: 220px; height: 220px; border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    top: -80px; right: -60px; pointer-events: none;
+}
+.sc-humo       { background: linear-gradient(145deg, #5b21b6, #7c3aed); }
+.sc-uzcard     { background: linear-gradient(145deg, #065f46, #059669); }
+.sc-visa       { background: linear-gradient(145deg, #1e3a8a, #2563eb); }
+.sc-mastercard { background: linear-gradient(145deg, #7c2d12, #ea580c); }
+.sc-top { display: flex; align-items: flex-start; justify-content: space-between; position: relative; z-index: 2; }
+.sc-chip {
+    width: 32px; height: 24px;
+    background: linear-gradient(135deg, #d4af37, #f5d060, #b8962e);
+    border-radius: 4px; display: flex; align-items: center;
+    justify-content: center; font-size: 0.65rem; color: rgba(0,0,0,0.3);
+}
+.sc-logo { font-size: 0.9rem; font-weight: 800; opacity: 0.9; position: relative; z-index: 2; }
+.sc-logo.vl { font-style: italic; font-size: 1.2rem; }
+.sc-logo.ml { font-size: 1.2rem; letter-spacing: -0.15em; }
+.sc-num {
+    font-size: 1rem; letter-spacing: 0.2em;
+    font-family: 'Courier New', monospace; font-weight: 600;
+    position: relative; z-index: 2; margin-top: 10px;
+}
+.sc-bottom { display: flex; align-items: flex-end; gap: 16px; position: relative; z-index: 2; margin-top: 10px; }
+.sc-f .sc-l { font-size: 0.54rem; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.5; margin-bottom: 2px; }
+.sc-f .sc-v { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; }
+.sc-edit {
+    margin-left: auto;
+    background: rgba(255,255,255,0.17); border: 1px solid rgba(255,255,255,0.26);
+    color: white; padding: 5px 12px; border-radius: 7px;
+    font-size: 0.72rem; font-weight: 600; text-decoration: none;
+    transition: all 0.17s; display: inline-flex; align-items: center; gap: 5px;
+}
+.sc-edit:hover { background: rgba(255,255,255,0.27); }
+
+/* No card */
+.no-card {
+    display: flex; align-items: center; gap: 14px;
+    padding: 15px 17px; background: var(--bg);
+    border: 2px dashed var(--border); border-radius: 13px;
+    margin-bottom: 16px; text-decoration: none;
+    color: var(--text-muted); transition: all 0.17s;
+}
+.no-card:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+.nc-ico {
+    width: 42px; height: 42px; border-radius: 9px;
+    background: white; border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; color: var(--accent); flex-shrink: 0;
+}
+.nc-t { font-weight: 700; font-size: 0.86rem; }
+.nc-s { font-size: 0.72rem; margin-top: 2px; opacity: 0.7; }
+
+/* Notifications */
+.notif-list { display: flex; flex-direction: column; }
+.ni-item { display: flex; gap: 11px; padding: 13px 0; border-bottom: 1px solid var(--border); }
+.ni-item:last-child { border-bottom: none; padding-bottom: 0; }
+.ni-ico {
+    width: 36px; height: 36px; border-radius: 9px;
+    background: var(--accent-soft); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; flex-shrink: 0;
+}
+.ni-title { font-weight: 700; font-size: 0.86rem; color: var(--primary); margin-bottom: 2px; }
+.ni-msg   { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
+.ni-date  { font-size: 0.7rem; color: var(--text-light); margin-top: 3px; }
+
+/* Section block */
+.sec-block {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+.sec-block-head {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    background: #fafaf8;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.sbh-title { font-size: 0.9rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+.sbh-title i { color: var(--accent); }
+.sec-block-body { padding: 18px; }
+
+/* Payments */
+.pay-t { width: 100%; border-collapse: collapse; }
+.pay-t th { background: var(--bg); padding: 9px 12px; font-size: 0.74rem; font-weight: 700; color: var(--text-muted); text-align: left; border-bottom: 1px solid var(--border); }
+.pay-t td { padding: 10px 12px; font-size: 0.83rem; border-bottom: 1px solid var(--border); color: var(--text); }
+.pay-t tr:last-child td { border-bottom: none; }
+
+/* Empty */
+.empty-s { text-align: center; padding: 28px 16px; }
+.empty-s i { font-size: 2rem; display: block; margin-bottom: 8px; opacity: 0.13; color: var(--text-muted); }
+.empty-s p { font-size: 0.82rem; color: var(--text-muted); }
+
+/* Quick links */
+.quick-links { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.ql-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px; background: white;
+    border: 1px solid var(--border); border-radius: 13px;
+    text-decoration: none; color: var(--text);
+    transition: all 0.17s;
+}
+.ql-item:hover { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+.ql-ico {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--accent-soft); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; flex-shrink: 0;
+}
+.ql-t { font-weight: 700; font-size: 0.86rem; }
+.ql-s { font-size: 0.71rem; color: var(--text-muted); margin-top: 1px; }
+
+@media (max-width: 640px) {
+    .prof-page { padding: 14px 14px 50px; }
+    .uic-body { flex-direction: column; gap: 12px; }
+    .stats-row { flex-wrap: wrap; }
+    .stat-item { min-width: 50%; }
+    .quick-links { grid-template-columns: 1fr; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="prof-page">
+    <div class="prof-page-title">Mening profilim</div>
+
+    <!-- User info -->
+    <div class="user-info-card">
+        <div class="uic-cover">
+            <div class="uic-av-wrap">
+                <div class="uic-av">
+                    {% if user.avatar %}
+                        <img src="{{ user.avatar.url }}" alt="">
+                    {% else %}
+                        {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="uic-body">
+            <div class="uic-info">
+                <div class="uic-name">{{ user.get_full_name }}</div>
+                <div class="uic-phone">
+                    <i class="fa-solid fa-phone"></i> {{ user.phone }}
+                </div>
+            </div>
+            <div class="uic-actions">
+                <a href="{% url 'profile_edit' %}" class="btn btn-outline btn-sm">
+                    <i class="fa-solid fa-pen"></i> Tahrirlash
+                </a>
+                <a href="{% url 'logout' %}" class="btn btn-sm"
+                   style="background:#fff5f5;color:#e53e3e;border:1px solid #fecaca;">
+                    <i class="fa-solid fa-right-from-bracket"></i> Chiqish
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-item">
+                <a href="{% url 'my_houses' %}">
+                    <div class="sn">{{ houses.count }}</div>
+                    <div class="sl">E'lonlarim</div>
+                </a>
+            </div>
+            <div class="stat-item">
+                <a href="{% url 'wishlist' %}">
+                    <div class="sn">{{ user.wishlist.count }}</div>
+                    <div class="sl">Saqlangan</div>
+                </a>
+            </div>
+            <div class="stat-item">
+                <div class="sn">{{ payments.count }}</div>
+                <div class="sl">To'lovlar</div>
+            </div>
+            <div class="stat-item">
+                <div class="sn">{{ user.balance|floatformat:0 }}</div>
+                <div class="sl">so'm balans</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subscription -->
+    {% if subscription %}
+        <div class="sub-card active">
+            <div class="sub-left">
+                <div class="sub-ico"><i class="fa-solid fa-crown"></i></div>
+                <div>
+                    <div class="sub-title">{{ subscription.tariff.name }} — Faol</div>
+                    <div class="sub-sub">
+                        {{ subscription.days_left }} kun qoldi &bull;
+                        {{ subscription.end_date|date:"d.m.Y" }} gacha
+                    </div>
+                </div>
+            </div>
+            <a href="{% url 'tariff_list' %}" class="btn btn-outline btn-sm">
+                Uzaytirish
+            </a>
+        </div>
+    {% else %}
+        <div class="sub-card inactive">
+            <div class="sub-left">
+                <div class="sub-ico"><i class="fa-solid fa-lock"></i></div>
+                <div>
+                    <div class="sub-title">Tarif yo'q</div>
+                    <div class="sub-sub">Uy e'lon qilish va raqam ko'rish uchun tarif oling</div>
+                </div>
+            </div>
+            <a href="{% url 'tariff_list' %}" class="btn btn-primary btn-sm">
+                <i class="fa-solid fa-crown"></i> Tarif olish
+            </a>
+        </div>
+    {% endif %}
+
+    <!-- Tezkor havolalar -->
+    <div class="quick-links">
+        <a href="{% url 'my_houses' %}" class="ql-item">
+            <div class="ql-ico"><i class="fa-solid fa-house"></i></div>
+            <div>
+                <div class="ql-t">Mening uylarim</div>
+                <div class="ql-s">{{ houses.count }} ta e'lon</div>
+            </div>
+        </a>
+        <a href="{% url 'wishlist' %}" class="ql-item">
+            <div class="ql-ico"><i class="fa-solid fa-heart"></i></div>
+            <div>
+                <div class="ql-t">Saqlangan uylar</div>
+                <div class="ql-s">{{ user.wishlist.count }} ta saqlangan</div>
+            </div>
+        </a>
+        <a href="{% url 'tariff_list' %}" class="ql-item">
+            <div class="ql-ico"><i class="fa-solid fa-crown"></i></div>
+            <div>
+                <div class="ql-t">Tariflar</div>
+                <div class="ql-s">3 va 7 kunlik</div>
+            </div>
+        </a>
+        <a href="{% url 'house_add' %}" class="ql-item">
+            <div class="ql-ico"><i class="fa-solid fa-plus"></i></div>
+            <div>
+                <div class="ql-t">Uy qo'shish</div>
+                <div class="ql-s">Yangi e'lon berish</div>
+            </div>
+        </a>
+    </div>
+
+    <!-- Balans -->
+    <div class="bal-card">
+        <div class="bl-lbl">Joriy balans</div>
+        <div class="bl-amt">{{ user.balance|floatformat:0 }}<small>so'm</small></div>
+        <form method="post" action="{% url 'top_up_balance' %}">
+            {% csrf_token %}
+            <div class="topup-row">
+                <input type="number" name="amount" placeholder="Qancha so'm qo'shish?" min="1000" step="1000">
+                <button type="submit"><i class="fa-solid fa-plus"></i> To'ldirish</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Karta -->
+    {% if user.card_number %}
+        {% with c=user.card_number %}
+        <div class="saved-card
+            {% if c|slice:':4' == '9860' %}sc-humo
+            {% elif c|slice:':4' == '8600' %}sc-uzcard
+            {% elif c|slice:':1' == '4' %}sc-visa
+            {% else %}sc-mastercard{% endif %}">
+            <div class="sc-top">
+                <div class="sc-chip"><i class="fa-solid fa-microchip"></i></div>
+                <div class="sc-logo
+                    {% if c|slice:':1' == '4' %}vl
+                    {% elif c|slice:':4' != '9860' and c|slice:':4' != '8600' %}ml{% endif %}">
+                    {% if c|slice:':4' == '9860' %}HUMO
+                    {% elif c|slice:':4' == '8600' %}UZCARD
+                    {% elif c|slice:':1' == '4' %}Visa
+                    {% else %}⬤⬤{% endif %}
+                </div>
+            </div>
+            <div class="sc-num">
+                {{ c|slice:':4' }}&nbsp; &nbsp;••••&nbsp; &nbsp;••••&nbsp; &nbsp;{{ c|slice:'-4:' }}
+            </div>
+            <div class="sc-bottom">
+                <div class="sc-f">
+                    <div class="sc-l">Karta egasi</div>
+                    <div class="sc-v">{{ user.card_holder|default:"—" }}</div>
+                </div>
+                <div class="sc-f">
+                    <div class="sc-l">Muddat</div>
+                    <div class="sc-v">{{ user.card_expiry|default:"—" }}</div>
+                </div>
+                <a href="{% url 'profile_edit' %}" class="sc-edit">
+                    <i class="fa-solid fa-pen"></i> O'zgartirish
+                </a>
+            </div>
+        </div>
+        {% endwith %}
+    {% else %}
+        <a href="{% url 'profile_edit' %}" class="no-card">
+            <div class="nc-ico"><i class="fa-solid fa-credit-card"></i></div>
+            <div>
+                <div class="nc-t">Karta qo'shish</div>
+                <div class="nc-s">Tarif to'lovi uchun karta kiriting</div>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="margin-left:auto;font-size:0.75rem;opacity:0.3;flex-shrink:0;"></i>
+        </a>
+    {% endif %}
+
+    <!-- To'lovlar -->
+    <div class="sec-block">
+        <div class="sec-block-head">
+            <span class="sbh-title"><i class="fa-solid fa-receipt"></i> To'lovlar tarixi</span>
+        </div>
+        {% if payments %}
+            <div style="overflow-x:auto;">
+                <table class="pay-t">
+                    <thead>
+                        <tr>
+                            <th>Tarif</th><th>Summa</th><th>Karta</th><th>Holat</th><th>Sana</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in payments %}
+                            <tr>
+                                <td><strong>{{ p.tariff.name }}</strong></td>
+                                <td style="color:var(--accent);font-weight:700;">{{ p.amount|floatformat:0 }} so'm</td>
+                                <td style="font-family:monospace;font-size:0.78rem;color:var(--text-muted);">{{ p.card_number_masked }}</td>
+                                <td>
+                                    <span class="badge {% if p.status == 'success' %}badge-success{% elif p.status == 'failed' %}badge-danger{% else %}badge-warning{% endif %}">
+                                        {{ p.get_status_display }}
+                                    </span>
+                                </td>
+                                <td style="font-size:0.76rem;color:var(--text-muted);">{{ p.created_at|date:"d.m.Y" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="sec-block-body">
+                <div class="empty-s">
+                    <i class="fa-solid fa-receipt"></i>
+                    <p>Hali hech qanday to'lov amalga oshirilmagan</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Bildirishnomalar -->
+    <div class="sec-block">
+        <div class="sec-block-head">
+            <span class="sbh-title"><i class="fa-solid fa-bell"></i> Bildirishnomalar</span>
+            {% if notifications %}
+                <a href="{% url 'notifications_read' %}" class="btn btn-outline btn-sm">
+                    <i class="fa-solid fa-check-double"></i> O'qildi
+                </a>
+            {% endif %}
+        </div>
+        <div class="sec-block-body">
+            {% if notifications %}
+                <div class="notif-list">
+                    {% for n in notifications %}
+                        <div class="ni-item">
+                            <div class="ni-ico">
+                                {% if n.type == 'sub_2day' or n.type == 'sub_1day' %}
+                                    <i class="fa-solid fa-clock"></i>
+                                {% elif n.type == 'sub_end' %}
+                                    <i class="fa-solid fa-triangle-exclamation" style="color:#f59e0b;"></i>
+                                {% elif n.type == 'report' %}
+                                    <i class="fa-solid fa-flag" style="color:#e53e3e;"></i>
+                                {% else %}
+                                    <i class="fa-solid fa-bell"></i>
+                                {% endif %}
+                            </div>
+                            <div>
+                                <div class="ni-title">{{ n.title }}</div>
+                                <div class="ni-msg">{{ n.message }}</div>
+                                <div class="ni-date">{{ n.created_at|timesince }} oldin</div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-s">
+                    <i class="fa-regular fa-bell"></i>
+                    <p>Hamma bildirishnomalar o'qilgan</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

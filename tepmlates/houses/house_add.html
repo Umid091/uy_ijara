@@ -1,0 +1,437 @@
+{% extends 'base.html' %}
+{% block title %}Uy qo'shish — UyIjara{% endblock %}
+
+{% block extra_css %}
+.add-wrapper {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 32px 24px;
+}
+.form-section {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+.form-section-header {
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.form-section-header .sec-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--accent-soft);
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+.form-section-header h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+.form-section-body { padding: 22px; }
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+.upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 36px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    background: var(--bg);
+}
+.upload-zone:hover, .upload-zone.drag {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+}
+.upload-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+.upload-zone .uz-icon {
+    font-size: 2.2rem;
+    color: var(--accent);
+    opacity: 0.7;
+    margin-bottom: 10px;
+}
+.upload-zone .uz-title { font-weight: 700; color: var(--primary); margin-bottom: 4px; }
+.upload-zone .uz-hint { font-size: 0.8rem; color: var(--text-muted); }
+.preview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 8px;
+    margin-top: 14px;
+}
+.preview-item {
+    aspect-ratio: 1;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    border: 2px solid var(--border);
+}
+.preview-item img { width: 100%; height: 100%; object-fit: cover; }
+.preview-item .main-tag {
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
+    background: var(--accent);
+    color: white;
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+#addMap {
+    height: 300px;
+    width: 100%;
+}
+.map-hint {
+    padding: 10px 16px;
+    background: var(--bg);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.map-hint i { color: var(--accent); }
+.form-footer {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+@media (max-width: 640px) {
+    .form-row { grid-template-columns: 1fr; }
+    .add-wrapper { padding: 16px; }
+}
+{% endblock %}
+
+{% block content %}
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+
+<div class="add-wrapper">
+    <div style="margin-bottom:24px;">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+            <a href="{% url 'house_list' %}" class="btn btn-outline btn-sm">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <h1 class="page-title" style="margin:0;">Uy qo'shish</h1>
+        </div>
+        <p class="page-subtitle" style="margin-left:52px;">
+            Barcha majburiy maydonlarni to'ldiring
+        </p>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" id="addForm">
+        {% csrf_token %}
+
+        <!-- Manzil -->
+        <div class="form-section">
+            <div class="form-section-header">
+                <div class="sec-icon"><i class="fa-solid fa-location-dot"></i></div>
+                <h3>Manzil ma'lumotlari</h3>
+            </div>
+            <div class="form-section-body">
+                <div class="form-row" style="margin-bottom:16px;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">Viloyat <span>*</span></label>
+                        <select name="region" id="regionSel" class="form-control"
+                                onchange="loadDistricts(this.value)" required>
+                            <option value="">— Viloyatni tanlang —</option>
+                            {% for r in regions %}
+                                <option value="{{ r.id }}">{{ r.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">Tuman <span>*</span></label>
+                        <select name="district" id="districtSel"
+                                class="form-control" required>
+                            <option value="">— Avval viloyat tanlang —</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">Ko'cha <span>*</span></label>
+                        <div class="form-control-icon">
+                            <input type="text" name="street" class="form-control"
+                                   placeholder="Masalan: Amir Temur ko'chasi" required>
+                            <i class="fa-solid fa-road"></i>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">To'liq manzil <span>*</span></label>
+                        <div class="form-control-icon">
+                            <input type="text" name="full_address" class="form-control"
+                                   placeholder="Ko'cha, uy raqami, qavat" required>
+                            <i class="fa-solid fa-map-marker-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Uy ma'lumotlari -->
+        <div class="form-section">
+            <div class="form-section-header">
+                <div class="sec-icon"><i class="fa-solid fa-house"></i></div>
+                <h3>Uy ma'lumotlari</h3>
+            </div>
+            <div class="form-section-body">
+                <div class="form-group">
+                    <label class="form-label">Narx (dollar, oyiga) <span>*</span></label>
+                    <div class="form-control-icon">
+                        <input type="number" name="price_usd" class="form-control"
+                               placeholder="Masalan: 350" min="1" step="1" required>
+                        <i class="fa-solid fa-dollar-sign"></i>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">Tavsif <span>*</span></label>
+                    <textarea name="description" class="form-control"
+                              placeholder="Uy haqida batafsil: xona soni, qavat, jihozlar, sharoitlar..."
+                              rows="5" required></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rasmlar -->
+        <div class="form-section">
+            <div class="form-section-header">
+                <div class="sec-icon"><i class="fa-solid fa-images"></i></div>
+                <h3>Rasmlar
+                    <span style="font-weight:400;color:var(--text-muted);font-size:0.82rem;margin-left:6px;">
+                        (1 dan 10 tagacha)
+                    </span>
+                </h3>
+            </div>
+            <div class="form-section-body">
+                <div class="upload-zone" id="uploadZone">
+                    <input type="file" name="images" id="imgInput"
+                           multiple accept="image/jpeg,image/png,image/webp"
+                           onchange="previewImages(this)">
+                    <div class="uz-icon">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                    </div>
+                    <div class="uz-title">Rasmlarni tanlash yoki sudrab olib keling</div>
+                    <div class="uz-hint">JPG, PNG, WEBP • Birinchi rasm asosiy bo'ladi</div>
+                </div>
+                <div class="preview-grid" id="previewGrid"></div>
+            </div>
+        </div>
+
+        <!-- Xarita -->
+        <div class="form-section">
+            <div class="form-section-header">
+                <div class="sec-icon"><i class="fa-solid fa-map"></i></div>
+                <h3>Joylashuv xaritada
+                    <span style="font-weight:400;color:var(--text-muted);font-size:0.82rem;margin-left:6px;">
+                        (ixtiyoriy)
+                    </span>
+                </h3>
+            </div>
+            <div id="addMap"></div>
+            <div class="map-hint">
+                <i class="fa-solid fa-hand-pointer"></i>
+                Xaritada uyning joylashgan joyini bosing — koordinatalar avtomatik to'ldiriladi
+            </div>
+            <div class="form-section-body" style="padding-top:14px;">
+                <div class="form-row">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">Kenglik (Latitude)</label>
+                        <input type="text" name="latitude" id="latInput"
+                               class="form-control" placeholder="Xaritada bosing"
+                               readonly style="background:var(--bg);">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">Uzunlik (Longitude)</label>
+                        <input type="text" name="longitude" id="lngInput"
+                               class="form-control" placeholder="Xaritada bosing"
+                               readonly style="background:var(--bg);">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="form-footer">
+            <a href="{% url 'house_list' %}" class="btn btn-outline">
+                <i class="fa-solid fa-xmark"></i> Bekor qilish
+            </a>
+            <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                <i class="fa-solid fa-plus"></i> E'lon qo'shish
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// ── Districts yuklash ──
+function loadDistricts(regionId) {
+    const sel = document.getElementById('districtSel');
+    sel.innerHTML = '<option value="">— Yuklanmoqda... —</option>';
+    sel.disabled = true;
+
+    if (!regionId) {
+        sel.innerHTML = '<option value="">— Avval viloyat tanlang —</option>';
+        sel.disabled = false;
+        return;
+    }
+
+    fetch(`/districts/?region_id=${regionId}`)
+        .then(r => r.json())
+        .then(data => {
+            sel.innerHTML = '<option value="">— Tumanni tanlang —</option>';
+            if (data.districts && data.districts.length > 0) {
+                data.districts.forEach(d => {
+                    const opt = document.createElement('option');
+                    opt.value = d.id;
+                    opt.textContent = d.name;
+                    sel.appendChild(opt);
+                });
+            } else {
+                sel.innerHTML = '<option value="">Tumanlar topilmadi</option>';
+            }
+            sel.disabled = false;
+        })
+        .catch(err => {
+            console.error('Districts error:', err);
+            sel.innerHTML = '<option value="">Xato yuz berdi</option>';
+            sel.disabled = false;
+        });
+}
+
+// ── Rasm preview ──
+function previewImages(input) {
+    const grid = document.getElementById('previewGrid');
+    grid.innerHTML = '';
+    const files = Array.from(input.files);
+
+    if (files.length > 10) {
+        alert("Ko'pi bilan 10 ta rasm yuklash mumkin!");
+        input.value = '';
+        return;
+    }
+
+    files.forEach((file, i) => {
+        const reader = new FileReader();
+        reader.onload = e => {
+            const div = document.createElement('div');
+            div.className = 'preview-item';
+            div.innerHTML = `
+                <img src="${e.target.result}" alt="">
+                ${i === 0 ? '<div class="main-tag">Asosiy</div>' : ''}
+            `;
+            grid.appendChild(div);
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+// ── Drag & Drop ──
+const zone = document.getElementById('uploadZone');
+['dragover', 'dragenter'].forEach(ev => {
+    zone.addEventListener(ev, e => { e.preventDefault(); zone.classList.add('drag'); });
+});
+['dragleave', 'dragend', 'drop'].forEach(ev => {
+    zone.addEventListener(ev, () => zone.classList.remove('drag'));
+});
+zone.addEventListener('drop', e => {
+    e.preventDefault();
+    const input = document.getElementById('imgInput');
+    input.files = e.dataTransfer.files;
+    previewImages(input);
+});
+
+// ── Leaflet xarita ──
+document.addEventListener('DOMContentLoaded', function () {
+    const map = L.map('addMap', {
+        scrollWheelZoom: false,
+        center: [41.2995, 69.2401],
+        zoom: 12
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap',
+        maxZoom: 19
+    }).addTo(map);
+
+    let marker = null;
+
+    const pinIcon = L.divIcon({
+        html: `<div style="
+            background:#e8622a;
+            width:32px;height:32px;
+            border-radius:50% 50% 50% 0;
+            transform:rotate(-45deg);
+            border:3px solid white;
+            box-shadow:0 3px 10px rgba(0,0,0,0.3);
+        "></div>`,
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        className: ''
+    });
+
+    map.on('click', function (e) {
+        const lat = e.latlng.lat.toFixed(7);
+        const lng = e.latlng.lng.toFixed(7);
+
+        if (marker) {
+            marker.setLatLng(e.latlng);
+        } else {
+            marker = L.marker(e.latlng, { icon: pinIcon }).addTo(map);
+        }
+
+        document.getElementById('latInput').value = lat;
+        document.getElementById('lngInput').value = lng;
+
+        marker.bindPopup(`
+            <div style="font-family:sans-serif;font-size:13px;padding:2px;">
+                <i style="color:#e8622a;">📍</i>
+                <strong>${lat}, ${lng}</strong>
+            </div>
+        `).openPopup();
+    });
+});
+
+// ── Form yuborish ──
+document.getElementById('addForm').addEventListener('submit', function (e) {
+    const images = document.getElementById('imgInput').files;
+    if (images.length === 0) {
+        e.preventDefault();
+        alert("Kamida 1 ta rasm yuklang!");
+        return;
+    }
+    const btn = document.getElementById('submitBtn');
+    btn.innerHTML = '<div class="spinner"></div> Saqlanmoqda...';
+    btn.disabled = true;
+});
+</script>
+{% endblock %}

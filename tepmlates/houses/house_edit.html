@@ -1,0 +1,351 @@
+{% extends 'base.html' %}
+{% block title %}Uyni tahrirlash — UyIjara{% endblock %}
+
+{% block extra_css %}
+.edit-wrapper {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 32px 24px;
+}
+.form-section {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+.form-section-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.form-section-header .icon {
+    width: 36px;
+    height: 36px;
+    background: var(--accent-soft);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+}
+.form-section-header h3 {
+    font-size: 0.97rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+.form-section-body { padding: 24px; }
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* Existing images */
+.existing-images {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+}
+.existing-img {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    aspect-ratio: 1;
+    border: 2px solid var(--border);
+}
+.existing-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.existing-img .main-badge {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    background: var(--accent);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+.existing-img .del-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 24px;
+    height: 24px;
+    background: rgba(220,38,38,0.85);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.65rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: var(--transition);
+}
+.existing-img .del-btn:hover { background: #dc2626; }
+
+.add-more-images {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+}
+.add-more-images:hover { border-color: var(--accent); background: var(--accent-soft); }
+.add-more-images input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.form-footer-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+}
+
+@media (max-width: 640px) {
+    .form-row { grid-template-columns: 1fr; }
+}
+{% endblock %}
+
+{% block content %}
+<div class="edit-wrapper">
+    <div class="page-header">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+            <a href="{% url 'house_detail' house.pk %}" class="btn btn-outline btn-sm">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <h1 class="page-title" style="margin-bottom:0;">Uyni tahrirlash</h1>
+        </div>
+        <p class="page-subtitle">{{ house.full_address }}</p>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" id="editForm">
+        {% csrf_token %}
+
+        <!-- Location -->
+        <div class="form-section">
+            <div class="form-section-header">
+                <div class="icon"><i class="fa-solid fa-location-dot"></i></div>
+                <h3>Manzil ma'lumotlari</h3>
+            </div>
+            <div class="form-section-body">
+                <div class="form-row" style="margin-bottom:16px;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">Viloyat <span>*</span></label>
+                        <select name="region" class="form-control" id="regionSel"
+                                onchange="loadDistricts(this.value, {{ house.district.id }})" required>
+                            {% for r in regions %}
+                                <option value="{{ r.id }}"
+                                    {% if r == house.region %}selected{% endif %}>
+                                    {{ r.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">Tuman <span>*</span></label>
+                        <select name="district" class="form-control" id="districtSel" required>
+                            {% for d in districts %}
+                                <option value="{{ d.id }}"
+                                    {% if d == house.district %}selected{% endif %}>
+                                    {{ d.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">Ko'cha <span>*</span></label>
+                        <div class="form-control-icon">
+                            <input type="text" name="street" class="form-control"
+                                   value="{{ house.street }}" required>
+                            <i class="fa-solid fa-road"></i>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">To'liq manzil <span>*</span></label>
+                        <div class="form-control-icon">
+                            <input type="text" name="full_address" class="form-control"
+                                   value="{{ house.full_address }}" required>
+                            <i class="fa-solid fa-map-marker-alt"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- House info -->
+        <div class="form-section">
+            <div class="form-section-header">
+                <div class="icon"><i class="fa-solid fa-house"></i></div>
+                <h3>Uy ma'lumotlari</h3>
+            </div>
+            <div class="form-section-body">
+                <div class="form-group">
+                    <label class="form-label">Narx (dollar) <span>*</span></label>
+                    <div class="form-control-icon">
+                        <input type="number" name="price_usd" class="form-control"
+                               value="{{ house.price_usd }}" min="1" step="0.01" required>
+                        <i class="fa-solid fa-dollar-sign"></i>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom:0;">
+                    <label class="form-label">Tavsif <span>*</span></label>
+                    <textarea name="description" class="form-control"
+                              rows="5" required>{{ house.description }}</textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Images -->
+        <div class="form-section">
+            <div class="form-section-header">
+                <div class="icon"><i class="fa-solid fa-images"></i></div>
+                <h3>Rasmlar
+                    <span style="color:var(--text-muted);font-weight:400;font-size:0.82rem;margin-left:6px;">
+                        ({{ house.images.count }}/10)
+                    </span>
+                </h3>
+            </div>
+            <div class="form-section-body">
+                <!-- Existing -->
+                {% if house.images.all %}
+                    <div style="font-size:0.85rem;font-weight:600;color:var(--text-muted);margin-bottom:10px;">
+                        Mavjud rasmlar:
+                    </div>
+                    <div class="existing-images">
+                        {% for img in house.images.all %}
+                            <div class="existing-img">
+                                <img src="{{ img.image.url }}" alt="">
+                                {% if img.is_main %}
+                                    <div class="main-badge">Asosiy</div>
+                                {% endif %}
+                                <a href="{% url 'delete_image' img.pk %}"
+                                   class="del-btn"
+                                   onclick="return confirm('Rasmni o\'chirishni tasdiqlaysizmi?')">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% if house.images.count < 10 %}
+                    <div class="add-more-images">
+                        <input type="file" name="images" multiple accept="image/*"
+                               onchange="previewNew(this)">
+                        <i class="fa-solid fa-plus" style="font-size:1.5rem;color:var(--accent);margin-bottom:8px;"></i>
+                        <div style="font-weight:600;color:var(--primary);font-size:0.9rem;">
+                            Yangi rasmlar qo'shish
+                        </div>
+                        <div style="font-size:0.78rem;color:var(--text-muted);margin-top:4px;">
+                            Yana {{ 10|add:house.images.count|add:"-10"|add:"10" }}
+                            tagacha rasm qo'shishingiz mumkin
+                        </div>
+                    </div>
+                    <div class="existing-images" id="newPreviews" style="margin-top:12px;"></div>
+                {% else %}
+                    <div style="padding:12px;background:#fef3c7;border-radius:10px;font-size:0.85rem;color:#92400e;">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        Maksimal rasm soni (10) to'ldi. Yangi rasm qo'shish uchun avval birini o'chiring.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Coordinates -->
+        <div class="form-section">
+            <div class="form-section-header">
+                <div class="icon"><i class="fa-solid fa-map"></i></div>
+                <h3>Joylashuv koordinatalari</h3>
+            </div>
+            <div class="form-section-body">
+                <div class="form-row">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">Kenglik (Latitude)</label>
+                        <input type="text" name="latitude" class="form-control"
+                               value="{{ house.latitude|default:'' }}"
+                               placeholder="Masalan: 41.2995">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label">Uzunlik (Longitude)</label>
+                        <input type="text" name="longitude" class="form-control"
+                               value="{{ house.longitude|default:'' }}"
+                               placeholder="Masalan: 69.2401">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="form-footer-actions">
+            <a href="{% url 'house_detail' house.pk %}" class="btn btn-outline">
+                <i class="fa-solid fa-xmark"></i> Bekor qilish
+            </a>
+            <button type="submit" class="btn btn-primary btn-lg" id="saveBtn">
+                <i class="fa-solid fa-floppy-disk"></i> O'zgarishlarni saqlash
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function loadDistricts(regionId, selectedId) {
+        const sel = document.getElementById('districtSel');
+        if (!regionId) return;
+        fetch(`/districts/?region_id=${regionId}`)
+            .then(r => r.json())
+            .then(data => {
+                sel.innerHTML = '<option value="">Tumanni tanlang</option>';
+                data.districts.forEach(d => {
+                    sel.innerHTML += `<option value="${d.id}"
+                        ${d.id == selectedId ? 'selected' : ''}>${d.name}</option>`;
+                });
+            });
+    }
+
+    function previewNew(input) {
+        const prev = document.getElementById('newPreviews');
+        prev.innerHTML = '';
+        Array.from(input.files).forEach((file, i) => {
+            const reader = new FileReader();
+            reader.onload = e => {
+                prev.innerHTML += `
+                    <div class="existing-img">
+                        <img src="${e.target.result}" alt="">
+                        ${i === 0 ? '<div class="main-badge">Yangi</div>' : ''}
+                    </div>`;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    document.getElementById('editForm').addEventListener('submit', function() {
+        const btn = document.getElementById('saveBtn');
+        btn.innerHTML = '<div class="spinner"></div> Saqlanmoqda...';
+        btn.disabled = true;
+    });
+</script>
+{% endblock %}
