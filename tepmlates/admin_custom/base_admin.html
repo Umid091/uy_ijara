@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control Panel | Maklersiz Uy</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --sidebar-bg: #1e293b;
+            --sidebar-active: #38bdf8;
+            --body-bg: #f1f5f9;
+        }
+        body { font-family: 'Inter', sans-serif; background: var(--body-bg); }
+
+        #sidebar-wrapper {
+            width: 260px; min-height: 100vh; background: var(--sidebar-bg);
+            position: fixed; transition: all 0.3s;
+        }
+        .sidebar-heading { padding: 2rem 1.5rem; color: #fff; font-weight: 700; font-size: 1.3rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+        .nav-link {
+            color: #94a3b8 !important; padding: 0.8rem 1.5rem !important;
+            margin: 0.2rem 1rem; border-radius: 8px; transition: 0.3s;
+        }
+        .nav-link:hover, .nav-link.active { color: #fff !important; background: rgba(255,255,255,0.05); }
+        .nav-link.active { color: var(--sidebar-active) !important; background: rgba(56, 189, 248, 0.1); }
+        .nav-link i { margin-right: 12px; }
+
+        #page-content-wrapper { width: 100%; padding-left: 260px; }
+        .topbar { background: #fff; height: 70px; padding: 0 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+
+        .table-card { border: none; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .badge-block { cursor: pointer; }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<div class="d-flex" id="wrapper">
+    <div id="sidebar-wrapper">
+        <div class="sidebar-heading"><i class="fas fa-cube me-2 text-info"></i> ADMIN PANEL</div>
+        <div class="nav flex-column mt-3">
+            <a href="{% url 'admin_dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+                <i class="fas fa-th-large"></i> Dashboard
+            </a>
+            <div class="small text-muted px-4 py-3 text-uppercase" style="font-size: 0.65rem;">Boshqaruv</div>
+            <a href="{% url 'admin_houses' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_houses' %}active{% endif %}">
+                <i class="fas fa-home"></i> Uylar
+            </a>
+            <a href="{% url 'admin_users' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_users' %}active{% endif %}">
+                <i class="fas fa-users"></i> Mijozlar
+            </a>
+            <a href="{% url 'admin_payments' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_payments' %}active{% endif %}">
+                <i class="fas fa-credit-card"></i> To'lovlar
+            </a>
+            <a href="{% url 'admin_reports' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_reports' %}active{% endif %}">
+                <i class="fas fa-flag"></i> Shikoyatlar
+            </a>
+            <hr class="mx-3 border-secondary opacity-10">
+            <a href="{% url 'house_list' %}" class="nav-link text-warning"><i class="fas fa-external-link-alt"></i> Saytga o'tish</a>
+            <a href="{% url 'logout' %}" class="nav-link text-danger"><i class="fas fa-power-off"></i> Chiqish</a>
+        </div>
+    </div>
+
+    <div id="page-content-wrapper">
+        <nav class="topbar d-flex align-items-center justify-content-between">
+            <div class="text-muted small fw-bold">Xush kelibsiz, {{ request.user.first_name }}!</div>
+            <div class="d-flex align-items-center">
+                <span class="me-3 small text-muted">{% now "d-M, Y" %}</span>
+                <img src="https://ui-avatars.com/api/?name={{ request.user.first_name }}&background=0ea5e9&color=fff" class="rounded-circle" width="35">
+            </div>
+        </nav>
+
+        <div class="p-4">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show rounded-3" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% block admin_content %}{% endblock %}
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

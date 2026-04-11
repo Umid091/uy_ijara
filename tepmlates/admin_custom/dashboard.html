@@ -1,0 +1,126 @@
+{% extends 'admin_custom/base_admin.html' %}
+{% load humanize %}
+
+{% block extra_css %}
+<style>
+    .stat-card { border: none; border-radius: 12px; transition: 0.3s; }
+    .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+    .icon-box { width: 50px; height: 50px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+    .table-modern thead th { background: #f8f9fc; text-transform: uppercase; font-size: 0.7rem; letter-spacing: 1px; }
+    .badge-soft { padding: 5px 10px; border-radius: 30px; font-size: 11px; font-weight: 700; }
+</style>
+{% endblock %}
+
+{% block admin_content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h4 mb-0 text-gray-800 fw-bold">Tizim Monitoringi</h2>
+        <div class="text-muted small">Oxirgi yangilanish: {% now "H:i" %}</div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="card stat-card shadow-sm h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="icon-box bg-primary text-white me-3"><i class="fas fa-wallet fa-lg"></i></div>
+                    <div>
+                        <div class="text-xs text-uppercase text-muted fw-bold">Oylik Foyda</div>
+                        <div class="h5 mb-0 fw-bold">{{ monthly_income|intcomma }} <small>so'm</small></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card stat-card shadow-sm h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="icon-box bg-success text-white me-3"><i class="fas fa-crown fa-lg"></i></div>
+                        <div>
+                            <div class="text-xs text-uppercase text-muted fw-bold">Aktiv Obunalar</div>
+                            <div class="h5 mb-0 fw-bold">{{ active_subscribers }}</div>
+                        </div>
+                    </div>
+                    <div class="progress" style="height: 4px;">
+                        <div class="progress-bar bg-success" style="width: {{ subscribers_percentage }}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card stat-card shadow-sm h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="icon-box bg-danger text-white me-3"><i class="fas fa-flag fa-lg"></i></div>
+                    <div>
+                        <div class="text-xs text-uppercase text-muted fw-bold">Jami Reportlar</div>
+                        <div class="h5 mb-0 fw-bold">{{ total_reports }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="card stat-card shadow-sm h-100">
+                <div class="card-body d-flex align-items-center">
+                    <div class="icon-box bg-info text-white me-3"><i class="fas fa-home fa-lg"></i></div>
+                    <div>
+                        <div class="text-xs text-uppercase text-muted fw-bold">Faol E'lonlar</div>
+                        <div class="h5 mb-0 fw-bold">{{ total_houses }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-2">
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3"><h6 class="m-0 fw-bold text-primary">Oxirgi tranzaksiyalar</h6></div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-modern table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="ps-4">Foydalanuvchi</th>
+                                    <th>Tarif</th>
+                                    <th>Summa</th>
+                                    <th>Vaqt</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for payment in latest_payments %}
+                                <tr>
+                                    <td class="ps-4 fw-bold">{{ payment.user.get_full_name }}</td>
+                                    <td>{{ payment.tariff.name }}</td>
+                                    <td class="text-dark fw-bold">{{ payment.amount|intcomma }} so'm</td>
+                                    <td class="text-muted">{{ payment.created_at|date:"d.m.Y, H:i" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white py-3 text-danger fw-bold"><i class="fas fa-user-ninja me-2"></i>Shubhali Foydalanuvchilar</div>
+                <div class="card-body">
+                    {% for user in reported_users %}
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <div class="fw-bold small">{{ user.get_full_name }}</div>
+                            <div class="text-muted" style="font-size: 11px;">{{ user.phone }}</div>
+                        </div>
+                        <span class="badge bg-danger rounded-pill">{{ user.reports_count_attr }}</span>
+                    </div>
+                    {% empty %}
+                    <div class="text-center text-muted">Hozircha shikoyatlar yo'q.</div>
+                    {% endfor %}
+                    <hr>
+                    <a href="/admin/users/user/" class="btn btn-sm btn-outline-dark w-100">Barchasini ko'rish</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

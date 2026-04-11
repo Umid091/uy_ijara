@@ -1,0 +1,46 @@
+{% extends 'admin_custom/base_admin.html' %}
+{% load humanize %}
+
+{% block admin_content %}
+<h4 class="fw-bold mb-4">To'lovlar Tarixi</h4>
+
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light text-muted small text-uppercase">
+                    <tr>
+                        <th class="ps-4 py-3">Mijoz</th>
+                        <th>Tarif</th>
+                        <th>Summa</th>
+                        <th>Karta (Mask)</th>
+                        <th>Sana</th>
+                        <th class="text-end pe-4">Holat</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in payments %}
+                    <tr>
+                        <td class="ps-4">
+                            <div class="fw-bold">{{ p.user.get_full_name }}</div>
+                            <div class="small text-muted">{{ p.user.phone }}</div>
+                        </td>
+                        <td>
+                            <span class="badge bg-info-subtle text-info border border-info-subtle">{{ p.tariff.name }}</span>
+                        </td>
+                        <td class="fw-bold text-success">{{ p.amount|intcomma }} so'm</td>
+                        <td><code class="text-muted small">{{ p.card_number_masked }}</code></td>
+                        <td class="text-muted small">{{ p.created_at|date:"d.m.Y, H:i" }}</td>
+                        <td class="text-end pe-4">
+                            <span class="badge bg-success shadow-sm rounded-pill px-3">Muvaffaqiyatli</span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" class="text-center py-5 text-muted">Hozircha to'lovlar mavjud emas.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

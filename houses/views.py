@@ -4,9 +4,7 @@ from django.db.models import Avg
 from .models import House, HouseImage, HouseRating, Comment, Wishlist, Report, Region, District
 
 
-# ─────────────────────────────────────────────
-# BOSH SAHIFA — BARCHA UYLAR
-# ─────────────────────────────────────────────
+
 
 
 def house_list(request):
@@ -51,9 +49,7 @@ def house_list(request):
         'samarqand_houses' : samarqand_houses,
     })
 
-# ─────────────────────────────────────────────
-# TUMAN BO'YICHA DISTRICT AJAX
-# ─────────────────────────────────────────────
+
 def get_districts(request):
     region_id = request.GET.get('region_id')
     districts = District.objects.filter(region_id=region_id).values('id', 'name')
@@ -61,9 +57,6 @@ def get_districts(request):
     return JsonResponse({'districts': list(districts)})
 
 
-# ─────────────────────────────────────────────
-# UY DETAIL
-# ─────────────────────────────────────────────
 def house_detail(request, pk):
     # Login tekshiruvi
     if not request.user.is_authenticated:
@@ -77,14 +70,14 @@ def house_detail(request, pk):
         is_active=True
     ).exclude(pk=pk).prefetch_related('images')[:4]
 
-    # Foydalanuvchining reytingi
+
     user_rating = None
     in_wishlist = False
     if request.user.is_authenticated:
         user_rating = HouseRating.objects.filter(house=house, user=request.user).first()
         in_wishlist = Wishlist.objects.filter(house=house, user=request.user).exists()
 
-    # O'rtacha reyting
+
     avg_rating = house.ratings.aggregate(avg=Avg('score'))['avg'] or 0
 
     context = {
@@ -100,14 +93,12 @@ def house_detail(request, pk):
     return render(request, 'houses/house_detail.html', context)
 
 
-# ─────────────────────────────────────────────
-# UY QO'SHISH
-# ─────────────────────────────────────────────
+
 def house_add(request):
     if not request.user.is_authenticated:
         return redirect("/users/login/?next=/houses/add/")
 
-    # Tarif tekshiruvi
+
     if not request.user.has_active_subscription:
         messages.error(request, "Uy qo'shish uchun avval tarif sotib oling.")
         return redirect('tariff_list')
@@ -126,7 +117,7 @@ def house_add(request):
         longitude = request.POST.get('longitude', '').strip().replace(',', '.')
         images       = request.FILES.getlist('images')
 
-        # Validatsiya
+
         if not all([region_id, district_id, street, full_address, price_usd, description]):
             messages.error(request, "Barcha majburiy maydonlarni to'ldiring.")
             return render(request, 'houses/house_add.html', {
@@ -170,7 +161,7 @@ def house_add(request):
             longitude    = longitude if longitude else None,
         )
 
-        # Rasmlarni saqlash
+
         for i, image in enumerate(images):
             HouseImage.objects.create(
                 house   = house,
@@ -189,21 +180,18 @@ def house_add(request):
     return render(request, 'houses/house_add.html', context)
 
 
-# ─────────────────────────────────────────────
-# UY TAHRIRLASH
-# ─────────────────────────────────────────────
+
 def house_edit(request, pk):
     if not request.user.is_authenticated:
         return redirect(f"/users/login/?next=/houses/{pk}/edit/")
 
     house = get_object_or_404(House, pk=pk, is_active=True)
 
-    # Faqat uy egasi tahrirlaydi
+
     if house.owner != request.user:
         messages.error(request, "Siz bu uyni tahrirlash huquqiga ega emassiz.")
         return redirect('house_detail', pk=pk)
 
-    # Tarif tekshiruvi
     if not request.user.has_active_subscription:
         messages.error(request, "Uy tahrirlash uchun aktiv tarif kerak.")
         return redirect('tariff_list')
@@ -248,7 +236,7 @@ def house_edit(request, pk):
         house.longitude    = longitude if longitude else None
         house.save()
 
-        # Yangi rasmlar yuklangan bo'lsa
+
         if new_images:
             existing_count = house.images.count()
             if existing_count + len(new_images) > 10:
@@ -274,16 +262,14 @@ def house_edit(request, pk):
     return render(request, 'houses/house_edit.html', context)
 
 
-# ─────────────────────────────────────────────
-# UY O'CHIRISH
-# ─────────────────────────────────────────────
+
 def house_delete(request, pk):
     if not request.user.is_authenticated:
         return redirect(f"/users/login/?next=/houses/{pk}/delete/")
 
     house = get_object_or_404(House, pk=pk)
 
-    # Faqat uy egasi o'chiradi
+
     if house.owner != request.user:
         messages.error(request, "Siz bu uyni o'chirish huquqiga ega emassiz.")
         return redirect('house_detail', pk=pk)
@@ -296,16 +282,14 @@ def house_delete(request, pk):
     return render(request, 'houses/house_delete.html', {'house': house})
 
 
-# ─────────────────────────────────────────────
-# CALL — TELEFON RAQAMNI KO'RISH
-# ─────────────────────────────────────────────
+
 def call_view(request, pk):
     if not request.user.is_authenticated:
         return redirect(f"/users/login/?next=/houses/{pk}/")
 
     house = get_object_or_404(House, pk=pk, is_active=True)
 
-    # Tarif tekshiruvi
+
     if not request.user.has_active_subscription:
         from django.http import JsonResponse
         return JsonResponse({
@@ -322,22 +306,20 @@ def call_view(request, pk):
     })
 
 
-# ─────────────────────────────────────────────
-# MAKLER SHIKOYATI (REPORT)
-# ─────────────────────────────────────────────
+
 def report_view(request, pk):
     if not request.user.is_authenticated:
         return redirect(f"/users/login/?next=/houses/{pk}/")
 
     house = get_object_or_404(House, pk=pk, is_active=True)
 
-    # O'z uyini report qilmasin
+
     if house.owner == request.user:
         messages.error(request, "O'z uyingizni report qila olmaysiz.")
         return redirect('house_detail', pk=pk)
 
     if request.method == 'POST':
-        # Avval report yozilganmi tekshirish
+
         already = Report.objects.filter(reporter=request.user, house=house).exists()
         if already:
             messages.warning(request, "Siz bu uy uchun allaqachon shikoyat yuborgansiz.")
@@ -354,9 +336,7 @@ def report_view(request, pk):
     return render(request, 'houses/report.html', {'house': house})
 
 
-# ─────────────────────────────────────────────
-# WISHLIST QO'SHISH / O'CHIRISH
-# ─────────────────────────────────────────────
+
 def toggle_wishlist(request, pk):
     if not request.user.is_authenticated:
         return redirect(f"/users/login/?next=/houses/{pk}/")
@@ -375,9 +355,7 @@ def toggle_wishlist(request, pk):
     return redirect('house_detail', pk=pk)
 
 
-# ─────────────────────────────────────────────
-# IZOH QO'SHISH
-# ─────────────────────────────────────────────
+
 def add_comment(request, pk):
     if not request.user.is_authenticated:
         return redirect(f"/users/login/?next=/houses/{pk}/")
@@ -405,16 +383,13 @@ def add_comment(request, pk):
     return redirect('house_detail', pk=pk)
 
 
-# ─────────────────────────────────────────────
-# REYTING QO'YISH
-# ─────────────────────────────────────────────
 def add_rating(request, pk):
     if not request.user.is_authenticated:
         return redirect(f"/users/login/?next=/houses/{pk}/")
 
     house = get_object_or_404(House, pk=pk, is_active=True)
 
-    # O'z uyiga baho bermasin
+
     if house.owner == request.user:
         messages.error(request, "O'z uyingizga baho bera olmaysiz.")
         return redirect('house_detail', pk=pk)
@@ -430,7 +405,7 @@ def add_rating(request, pk):
             messages.error(request, "Baho 1 dan 5 gacha bo'lishi kerak.")
             return redirect('house_detail', pk=pk)
 
-        # Mavjud bo'lsa yangilash, yo'q bo'lsa yaratish
+
         HouseRating.objects.update_or_create(
             house = house,
             user  = request.user,
@@ -441,16 +416,14 @@ def add_rating(request, pk):
     return redirect('house_detail', pk=pk)
 
 
-# ─────────────────────────────────────────────
-# RASM O'CHIRISH
-# ─────────────────────────────────────────────
+
 def delete_image(request, image_id):
     if not request.user.is_authenticated:
         return redirect('/users/login/')
 
     image = get_object_or_404(HouseImage, pk=image_id)
 
-    # Faqat uy egasi o'chira oladi
+
     if image.house.owner != request.user:
         messages.error(request, "Ruxsat yo'q.")
         return redirect('house_detail', pk=image.house.pk)

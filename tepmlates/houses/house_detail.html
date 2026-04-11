@@ -1,890 +1,206 @@
 {% extends 'base.html' %}
-
 {% block title %}{{ house.full_address }} — UyIjara{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
-/* ─────────────────────────────────────
-   PAGE STRUCTURE
-───────────────────────────────────── */
-.dp-wrap {
-    max-width: 1240px;
-    margin: 0 auto;
-    padding: 24px 20px 80px;
-}
+.dp-wrap { max-width: 1200px; margin: 0 auto; padding: 20px 20px 60px; }
 
-/* ─────────────────────────────────────
-   BREADCRUMB
-───────────────────────────────────── */
-.dp-crumb {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.8rem;
-    flex-wrap: wrap;
-    margin-bottom: 18px;
-    color: var(--text-muted);
-}
-.dp-crumb a { color: var(--accent); font-weight: 500; }
-.dp-crumb a:hover { text-decoration: underline; }
-.dp-crumb i { font-size: 0.55rem; color: var(--text-light); }
+/* BREADCRUMB */
+.dp-crumb { display:flex; align-items:center; gap:6px; font-size:12px; flex-wrap:wrap; margin-bottom:16px; color:var(--text-muted); }
+.dp-crumb a { color:var(--accent); font-weight:500; }
+.dp-crumb a:hover { text-decoration:underline; }
 
-/* ─────────────────────────────────────
-   HERO GALLERY — Full width
-───────────────────────────────────── */
-.hero-gallery {
+/* GALLERY */
+.dp-gallery {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 320px 180px;
-    gap: 6px;
-    border-radius: 18px;
-    overflow: hidden;
-    margin-bottom: 28px;
-    background: #f1f1f1;
-}
-.hg-main {
-    grid-row: 1 / 3;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-}
-.hg-main img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.4s ease;
-}
-.hg-main:hover img { transform: scale(1.03); }
-
-.hg-sub {
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-}
-.hg-sub img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.4s ease;
-}
-.hg-sub:hover img { transform: scale(1.03); }
-.hg-sub.dim { position: relative; }
-.hg-sub.dim::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.38);
-}
-.hg-sub.dim .hg-count {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 1.3rem;
-    font-weight: 700;
-    z-index: 2;
-    flex-direction: column;
-    gap: 4px;
-}
-.hg-sub.dim .hg-count span { font-size: 0.8rem; font-weight: 400; opacity: 0.85; }
-
-/* No photo state */
-.hg-nophoto {
-    grid-column: 1 / 3;
-    grid-row: 1 / 3;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: #e8e4de;
-    color: #a0a0a0;
-    gap: 12px;
-}
-.hg-nophoto i { font-size: 3rem; opacity: 0.3; }
-.hg-nophoto span { font-size: 0.9rem; }
-
-/* Gallery action badges */
-.hg-actions {
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    display: flex;
-    gap: 8px;
-    z-index: 5;
-}
-.hg-badge {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 13px;
-    background: rgba(255,255,255,0.95);
-    border-radius: 8px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--text);
-    cursor: pointer;
-    transition: all 0.2s;
-    text-decoration: none;
-    border: none;
-    font-family: var(--font);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-.hg-badge:hover { background: white; transform: translateY(-1px); }
-.hg-badge.wish i { color: #e53e3e; }
-.hg-badge.wish.active { background: #fff5f5; color: #e53e3e; }
-
-/* ─────────────────────────────────────
-   LIGHTBOX
-───────────────────────────────────── */
-.lightbox {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.94);
-    z-index: 9999;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-}
-.lightbox.open { display: flex; }
-.lb-img-wrap {
-    position: relative;
-    max-width: 90vw;
-    max-height: 80vh;
-}
-.lb-img-wrap img {
-    max-width: 90vw;
-    max-height: 80vh;
-    object-fit: contain;
-    border-radius: 8px;
-}
-.lb-close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    width: 40px;
-    height: 40px;
-    background: rgba(255,255,255,0.15);
-    border: none;
-    border-radius: 50%;
-    color: white;
-    font-size: 1rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s;
-}
-.lb-close:hover { background: rgba(255,255,255,0.25); }
-.lb-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 44px;
-    height: 44px;
-    background: rgba(255,255,255,0.12);
-    border: none;
-    border-radius: 50%;
-    color: white;
-    font-size: 1rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s;
-}
-.lb-arrow:hover { background: rgba(255,255,255,0.22); }
-.lb-arrow.lft { left: 16px; }
-.lb-arrow.rgt { right: 16px; }
-.lb-counter {
-    color: rgba(255,255,255,0.6);
-    font-size: 0.82rem;
-    margin-top: 14px;
-}
-.lb-thumbs {
-    display: flex;
-    gap: 6px;
-    margin-top: 14px;
-    overflow-x: auto;
-    max-width: 90vw;
-    padding: 4px;
-}
-.lb-thumbs::-webkit-scrollbar { display: none; }
-.lb-thumb {
-    width: 60px;
-    height: 44px;
-    border-radius: 5px;
-    overflow: hidden;
-    flex-shrink: 0;
-    cursor: pointer;
-    opacity: 0.45;
-    border: 2px solid transparent;
-    transition: all 0.15s;
-}
-.lb-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.lb-thumb.on { opacity: 1; border-color: var(--accent); }
-
-/* ─────────────────────────────────────
-   MAIN CONTENT GRID
-───────────────────────────────────── */
-.dp-grid {
-    display: grid;
-    grid-template-columns: 1fr 380px;
-    gap: 24px;
-    align-items: start;
-}
-
-/* ─────────────────────────────────────
-   LEFT — TITLE & INFO
-───────────────────────────────────── */
-.dp-title-row {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 10px;
-}
-.dp-title {
-    font-family: var(--font-display);
-    font-size: 1.65rem;
-    color: var(--primary);
-    line-height: 1.3;
-    flex: 1;
-}
-.dp-tags {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    flex-wrap: wrap;
-    margin-bottom: 18px;
-}
-
-/* Meta strip */
-.dp-meta {
-    display: flex;
-    align-items: stretch;
-    gap: 0;
-    background: white;
-    border: 1px solid var(--border);
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 220px 110px;
+    gap: 5px;
     border-radius: 14px;
     overflow: hidden;
     margin-bottom: 22px;
-}
-.dp-meta-item {
-    flex: 1;
-    padding: 14px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    border-right: 1px solid var(--border);
-}
-.dp-meta-item:last-child { border-right: none; }
-.dmi-icon {
-    font-size: 0.82rem;
-    color: var(--accent);
-    margin-bottom: 2px;
-}
-.dmi-label {
-    font-size: 0.68rem;
-    color: var(--text-muted);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-}
-.dmi-val {
-    font-size: 0.88rem;
-    font-weight: 700;
-    color: var(--primary);
-}
-
-/* ─────────────────────────────────────
-   CARD BLOCK
-───────────────────────────────────── */
-.dp-card {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-    margin-bottom: 18px;
-}
-.dp-card-head {
-    padding: 14px 18px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    background: #fafaf8;
-}
-.dch-ico {
-    width: 30px;
-    height: 30px;
-    border-radius: 7px;
     background: var(--accent-soft);
-    color: var(--accent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-    flex-shrink: 0;
 }
-.dp-card-head h3 {
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: var(--primary);
-    flex: 1;
-}
-.dp-card-body { padding: 18px; }
+.gal-main { grid-row: 1/3; position:relative; overflow:hidden; cursor:pointer; }
+.gal-main img { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
+.gal-main:hover img { transform:scale(1.03); }
+.gal-sub { position:relative; overflow:hidden; cursor:pointer; }
+.gal-sub img { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
+.gal-sub:hover img { transform:scale(1.04); }
+.gal-sub.more::after { content:''; position:absolute; inset:0; background:rgba(0,0,0,.38); }
+.gal-more-txt { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:white; font-size:1.1rem; font-weight:700; z-index:2; flex-direction:column; gap:3px; }
+.gal-more-txt span { font-size:11px; opacity:.8; font-weight:400; }
+.gal-nophoto { grid-column:1/3; grid-row:1/3; display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--accent-soft); color:var(--accent-light); gap:8px; opacity:.5; }
+.gal-actions { position:absolute; top:12px; right:12px; display:flex; gap:7px; z-index:5; }
+.gal-btn { display:flex; align-items:center; gap:5px; padding:6px 12px; background:rgba(255,255,255,.94); border-radius:8px; font-size:12px; font-weight:600; color:var(--text); cursor:pointer; border:none; font-family:'Inter',sans-serif; box-shadow:0 2px 8px rgba(0,0,0,.1); transition:all .18s; }
+.gal-btn:hover { background:white; transform:translateY(-1px); }
+.gal-btn.saved { background:#fff5f5; color:#ef4444; }
+.gal-btn.saved i { color:#ef4444; }
 
-/* Description */
-.dp-desc {
-    font-size: 0.91rem;
-    color: var(--text-muted);
-    line-height: 1.9;
-    white-space: pre-line;
-}
+/* LIGHTBOX */
+.lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,.94); z-index:9999; align-items:center; justify-content:center; flex-direction:column; }
+.lightbox.open { display:flex; }
+.lb-wrap { position:relative; max-width:90vw; max-height:80vh; }
+.lb-wrap img { max-width:90vw; max-height:80vh; object-fit:contain; border-radius:8px; }
+.lb-close { position:absolute; top:16px; right:16px; width:38px; height:38px; background:rgba(255,255,255,.15); border:none; border-radius:50%; color:white; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.lb-close:hover { background:rgba(255,255,255,.25); }
+.lb-arr { position:absolute; top:50%; transform:translateY(-50%); width:40px; height:40px; background:rgba(255,255,255,.12); border:none; border-radius:50%; color:white; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.lb-arr:hover { background:rgba(255,255,255,.22); }
+.lb-arr.l { left:14px; } .lb-arr.r { right:14px; }
+.lb-cnt { color:rgba(255,255,255,.55); font-size:12px; margin-top:12px; }
+.lb-thumbs { display:flex; gap:5px; margin-top:10px; overflow-x:auto; max-width:90vw; }
+.lb-thumbs::-webkit-scrollbar { display:none; }
+.lb-thumb { width:54px; height:40px; border-radius:5px; overflow:hidden; flex-shrink:0; cursor:pointer; opacity:.4; border:2px solid transparent; transition:all .15s; }
+.lb-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+.lb-thumb.on { opacity:1; border-color:var(--accent); }
 
-/* Map */
-#dpMap {  height: 320px;
-    width: 100%;
-    display: block;
-    z-index: 1; }
-.dp-map-foot {
-    padding: 10px 16px;
-    background: #fafaf8;
-    border-top: 1px solid var(--border);
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-.dp-map-foot i { color: var(--accent); }
+/* MAIN GRID */
+.dp-grid { display:grid; grid-template-columns:1fr 340px; gap:20px; align-items:start; }
+.dp-left { min-width:0; }
+.dp-sidebar { position:sticky; top:74px; }
 
-/* ─────────────────────────────────────
-   RATING
-───────────────────────────────────── */
-.rating-display {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    padding: 14px;
-    background: #fafaf8;
-    border-radius: 12px;
-    margin-bottom: 16px;
-    border: 1px solid var(--border);
-}
-.rd-score {
-    font-family: var(--font-display);
-    font-size: 2.8rem;
-    font-weight: 700;
-    color: var(--primary);
-    line-height: 1;
-    flex-shrink: 0;
-}
-.rd-stars { color: #f59e0b; font-size: 0.95rem; margin-bottom: 3px; }
-.rd-count { font-size: 0.75rem; color: var(--text-muted); }
+/* TAGS + TITLE */
+.dp-tags { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+.dp-title { font-size:1.35rem; font-weight:800; color:var(--primary); line-height:1.35; margin-bottom:16px; }
 
-.star-row {
-    display: flex;
-    flex-direction: row-reverse;
-    gap: 2px;
-    margin: 8px 0 12px;
-}
-.star-row input { display: none; }
-.star-row label {
-    font-size: 1.7rem;
-    color: #d4d4d4;
-    cursor: pointer;
-    transition: color 0.12s;
-    line-height: 1;
-}
+/* META STRIP */
+.dp-meta { display:flex; background:var(--card-bg); border:1px solid var(--card-border); border-radius:12px; overflow:hidden; margin-bottom:16px; }
+.dmi { flex:1; padding:12px 14px; border-right:1px solid var(--border); display:flex; flex-direction:column; gap:2px; }
+.dmi:last-child { border-right:none; }
+.dmi-lbl { font-size:9px; font-weight:700; color:var(--text-light); text-transform:uppercase; letter-spacing:.05em; }
+.dmi-val { font-size:13px; font-weight:700; color:var(--primary); }
+
+/* CARD */
+.dp-card { background:var(--card-bg); border:1px solid var(--card-border); border-radius:14px; overflow:hidden; margin-bottom:14px; }
+.dp-ch { padding:12px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px; background:var(--accent-pale); }
+.dp-ch-ico { width:28px; height:28px; border-radius:7px; background:var(--accent-soft); color:var(--accent); display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0; }
+.dp-ch h3 { font-size:13px; font-weight:700; color:var(--primary); flex:1; margin:0; }
+.dp-cb { padding:16px; }
+.dp-desc { font-size:13px; color:var(--text-muted); line-height:1.85; white-space:pre-line; }
+
+/* MAP */
+#dpMap { height:220px; width:100%; display:block; z-index:1; }
+.dp-map-foot { padding:9px 14px; background:var(--accent-pale); border-top:1px solid var(--border); font-size:11px; color:var(--text-muted); display:flex; align-items:center; gap:5px; }
+.dp-map-foot i { color:var(--accent); }
+
+/* RATING */
+.rating-display { display:flex; align-items:center; gap:14px; padding:12px 14px; background:var(--accent-pale); border-radius:10px; margin-bottom:14px; border:1px solid var(--border); }
+.rd-score { font-size:2.2rem; font-weight:800; color:var(--primary); line-height:1; flex-shrink:0; }
+.rd-stars { color:#f59e0b; font-size:13px; margin-bottom:2px; }
+.rd-cnt { font-size:11px; color:var(--text-light); }
+.star-row { display:flex; flex-direction:row-reverse; gap:2px; margin:8px 0 10px; }
+.star-row input { display:none; }
+.star-row label { font-size:1.5rem; color:#d4d4d4; cursor:pointer; transition:color .12s; line-height:1; }
 .star-row input:checked ~ label,
 .star-row label:hover,
-.star-row label:hover ~ label { color: #f59e0b; }
+.star-row label:hover ~ label { color:#f59e0b; }
 
-/* ─────────────────────────────────────
-   COMMENTS — full width section
-───────────────────────────────────── */
-.comments-section {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-    margin-top: 24px;
-}
-.cs-head {
-    padding: 16px 22px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #fafaf8;
-}
-.cs-head h3 {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--primary);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.cs-body { padding: 22px; }
+/* COMMENTS */
+.cs-section { background:var(--card-bg); border:1px solid var(--card-border); border-radius:14px; overflow:hidden; margin-top:16px; }
+.cs-head { padding:13px 18px; border-bottom:1px solid var(--border); background:var(--accent-pale); display:flex; align-items:center; gap:8px; }
+.cs-head h3 { font-size:13px; font-weight:700; color:var(--primary); margin:0; display:flex; align-items:center; gap:7px; }
+.cs-body { padding:18px; }
+.ci-wrap { display:flex; gap:10px; align-items:flex-start; margin-bottom:18px; padding-bottom:18px; border-bottom:1px solid var(--border); }
+.ci-av { width:34px; height:34px; border-radius:50%; background:var(--accent); color:white; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; flex-shrink:0; overflow:hidden; }
+.ci-av img { width:100%; height:100%; object-fit:cover; }
+.ci-textarea { width:100%; padding:10px 13px; border:1.5px solid var(--border); border-radius:10px; font-family:'Inter',sans-serif; font-size:13px; resize:none; outline:none; min-height:72px; color:var(--text); background:var(--surface); display:block; }
+.ci-textarea:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(124,58,237,.08); }
+.ci-foot { display:flex; justify-content:space-between; align-items:center; margin-top:7px; }
+.ci-count { font-size:11px; color:var(--text-light); }
+.c-item { display:flex; gap:10px; padding:13px 0; border-bottom:1px solid var(--border); }
+.c-item:last-child { border-bottom:none; padding-bottom:0; }
+.c-av { width:34px; height:34px; border-radius:50%; background:var(--accent); color:white; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; flex-shrink:0; overflow:hidden; }
+.c-av img { width:100%; height:100%; object-fit:cover; }
+.c-name { font-weight:700; font-size:13px; color:var(--primary); }
+.c-date { font-size:11px; color:var(--text-light); margin-left:6px; }
+.c-text { font-size:13px; color:var(--text-muted); line-height:1.65; margin-top:3px; }
 
-.comment-input-wrap {
-    margin-bottom: 22px;
-    padding-bottom: 22px;
-    border-bottom: 1px solid var(--border);
-}
-.ci-user {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-}
-.ci-av {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: var(--primary);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 0.78rem;
-    flex-shrink: 0;
-    overflow: hidden;
-}
-.ci-av img { width: 100%; height: 100%; object-fit: cover; }
-.ci-field { flex: 1; }
-.ci-textarea {
-    width: 100%;
-    padding: 11px 14px;
-    border: 1.5px solid var(--border);
-    border-radius: 10px;
-    font-family: var(--font);
-    font-size: 0.87rem;
-    resize: none;
-    outline: none;
-    transition: border-color 0.2s;
-    min-height: 78px;
-    color: var(--text);
-    background: var(--bg);
-    display: block;
-}
-.ci-textarea:focus {
-    border-color: var(--accent);
-    background: white;
-    box-shadow: 0 0 0 3px rgba(232,98,42,0.08);
-}
-.ci-foot {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 8px;
-}
-.ci-count { font-size: 0.72rem; color: var(--text-light); }
+/* SIMILAR */
+.sim-section { margin-top:16px; }
+.sim-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+.sim-head h3 { font-size:14px; font-weight:800; color:var(--primary); display:flex; align-items:center; gap:7px; margin:0; }
+.sim-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+.sim-card { background:var(--card-bg); border:1px solid var(--card-border); border-radius:12px; overflow:hidden; text-decoration:none; display:block; transition:all .2s; }
+.sim-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-md); border-color:var(--accent-border); }
+.sim-img { height:90px; overflow:hidden; background:var(--accent-soft); }
+.sim-img img { width:100%; height:100%; object-fit:cover; display:block; }
+.sim-img .ni { width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--accent-light); font-size:1.4rem; opacity:.25; }
+.sim-info { padding:8px 10px 10px; }
+.sim-price { font-weight:800; color:var(--accent); font-size:13px; }
+.sim-loc { font-size:10px; color:var(--text-light); margin-top:2px; }
+.sim-addr { font-size:11px; color:var(--primary); margin-top:2px; font-weight:500; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; line-height:1.35; }
 
-/* Comment items */
-.comment-list { display: flex; flex-direction: column; gap: 0; }
-.c-item {
-    display: flex;
-    gap: 12px;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--border);
-}
-.c-item:last-child { border-bottom: none; padding-bottom: 0; }
-.c-av {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: var(--primary);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 0.78rem;
-    flex-shrink: 0;
-    overflow: hidden;
-}
-.c-av img { width: 100%; height: 100%; object-fit: cover; }
-.c-name { font-weight: 700; font-size: 0.87rem; color: var(--primary); }
-.c-date { font-size: 0.72rem; color: var(--text-light); margin-left: 7px; }
-.c-text { font-size: 0.87rem; color: var(--text-muted); line-height: 1.72; margin-top: 4px; }
+/* SIDEBAR — PRICE CARD */
+.price-card { background:var(--card-bg); border:1px solid var(--card-border); border-radius:16px; overflow:hidden; box-shadow:var(--shadow-md); margin-bottom:12px; }
+.pc-top { background:linear-gradient(135deg,var(--hero-start) 0%,var(--hero-end) 100%); padding:20px 18px 16px; color:white; text-align:center; }
+.pc-lbl { font-size:10px; opacity:.6; text-transform:uppercase; letter-spacing:.1em; margin-bottom:3px; }
+.pc-price { font-size:2.2rem; font-weight:900; line-height:1; }
+.pc-period { font-size:11px; opacity:.5; margin-top:3px; }
+.pc-body { padding:14px; }
+.owner-block { display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--accent-pale); border-radius:10px; margin-bottom:12px; border:1px solid var(--border); }
+.ob-av { width:40px; height:40px; border-radius:50%; background:var(--accent); color:white; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; overflow:hidden; flex-shrink:0; }
+.ob-av img { width:100%; height:100%; object-fit:cover; }
+.ob-name { font-weight:700; font-size:13px; color:var(--primary); }
+.ob-tag { font-size:10px; color:var(--text-light); margin-top:2px; display:flex; align-items:center; gap:3px; }
+.ob-tag i { color:#22c55e; font-size:7px; }
+.phone-box { display:none; padding:11px 13px; background:#f0fdf4; border:1.5px solid #86efac; border-radius:10px; text-align:center; margin-bottom:10px; }
+.ph-lbl { font-size:10px; color:#16a34a; font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-bottom:3px; display:flex; align-items:center; justify-content:center; gap:4px; }
+.ph-num { font-size:1.3rem; font-weight:800; color:#14532d; }
+.call-btn { width:100%; padding:12px 16px; background:var(--accent); color:white; border:none; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px; transition:all .2s; margin-bottom:8px; font-family:'Inter',sans-serif; }
+.call-btn:hover:not(:disabled) { filter:brightness(1.1); transform:translateY(-1px); }
+.call-btn:disabled { opacity:.65; cursor:not-allowed; }
+.call-btn.green { background:#22c55e; }
+.sb-actions { display:flex; gap:8px; }
+.sb-actions .btn { flex:1; justify-content:center; font-size:12px; }
+.owner-edit { display:flex; gap:7px; margin-top:10px; padding-top:12px; border-top:1px solid var(--border); }
+.owner-edit .btn { flex:1; justify-content:center; font-size:12px; }
 
-/* ─────────────────────────────────────
-   SIMILAR HOUSES — full width
-───────────────────────────────────── */
-.similar-section {
-    margin-top: 18px;
-}
-.sim-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
-}
-.sim-head h3 {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--primary);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.sim-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-}
-.sim-card {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    text-decoration: none;
-    display: block;
-    transition: all 0.2s;
-}
-.sim-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-    border-color: transparent;
-}
-.sim-img {
-    height: 100px;
-    overflow: hidden;
-    background: var(--bg);
-    position: relative;
-}
-.sim-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.sim-img .ni {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-light);
-    font-size: 1.5rem;
-    opacity: 0.25;
-}
-.sim-info { padding: 9px 11px 11px; }
-.sim-price { font-weight: 700; color: var(--accent); font-size: 0.88rem; }
-.sim-loc { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
-.sim-addr {
-    font-size: 0.75rem;
-    color: var(--text);
-    margin-top: 3px;
-    font-weight: 500;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    line-height: 1.4;
-}
+/* STATS */
+.stats-card { background:var(--card-bg); border:1px solid var(--card-border); border-radius:12px; overflow:hidden; }
+.sc-row { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-bottom:1px solid var(--border); font-size:12px; }
+.sc-row:last-child { border-bottom:none; }
+.sc-lbl { display:flex; align-items:center; gap:7px; color:var(--text-muted); }
+.sc-lbl i { color:var(--accent); width:12px; text-align:center; }
+.sc-val { font-weight:700; color:var(--primary); font-size:12px; }
 
-/* ─────────────────────────────────────
-   SIDEBAR
-───────────────────────────────────── */
-.dp-sidebar { position: sticky; top: 84px; }
+/* MODALS */
+.m-overlay { display:none; position:fixed; inset:0; background:rgba(10,10,20,.55); z-index:9000; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(5px); }
+.m-overlay.open { display:flex; }
+.m-box { background:white; border-radius:18px; padding:28px 22px 22px; max-width:380px; width:100%; box-shadow:0 24px 60px rgba(0,0,0,.18); animation:mPop .25s cubic-bezier(.34,1.56,.64,1); }
+@keyframes mPop { from{opacity:0;transform:scale(.88)} to{opacity:1;transform:scale(1)} }
+.m-ico { width:58px; height:58px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.4rem; margin:0 auto 12px; }
+.m-box h3 { text-align:center; font-size:15px; font-weight:800; color:var(--primary); margin-bottom:6px; }
+.m-box p { text-align:center; font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:18px; }
+.m-btns { display:flex; gap:8px; }
+.m-btns .btn { flex:1; justify-content:center; }
+.m-choice { width:100%; display:flex; align-items:center; gap:10px; padding:10px 12px; border:1.5px solid var(--border); border-radius:10px; background:white; cursor:pointer; transition:all .17s; font-family:'Inter',sans-serif; margin-bottom:7px; text-align:left; }
+.m-choice:hover { border-color:var(--accent); background:var(--accent-soft); }
+.m-choice.bad { color:#dc2626; }
+.m-choice.bad:hover { border-color:#dc2626; background:#fff5f5; }
+.mc-ico { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
+.m-choice.good .mc-ico { background:#dcfce7; color:#16a34a; }
+.m-choice.bad .mc-ico  { background:#fee2e2; color:#dc2626; }
+.mc-t { font-weight:700; font-size:13px; }
+.mc-s { font-size:10px; opacity:.6; margin-top:1px; }
 
-/* Price card */
-.price-card {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    overflow: hidden;
-    box-shadow: 0 6px 28px rgba(28,43,74,0.1);
-    margin-bottom: 14px;
+/* RESPONSIVE */
+@media (max-width:1020px) {
+    .dp-grid { grid-template-columns:1fr; }
+    .dp-sidebar { position:static; }
+    .sim-grid { grid-template-columns:repeat(2,1fr); }
+    .dp-gallery { grid-template-rows:200px 100px; }
 }
-.pc-top {
-    background: linear-gradient(150deg, #1c2b4a 0%, #2d4070 100%);
-    padding: 24px 20px 20px;
-    color: white;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-}
-.pc-top::before {
-    content: '';
-    position: absolute;
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.04);
-    top: -80px;
-    right: -60px;
-}
-.pc-lbl {
-    font-size: 0.68rem;
-    opacity: 0.6;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    margin-bottom: 4px;
-}
-.pc-price {
-    font-family: var(--font-display);
-    font-size: 2.8rem;
-    font-weight: 700;
-    line-height: 1;
-}
-.pc-period { font-size: 0.78rem; opacity: 0.5; margin-top: 4px; }
-
-.pc-body { padding: 18px 16px 20px; }
-
-/* Owner */
-.owner-block {
-    display: flex;
-    align-items: center;
-    gap: 11px;
-    padding: 12px 14px;
-    background: var(--bg);
-    border-radius: 12px;
-    margin-bottom: 14px;
-    border: 1px solid var(--border);
-}
-.ob-av {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: var(--primary);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 0.95rem;
-    overflow: hidden;
-    flex-shrink: 0;
-}
-.ob-av img { width: 100%; height: 100%; object-fit: cover; }
-.ob-name { font-weight: 700; font-size: 0.88rem; color: var(--primary); }
-.ob-tag {
-    font-size: 0.71rem;
-    color: var(--text-muted);
-    margin-top: 2px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-.ob-tag i { color: #22c55e; font-size: 0.45rem; }
-
-/* Phone revealed */
-.phone-revealed {
-    display: none;
-    padding: 13px 15px;
-    background: #f0fdf4;
-    border: 1.5px solid #86efac;
-    border-radius: 11px;
-    text-align: center;
-    margin-bottom: 12px;
-    animation: fadeUp 0.3s ease;
-}
-@keyframes fadeUp {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-.pr-tag {
-    font-size: 0.68rem;
-    color: #16a34a;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    margin-bottom: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-}
-.pr-num {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #14532d;
-    letter-spacing: 0.04em;
-}
-.pr-hint { font-size: 0.7rem; color: #4ade80; margin-top: 3px; }
-
-/* Call btn */
-.call-btn {
-    width: 100%;
-    padding: 14px 18px;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 11px;
-    font-size: 0.95rem;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.2s;
-    margin-bottom: 9px;
-    font-family: var(--font);
-}
-.call-btn:hover:not(:disabled) {
-    background: var(--accent-light);
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(232,98,42,0.32);
-}
-.call-btn:disabled { opacity: 0.65; cursor: not-allowed; transform: none !important; }
-.call-btn.green-state {
-    background: #22c55e;
-    box-shadow: 0 4px 14px rgba(34,197,94,0.25);
-}
-.call-btn.green-state:hover { background: #16a34a; transform: none; }
-
-/* Actions */
-.sb-actions { display: flex; gap: 8px; margin-bottom: 0; }
-.sb-actions .btn { flex: 1; justify-content: center; font-size: 0.83rem; }
-
-/* Owner edit */
-.owner-edit {
-    display: flex;
-    gap: 8px;
-    margin-top: 12px;
-    padding-top: 14px;
-    border-top: 1px solid var(--border);
-}
-.owner-edit .btn { flex: 1; justify-content: center; font-size: 0.83rem; }
-
-/* Stats card */
-.stats-card {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    overflow: hidden;
-}
-.sc-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.82rem;
-}
-.sc-row:last-child { border-bottom: none; }
-.sc-label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--text-muted);
-}
-.sc-label i { color: var(--accent); width: 13px; text-align: center; }
-.sc-val { font-weight: 700; color: var(--primary); font-size: 0.85rem; }
-
-/* ─────────────────────────────────────
-   MODALS
-───────────────────────────────────── */
-.m-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(10,10,20,0.55);
-    z-index: 9000;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    backdrop-filter: blur(5px);
-}
-.m-overlay.open { display: flex; }
-.m-box {
-    background: white;
-    border-radius: 20px;
-    padding: 32px 26px 26px;
-    max-width: 400px;
-    width: 100%;
-    box-shadow: 0 24px 60px rgba(0,0,0,0.18);
-    animation: mPop 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-@keyframes mPop {
-    from { opacity: 0; transform: scale(0.88); }
-    to   { opacity: 1; transform: scale(1); }
-}
-.m-ico {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    margin: 0 auto 14px;
-}
-.m-box h3 {
-    text-align: center;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--primary);
-    margin-bottom: 7px;
-}
-.m-box p {
-    text-align: center;
-    font-size: 0.84rem;
-    color: var(--text-muted);
-    line-height: 1.65;
-    margin-bottom: 20px;
-}
-.m-btns { display: flex; gap: 9px; }
-.m-btns .btn { flex: 1; justify-content: center; }
-
-/* Choice options */
-.m-choice {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 14px;
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    background: white;
-    cursor: pointer;
-    transition: all 0.17s;
-    font-family: var(--font);
-    margin-bottom: 8px;
-    text-align: left;
-}
-.m-choice:hover { border-color: var(--accent); background: var(--accent-soft); }
-.m-choice.bad { color: #dc2626; }
-.m-choice.bad:hover { border-color: #dc2626; background: #fff5f5; }
-.m-choice .mc-ico {
-    width: 36px;
-    height: 36px;
-    border-radius: 9px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.9rem;
-    flex-shrink: 0;
-}
-.m-choice.good .mc-ico { background: #dcfce7; color: #16a34a; }
-.m-choice.bad .mc-ico  { background: #fee2e2; color: #dc2626; }
-.m-choice .mc-t { font-weight: 700; font-size: 0.85rem; }
-.m-choice .mc-s { font-size: 0.71rem; opacity: 0.6; margin-top: 1px; font-weight: 400; }
-
-/* ─────────────────────────────────────
-   RESPONSIVE
-───────────────────────────────────── */
-@media (max-width: 1060px) {
-    .dp-grid { grid-template-columns: 1fr; }
-    .dp-sidebar { position: static; }
-    .sim-grid { grid-template-columns: repeat(2, 1fr); }
-    .hero-gallery { grid-template-rows: 280px 160px; }
-}
-@media (max-width: 640px) {
-    .dp-wrap { padding: 12px 12px 60px; }
-    .hero-gallery { grid-template-columns: 1fr; grid-template-rows: 260px; }
-    .hg-main { grid-row: auto; }
-    .hg-sub { display: none; }
-    .dp-meta { flex-direction: column; }
-    .dp-meta-item { border-right: none; border-bottom: 1px solid var(--border); }
-    .dp-meta-item:last-child { border-bottom: none; }
-    .dp-title { font-size: 1.3rem; }
-    .sim-grid { grid-template-columns: 1fr 1fr; }
+@media (max-width:640px) {
+    .dp-wrap { padding:12px 12px 50px; }
+    .dp-gallery { grid-template-columns:1fr; grid-template-rows:220px; }
+    .gal-main { grid-row:auto; }
+    .gal-sub { display:none; }
+    .dp-meta { flex-direction:column; }
+    .dmi { border-right:none; border-bottom:1px solid var(--border); }
+    .dmi:last-child { border-bottom:none; }
+    .dp-title { font-size:1.15rem; }
+    .sim-grid { grid-template-columns:1fr 1fr; }
 }
 </style>
 {% endblock %}
@@ -894,50 +210,46 @@
 
     <!-- BREADCRUMB -->
     <div class="dp-crumb">
-        <a href="{% url 'house_list' %}"><i class="fa-solid fa-house" style="margin-right:4px;"></i>Bosh sahifa</a>
-        <i class="fa-solid fa-chevron-right"></i>
+        <a href="{% url 'house_list' %}"><i class="fa-solid fa-house" style="margin-right:3px;"></i>Bosh sahifa</a>
+        <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i>
         <a href="{% url 'house_list' %}?region={{ house.region.id }}">{{ house.region.name }}</a>
-        <i class="fa-solid fa-chevron-right"></i>
-        <a href="{% url 'house_list' %}?region={{ house.region.id }}&district={{ house.district.id }}">{{ house.district.name }}</a>
-        <i class="fa-solid fa-chevron-right"></i>
+        <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i>
+        <a href="{% url 'house_list' %}?region={{ house.region.id }}">{{ house.district.name }}</a>
+        <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i>
         <span>{{ house.street }}</span>
     </div>
 
-    <!-- ═══════════════════════
-         HERO GALLERY
-    ═══════════════════════ -->
+    <!-- GALLERY -->
     {% if images %}
-        <div class="hero-gallery" id="heroGallery">
-            <!-- Main photo -->
-            <div class="hg-main" onclick="lbOpen(0)">
-                <img src="{{ images.0.image.url }}" alt="{{ house.full_address }}" id="hgMain">
-
-                <!-- Actions overlay -->
-                <div class="hg-actions">
+        <div class="dp-gallery">
+            <div class="gal-main" onclick="lbOpen(0)">
+                <img src="{{ images.0.image.url }}" alt="{{ house.full_address }}">
+                <div class="gal-actions">
                     {% if user.is_authenticated %}
-                        <a href="{% url 'toggle_wishlist' house.pk %}"
-                           class="hg-badge wish {% if in_wishlist %}active{% endif %}">
+                        <button class="gal-btn {% if in_wishlist %}saved{% endif %}"
+                                id="galWishBtn"
+                                onclick="event.stopPropagation(); toggleWish({{ house.pk }}, this)"
+                                type="button">
                             <i class="fa-{% if in_wishlist %}solid{% else %}regular{% endif %} fa-heart"></i>
-                            {% if in_wishlist %}Saqlangan{% else %}Saqlash{% endif %}
-                        </a>
+                            <span>{% if in_wishlist %}Saqlangan{% else %}Saqlash{% endif %}</span>
+                        </button>
                     {% endif %}
-                    <button class="hg-badge" onclick="event.stopPropagation();lbOpen(0)" type="button">
-                        <i class="fa-solid fa-expand"></i> Barcha rasmlar
+                    <button class="gal-btn" onclick="event.stopPropagation();lbOpen(0)" type="button">
+                        <i class="fa-solid fa-images"></i>
+                        <span>{{ images|length }} ta rasm</span>
                     </button>
                 </div>
             </div>
-
-            <!-- Sub photos -->
             {% if images|length >= 2 %}
-                <div class="hg-sub" onclick="lbOpen(1)">
+                <div class="gal-sub" onclick="lbOpen(1)">
                     <img src="{{ images.1.image.url }}" alt="">
                 </div>
             {% endif %}
             {% if images|length >= 3 %}
-                <div class="hg-sub {% if images|length > 3 %}dim{% endif %}" onclick="lbOpen(2)">
+                <div class="gal-sub {% if images|length > 3 %}more{% endif %}" onclick="lbOpen(2)">
                     <img src="{{ images.2.image.url }}" alt="">
                     {% if images|length > 3 %}
-                        <div class="hg-count">
+                        <div class="gal-more-txt">
                             +{{ images|length|add:"-3" }}
                             <span>ta rasm</span>
                         </div>
@@ -946,85 +258,76 @@
             {% endif %}
         </div>
     {% else %}
-        <div class="hero-gallery">
-            <div class="hg-nophoto">
-                <i class="fa-solid fa-image"></i>
-                <span>Rasm yuklanmagan</span>
+        <div class="dp-gallery">
+            <div class="gal-nophoto">
+                <i class="fa-solid fa-image" style="font-size:2.5rem;"></i>
+                <span style="font-size:13px;">Rasm yuklanmagan</span>
             </div>
         </div>
     {% endif %}
 
-    <!-- ═══════════════════════
-         MAIN CONTENT GRID
-    ═══════════════════════ -->
+    <!-- MAIN GRID -->
     <div class="dp-grid">
 
-        <!-- ─── LEFT COLUMN ─── -->
-        <div>
+        <!-- LEFT -->
+        <div class="dp-left">
 
-            <!-- Title -->
-            <div>
-                <div class="dp-tags">
-                    <span class="badge badge-primary">
-                        <i class="fa-solid fa-location-dot"></i>
-                        {{ house.district.name }}, {{ house.region.name }}
+            <!-- Tags + Title -->
+            <div class="dp-tags">
+                <span class="badge badge-primary">
+                    <i class="fa-solid fa-location-dot"></i>
+                    {{ house.district.name }}, {{ house.region.name }}
+                </span>
+                <span class="badge badge-success">
+                    <i class="fa-solid fa-circle" style="font-size:6px;"></i> Faol
+                </span>
+                {% if avg_rating > 0 %}
+                    <span class="badge badge-warning">
+                        <i class="fa-solid fa-star"></i> {{ avg_rating }}
                     </span>
-                    <span class="badge badge-success">
-                        <i class="fa-solid fa-circle" style="font-size:0.38rem;"></i>
-                        Faol
-                    </span>
-                    {% if avg_rating > 0 %}
-                        <span class="badge badge-warning">
-                            <i class="fa-solid fa-star"></i> {{ avg_rating }}
-                        </span>
-                    {% endif %}
-                    <span style="font-size:0.75rem;color:var(--text-muted);">
-                        <i class="fa-regular fa-clock" style="margin-right:3px;"></i>
-                        {{ house.created_at|timesince }} oldin
-                    </span>
-                </div>
-                <h1 class="dp-title">{{ house.full_address }}</h1>
+                {% endif %}
+                <span style="font-size:11px;color:var(--text-light);">
+                    <i class="fa-regular fa-clock" style="margin-right:2px;"></i>
+                    {{ house.created_at|timesince }} oldin
+                </span>
             </div>
+            <h1 class="dp-title">{{ house.full_address }}</h1>
 
-            <!-- Meta strip -->
+            <!-- Meta -->
             <div class="dp-meta">
-                <div class="dp-meta-item">
-                    <div class="dmi-icon"><i class="fa-solid fa-dollar-sign"></i></div>
-                    <div class="dmi-label">Oylik ijara</div>
-                    <div class="dmi-val" style="color:var(--accent);font-size:1rem;">${{ house.price_usd }}</div>
+                <div class="dmi">
+                    <div class="dmi-lbl">Oylik narx</div>
+                    <div class="dmi-val" style="color:var(--accent);">${{ house.price_usd }}</div>
                 </div>
-                <div class="dp-meta-item">
-                    <div class="dmi-icon"><i class="fa-solid fa-map-location-dot"></i></div>
-                    <div class="dmi-label">Viloyat</div>
+                <div class="dmi">
+                    <div class="dmi-lbl">Viloyat</div>
                     <div class="dmi-val">{{ house.region.name }}</div>
                 </div>
-                <div class="dp-meta-item">
-                    <div class="dmi-icon"><i class="fa-solid fa-city"></i></div>
-                    <div class="dmi-label">Tuman</div>
+                <div class="dmi">
+                    <div class="dmi-lbl">Tuman</div>
                     <div class="dmi-val">{{ house.district.name }}</div>
                 </div>
-                <div class="dp-meta-item">
-                    <div class="dmi-icon"><i class="fa-solid fa-road"></i></div>
-                    <div class="dmi-label">Ko'cha</div>
+                <div class="dmi">
+                    <div class="dmi-lbl">Ko'cha</div>
                     <div class="dmi-val">{{ house.street }}</div>
                 </div>
             </div>
 
             <!-- Description -->
             <div class="dp-card">
-                <div class="dp-card-head">
-                    <div class="dch-ico"><i class="fa-solid fa-align-left"></i></div>
+                <div class="dp-ch">
+                    <div class="dp-ch-ico"><i class="fa-solid fa-align-left"></i></div>
                     <h3>Uy haqida</h3>
                 </div>
-                <div class="dp-card-body">
+                <div class="dp-cb">
                     <div class="dp-desc">{{ house.description }}</div>
                 </div>
             </div>
 
             <!-- Map -->
             <div class="dp-card">
-                <div class="dp-card-head">
-                    <div class="dch-ico"><i class="fa-solid fa-map-location-dot"></i></div>
+                <div class="dp-ch">
+                    <div class="dp-ch-ico"><i class="fa-solid fa-map-location-dot"></i></div>
                     <h3>Joylashuv xaritada</h3>
                 </div>
                 {% if house.latitude and house.longitude %}
@@ -1034,25 +337,21 @@
                         {{ house.full_address }}
                     </div>
                 {% else %}
-                    <div class="dp-card-body" style="text-align:center;padding:30px;color:var(--text-light);">
-                        <i class="fa-solid fa-map" style="font-size:2rem;opacity:0.18;display:block;margin-bottom:8px;"></i>
-                        <span style="font-size:0.82rem;">Koordinatalar kiritilmagan</span>
+                    <div class="dp-cb" style="text-align:center;padding:24px;color:var(--text-light);">
+                        <i class="fa-solid fa-map" style="font-size:1.8rem;opacity:.18;display:block;margin-bottom:6px;"></i>
+                        <span style="font-size:12px;">Koordinatalar kiritilmagan</span>
                     </div>
                 {% endif %}
             </div>
 
             <!-- Rating -->
             <div class="dp-card">
-                <div class="dp-card-head">
-                    <div class="dch-ico" style="background:#fef3c7;color:#f59e0b;">
-                        <i class="fa-solid fa-star"></i>
-                    </div>
+                <div class="dp-ch">
+                    <div class="dp-ch-ico" style="background:#fef3c7;color:#f59e0b;"><i class="fa-solid fa-star"></i></div>
                     <h3>Reyting</h3>
-                    <span style="font-size:0.75rem;color:var(--text-muted);margin-left:auto;">
-                        {{ house.ratings.count }} ta baho
-                    </span>
+                    <span style="font-size:11px;color:var(--text-light);margin-left:auto;">{{ house.ratings.count }} ta baho</span>
                 </div>
-                <div class="dp-card-body">
+                <div class="dp-cb">
                     <div class="rating-display">
                         <div class="rd-score">{{ avg_rating|floatformat:1 }}</div>
                         <div>
@@ -1061,16 +360,13 @@
                                     <i class="fa-{% if forloop.counter <= avg_rating %}solid{% else %}regular{% endif %} fa-star"></i>
                                 {% endfor %}
                             </div>
-                            <div class="rd-count">{{ house.ratings.count }} ta foydalanuvchi baholagan</div>
+                            <div class="rd-cnt">{{ house.ratings.count }} ta foydalanuvchi baholagan</div>
                         </div>
                     </div>
-
                     {% if user.is_authenticated and house.owner != user %}
                         <form method="post" action="{% url 'add_rating' house.pk %}">
                             {% csrf_token %}
-                            <div style="font-size:0.8rem;font-weight:600;color:var(--text-muted);margin-bottom:4px;">
-                                Bahoyingizni qoldiring:
-                            </div>
+                            <div style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:4px;">Bahoyingizni qoldiring:</div>
                             <div class="star-row">
                                 {% for i in "54321" %}
                                     <input type="radio" name="score" id="sr{{ i }}" value="{{ i }}"
@@ -1083,22 +379,117 @@
                             </button>
                         </form>
                     {% elif not user.is_authenticated %}
-                        <div style="padding:12px;background:var(--bg);border-radius:9px;
-                                    text-align:center;font-size:0.83rem;color:var(--text-muted);">
+                        <div style="padding:10px;background:var(--accent-pale);border-radius:8px;text-align:center;font-size:12px;color:var(--text-muted);">
                             Baho berish uchun
-                            <a href="{% url 'login' %}?next={% url 'house_detail' house.pk %}"
-                               style="color:var(--accent);font-weight:700;">kiring</a>
+                            <a href="{% url 'login' %}?next={% url 'house_detail' house.pk %}" style="color:var(--accent);font-weight:700;">kiring</a>
                         </div>
                     {% endif %}
                 </div>
             </div>
 
+            <!-- Comments -->
+            <div class="cs-section">
+                <div class="cs-head">
+                    <div class="dp-ch-ico" style="width:28px;height:28px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;border-radius:7px;font-size:12px;flex-shrink:0;">
+                        <i class="fa-solid fa-comments"></i>
+                    </div>
+                    <h3>
+                        Izohlar
+                        <span class="badge badge-info">{{ comments.count }}</span>
+                    </h3>
+                </div>
+                <div class="cs-body">
+                    {% if user.is_authenticated %}
+                        <div class="ci-wrap">
+                            <div class="ci-av">
+                                {% if user.avatar %}<img src="{{ user.avatar.url }}" alt="">
+                                {% else %}{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}{% endif %}
+                            </div>
+                            <div style="flex:1;">
+                                <form method="post" action="{% url 'add_comment' house.pk %}">
+                                    {% csrf_token %}
+                                    <textarea name="text" class="ci-textarea"
+                                              placeholder="Fikr yoki savolingizni yozing..."
+                                              id="cTxt" maxlength="1000"
+                                              oninput="cCount()"></textarea>
+                                    <div class="ci-foot">
+                                        <span class="ci-count" id="cCnt">0 / 1000</span>
+                                        <button type="submit" class="btn btn-primary btn-sm">
+                                            <i class="fa-solid fa-paper-plane"></i> Yuborish
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div style="padding:12px 14px;background:var(--accent-pale);border-radius:9px;margin-bottom:16px;font-size:12px;color:var(--text-muted);border:1px solid var(--border);display:flex;align-items:center;gap:7px;">
+                            <i class="fa-solid fa-lock" style="color:var(--accent);"></i>
+                            Izoh qoldirish uchun
+                            <a href="{% url 'login' %}?next={% url 'house_detail' house.pk %}" style="color:var(--accent);font-weight:700;">kiring</a>
+                        </div>
+                    {% endif %}
+
+                    {% if comments %}
+                        <div>
+                            {% for c in comments %}
+                                <div class="c-item">
+                                    <div class="c-av">
+                                        {% if c.user.avatar %}<img src="{{ c.user.avatar.url }}" alt="">
+                                        {% else %}{{ c.user.first_name|first|upper }}{{ c.user.last_name|first|upper }}{% endif %}
+                                    </div>
+                                    <div style="flex:1;min-width:0;">
+                                        <div>
+                                            <span class="c-name">{{ c.user.get_full_name }}</span>
+                                            <span class="c-date">{{ c.created_at|timesince }} oldin</span>
+                                        </div>
+                                        <div class="c-text">{{ c.text }}</div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div style="text-align:center;padding:28px 20px;color:var(--text-light);">
+                            <i class="fa-regular fa-comment-dots" style="font-size:2rem;display:block;margin-bottom:8px;opacity:.18;"></i>
+                            <div style="font-size:12px;">Hali izoh yo'q</div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Similar -->
+            {% if similar %}
+                <div class="sim-section">
+                    <div class="sim-head">
+                        <h3>
+                            <i class="fa-solid fa-house-circle-check" style="color:var(--accent);"></i>
+                            {{ house.district.name }} tumanidagi boshqa uylar
+                        </h3>
+                        <a href="{% url 'house_list' %}?region={{ house.region.id }}" class="btn btn-outline btn-sm">Ko'rish</a>
+                    </div>
+                    <div class="sim-grid">
+                        {% for s in similar %}
+                            <a href="{% url 'house_detail' s.pk %}" class="sim-card">
+                                <div class="sim-img">
+                                    {% with img=s.main_image %}
+                                        {% if img %}<img src="{{ img.image.url }}" alt="">
+                                        {% else %}<div class="ni"><i class="fa-solid fa-image"></i></div>{% endif %}
+                                    {% endwith %}
+                                </div>
+                                <div class="sim-info">
+                                    <div class="sim-price">${{ s.price_usd }}/oy</div>
+                                    <div class="sim-loc"><i class="fa-solid fa-location-dot" style="color:var(--accent);font-size:9px;margin-right:2px;"></i>{{ s.district.name }}</div>
+                                    <div class="sim-addr">{{ s.full_address }}</div>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
         </div>
 
-        <!-- ─── RIGHT SIDEBAR ─── -->
+        <!-- SIDEBAR -->
         <div class="dp-sidebar">
-
-            <!-- Price card -->
             <div class="price-card">
                 <div class="pc-top">
                     <div class="pc-lbl">Oylik ijara narxi</div>
@@ -1106,34 +497,22 @@
                     <div class="pc-period">AQSh dollari / oy</div>
                 </div>
                 <div class="pc-body">
-
-                    <!-- Owner -->
                     <div class="owner-block">
                         <div class="ob-av">
-                            {% if house.owner.avatar %}
-                                <img src="{{ house.owner.avatar.url }}" alt="">
-                            {% else %}
-                                {{ house.owner.first_name|first|upper }}{{ house.owner.last_name|first|upper }}
-                            {% endif %}
+                            {% if house.owner.avatar %}<img src="{{ house.owner.avatar.url }}" alt="">
+                            {% else %}{{ house.owner.first_name|first|upper }}{{ house.owner.last_name|first|upper }}{% endif %}
                         </div>
                         <div>
                             <div class="ob-name">{{ house.owner.get_full_name }}</div>
-                            <div class="ob-tag">
-                                <i class="fa-solid fa-circle"></i> Uy egasi
-                            </div>
+                            <div class="ob-tag"><i class="fa-solid fa-circle"></i> Uy egasi</div>
                         </div>
                     </div>
 
-                    <!-- Phone -->
-                    <div class="phone-revealed" id="phoneBox">
-                        <div class="pr-tag">
-                            <i class="fa-solid fa-phone"></i> Telefon raqam
-                        </div>
-                        <div class="pr-num" id="phoneNum">—</div>
-                        <div class="pr-hint">Qo'ng'iroq qiling!</div>
+                    <div class="phone-box" id="phoneBox">
+                        <div class="ph-lbl"><i class="fa-solid fa-phone"></i> Telefon raqam</div>
+                        <div class="ph-num" id="phoneNum">—</div>
                     </div>
 
-                    <!-- Call btn -->
                     {% if house.owner != user %}
                         <button class="call-btn" id="callBtn" type="button" onclick="doCall()">
                             <i class="fa-solid fa-phone"></i>
@@ -1141,27 +520,21 @@
                         </button>
                     {% endif %}
 
-                    <!-- Actions -->
                     <div class="sb-actions">
                         {% if user.is_authenticated %}
-                            <a href="{% url 'toggle_wishlist' house.pk %}"
-                               class="btn {% if in_wishlist %}btn-danger{% else %}btn-outline{% endif %}">
+                            <button class="btn {% if in_wishlist %}btn-danger{% else %}btn-outline{% endif %}"
+                                    id="sideWishBtn"
+                                    onclick="toggleWish({{ house.pk }}, this)">
                                 <i class="fa-{% if in_wishlist %}solid{% else %}regular{% endif %} fa-heart"></i>
-                                {% if in_wishlist %}Saqlangan{% else %}Saqlash{% endif %}
-                            </a>
+                                <span>{% if in_wishlist %}Saqlangan{% else %}Saqlash{% endif %}</span>
+                            </button>
                         {% else %}
-                            <a href="{% url 'login' %}?next={% url 'house_detail' house.pk %}"
-                               class="btn btn-outline">
+                            <a href="{% url 'login' %}?next={% url 'house_detail' house.pk %}" class="btn btn-outline">
                                 <i class="fa-regular fa-heart"></i> Saqlash
                             </a>
                         {% endif %}
-
                         {% if user.is_authenticated and house.owner != user %}
-                            <button class="btn btn-outline"
-                                    id="reportBtn"
-                                    style="display:none;"
-                                    onclick="mOpen('reportM')"
-                                    title="Shikoyat yuborish">
+                            <button class="btn btn-outline" id="reportBtn" style="display:none;" onclick="mOpen('reportM')" title="Shikoyat">
                                 <i class="fa-solid fa-flag"></i>
                             </button>
                         {% endif %}
@@ -1177,228 +550,43 @@
                             </a>
                         </div>
                     {% endif %}
-
                 </div>
             </div>
 
-            <!-- Stats -->
             <div class="stats-card">
                 <div class="sc-row">
-                    <span class="sc-label">
-                        <i class="fa-solid fa-calendar"></i> Sana
-                    </span>
+                    <span class="sc-lbl"><i class="fa-solid fa-calendar"></i> Sana</span>
                     <span class="sc-val">{{ house.created_at|date:"d.m.Y" }}</span>
                 </div>
                 <div class="sc-row">
-                    <span class="sc-label">
-                        <i class="fa-solid fa-comments"></i> Izohlar
-                    </span>
+                    <span class="sc-lbl"><i class="fa-solid fa-comments"></i> Izohlar</span>
                     <span class="sc-val">{{ comments.count }}</span>
                 </div>
                 <div class="sc-row">
-                    <span class="sc-label">
-                        <i class="fa-solid fa-star" style="color:#f59e0b;"></i> Reyting
-                    </span>
+                    <span class="sc-lbl"><i class="fa-solid fa-star" style="color:#f59e0b;"></i> Reyting</span>
                     <span class="sc-val">{{ avg_rating }}/5</span>
                 </div>
                 <div class="sc-row">
-                    <span class="sc-label">
-                        <i class="fa-solid fa-images"></i> Rasmlar
-                    </span>
+                    <span class="sc-lbl"><i class="fa-solid fa-images"></i> Rasmlar</span>
                     <span class="sc-val">{{ images|length }} ta</span>
                 </div>
             </div>
-
         </div>
+
     </div>
+</div>
 
-    <!-- ═══════════════════════
-         SIMILAR HOUSES — full width
-    ═══════════════════════ -->
-    {% if similar %}
-        <div class="similar-section">
-            <div class="sim-head">
-                <h3>
-                    <i class="fa-solid fa-house-circle-check" style="color:var(--accent);"></i>
-                    {{ house.district.name }} tumanidagi boshqa uylar
-                </h3>
-                <a href="{% url 'house_list' %}?district={{ house.district.id }}"
-                   class="btn btn-outline btn-sm">
-                    Hammasini ko'rish
-                </a>
-            </div>
-            <div class="sim-grid">
-                {% for s in similar %}
-                    <a href="{% url 'house_detail' s.pk %}" class="sim-card">
-                        <div class="sim-img">
-                            {% with img=s.main_image %}
-                                {% if img %}
-                                    <img src="{{ img.image.url }}" alt="{{ s.full_address }}">
-                                {% else %}
-                                    <div class="ni"><i class="fa-solid fa-image"></i></div>
-                                {% endif %}
-                            {% endwith %}
-                        </div>
-                        <div class="sim-info">
-                            <div class="sim-price">${{ s.price_usd }}/oy</div>
-                            <div class="sim-loc">
-                                <i class="fa-solid fa-location-dot" style="color:var(--accent);font-size:0.65rem;margin-right:3px;"></i>
-                                {{ s.district.name }}
-                            </div>
-                            <div class="sim-addr">{{ s.full_address }}</div>
-                        </div>
-                    </a>
-                {% endfor %}
-            </div>
-        </div>
-    {% endif %}
-
-<!-- ═══ COMMENTS ═══ -->
-    <div class="comments-section" style="margin-top:24px;">
-        <div class="cs-head">
-            <h3>
-                <i class="fa-solid fa-comments" style="color:var(--accent);"></i>
-                Izohlar
-                <span class="badge badge-info">{{ comments.count }}</span>
-            </h3>
-        </div>
-        <div class="cs-body">
-            {% if user.is_authenticated %}
-                <div class="comment-input-wrap">
-                    <div class="ci-user">
-                        <div class="ci-av">
-                            {% if user.avatar %}
-                                <img src="{{ user.avatar.url }}" alt="">
-                            {% else %}
-                                {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
-                            {% endif %}
-                        </div>
-                        <div class="ci-field">
-                            <form method="post" action="{% url 'add_comment' house.pk %}">
-                                {% csrf_token %}
-                                <textarea name="text" class="ci-textarea"
-                                          placeholder="Fikr yoki savolingizni yozing..."
-                                          id="cTxt" maxlength="1000"
-                                          oninput="cCount()"></textarea>
-                                <div class="ci-foot">
-                                    <span class="ci-count" id="cCnt">0 / 1000</span>
-                                    <button type="submit" class="btn btn-primary btn-sm">
-                                        <i class="fa-solid fa-paper-plane"></i> Yuborish
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            {% else %}
-                <div style="padding:14px 16px;background:var(--bg);border-radius:10px;
-                            margin-bottom:18px;font-size:0.84rem;color:var(--text-muted);
-                            border:1px solid var(--border);display:flex;align-items:center;gap:8px;">
-                    <i class="fa-solid fa-lock" style="color:var(--accent);"></i>
-                    Izoh qoldirish uchun
-                    <a href="{% url 'login' %}?next={% url 'house_detail' house.pk %}"
-                       style="color:var(--accent);font-weight:700;">kiring</a>
-                </div>
-            {% endif %}
-
-            {% if comments %}
-                <div class="comment-list">
-                    {% for c in comments %}
-                        <div class="c-item">
-                            <div class="c-av">
-                                {% if c.user.avatar %}
-                                    <img src="{{ c.user.avatar.url }}" alt="">
-                                {% else %}
-                                    {{ c.user.first_name|first|upper }}{{ c.user.last_name|first|upper }}
-                                {% endif %}
-                            </div>
-                            <div style="flex:1;min-width:0;">
-                                <div>
-                                    <span class="c-name">{{ c.user.get_full_name }}</span>
-                                    <span class="c-date">
-                                        <i class="fa-regular fa-clock" style="margin-right:2px;"></i>
-                                        {{ c.created_at|timesince }} oldin
-                                    </span>
-                                </div>
-                                <div class="c-text">{{ c.text }}</div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div style="text-align:center;padding:36px 20px;color:var(--text-light);">
-                    <i class="fa-regular fa-comment-dots"
-                       style="font-size:2.5rem;display:block;margin-bottom:10px;opacity:0.18;"></i>
-                    <div style="font-size:0.85rem;">Hali izoh yo'q</div>
-                    <div style="font-size:0.78rem;margin-top:4px;opacity:0.7;">
-                        Birinchi izoh qoldiring!
-                    </div>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- ═══ SIMILAR HOUSES ═══ -->
-    {% if similar %}
-        <div class="similar-section" style="margin-top:24px;">
-            <div class="sim-head">
-                <h3>
-                    <i class="fa-solid fa-house-circle-check" style="color:var(--accent);"></i>
-                    {{ house.district.name }} tumanidagi boshqa uylar
-                </h3>
-                <a href="{% url 'house_list' %}?district={{ house.district.id }}"
-                   class="btn btn-outline btn-sm">
-                    Hammasini ko'rish
-                </a>
-            </div>
-            <div class="sim-grid">
-                {% for s in similar %}
-                    <a href="{% url 'house_detail' s.pk %}" class="sim-card">
-                        <div class="sim-img">
-                            {% with img=s.main_image %}
-                                {% if img %}
-                                    <img src="{{ img.image.url }}" alt="{{ s.full_address }}">
-                                {% else %}
-                                    <div class="ni"><i class="fa-solid fa-image"></i></div>
-                                {% endif %}
-                            {% endwith %}
-                        </div>
-                        <div class="sim-info">
-                            <div class="sim-price">${{ s.price_usd }}/oy</div>
-                            <div class="sim-loc">
-                                <i class="fa-solid fa-location-dot"
-                                   style="color:var(--accent);font-size:0.65rem;margin-right:3px;"></i>
-                                {{ s.district.name }}
-                            </div>
-                            <div class="sim-addr">{{ s.full_address }}</div>
-                        </div>
-                    </a>
-                {% endfor %}
-            </div>
-        </div>
-    {% endif %}
-
-</div><!-- dp-wrap yopildi -->
-
-<!-- ═══════════════════════
-     LIGHTBOX
-═══════════════════════ -->
+<!-- LIGHTBOX -->
 <div class="lightbox" id="lb">
-    <button class="lb-close" onclick="lbClose()">
-        <i class="fa-solid fa-xmark"></i>
-    </button>
-    <div class="lb-img-wrap" style="position:relative;">
+    <button class="lb-close" onclick="lbClose()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="lb-wrap" style="position:relative;">
         <img src="" alt="" id="lbImg">
         {% if images|length > 1 %}
-            <button class="lb-arrow lft" onclick="lbChange(-1)">
-                <i class="fa-solid fa-chevron-left"></i>
-            </button>
-            <button class="lb-arrow rgt" onclick="lbChange(1)">
-                <i class="fa-solid fa-chevron-right"></i>
-            </button>
+            <button class="lb-arr l" onclick="lbChange(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="lb-arr r" onclick="lbChange(1)"><i class="fa-solid fa-chevron-right"></i></button>
         {% endif %}
     </div>
-    <div class="lb-counter" id="lbCnt"></div>
+    <div class="lb-cnt" id="lbCnt"></div>
     {% if images|length > 1 %}
         <div class="lb-thumbs">
             {% for img in images %}
@@ -1410,91 +598,54 @@
     {% endif %}
 </div>
 
-<!-- ═══════════════════════
-     MODALS
-═══════════════════════ -->
-
-<!-- Login -->
+<!-- MODALS -->
 <div class="m-overlay" id="loginM">
     <div class="m-box">
-        <div class="m-ico" style="background:#eff6ff;">
-            <i class="fa-solid fa-right-to-bracket" style="color:#3b82f6;"></i>
-        </div>
+        <div class="m-ico" style="background:#eff6ff;"><i class="fa-solid fa-right-to-bracket" style="color:#3b82f6;"></i></div>
         <h3>Tizimga kiring</h3>
         <p>Uy egasining telefon raqamini ko'rish uchun avval kiring.</p>
         <div class="m-btns">
             <button class="btn btn-outline" onclick="mClose('loginM')">Bekor</button>
-            <a href="{% url 'login' %}?next={% url 'house_detail' house.pk %}"
-               class="btn btn-primary">
+            <a href="{% url 'login' %}?next={% url 'house_detail' house.pk %}" class="btn btn-primary">
                 <i class="fa-solid fa-right-to-bracket"></i> Kirish
             </a>
         </div>
     </div>
 </div>
-
-<!-- No sub -->
 <div class="m-overlay" id="noSubM">
     <div class="m-box">
-        <div class="m-ico" style="background:#fff7ed;">
-            <i class="fa-solid fa-crown" style="color:#f97316;"></i>
-        </div>
+        <div class="m-ico" style="background:#fff7ed;"><i class="fa-solid fa-crown" style="color:#f97316;"></i></div>
         <h3>Premium tarif kerak</h3>
-        <p>
-            Uy egasining telefon raqamini ko'rish uchun tarif sotib oling.
-            <br><br>
-            <strong style="color:var(--accent);">3 kunlik — 30 000 so'm</strong><br>
-            <strong style="color:var(--accent);">7 kunlik — 50 000 so'm</strong>
-        </p>
+        <p>Uy egasining telefon raqamini ko'rish uchun tarif sotib oling.<br><br>
+           <strong style="color:var(--accent);">3 kunlik — 30 000 so'm</strong><br>
+           <strong style="color:var(--accent);">7 kunlik — 50 000 so'm</strong></p>
         <div class="m-btns">
             <button class="btn btn-outline" onclick="mClose('noSubM')">Bekor</button>
-            <a href="{% url 'tariff_list' %}" class="btn btn-primary">
-                <i class="fa-solid fa-crown"></i> Tariflar
-            </a>
+            <a href="{% url 'tariff_list' %}" class="btn btn-primary"><i class="fa-solid fa-crown"></i> Tariflar</a>
         </div>
     </div>
 </div>
-
-<!-- After call -->
 <div class="m-overlay" id="afterCallM">
     <div class="m-box">
-        <div class="m-ico" style="background:#f0fdf4;">
-            <i class="fa-solid fa-phone-volume" style="color:#22c55e;"></i>
-        </div>
+        <div class="m-ico" style="background:#f0fdf4;"><i class="fa-solid fa-phone-volume" style="color:#22c55e;"></i></div>
         <h3>Qo'ng'iroq qildingizmi?</h3>
-        <p>Uy egasi haqida fikringizni bildiring — bu boshqalarga yordam beradi!</p>
+        <p>Uy egasi haqida fikringizni bildiring.</p>
         <button class="m-choice good" onclick="mClose('afterCallM')">
             <div class="mc-ico"><i class="fa-solid fa-user-check"></i></div>
-            <div>
-                <div class="mc-t">Makler emas — hammasi yaxshi</div>
-                <div class="mc-s">To'g'ridan-to'g'ri uy egasi</div>
-            </div>
+            <div><div class="mc-t">Makler emas — hammasi yaxshi</div><div class="mc-s">To'g'ridan-to'g'ri uy egasi</div></div>
         </button>
         <button class="m-choice bad" onclick="callToReport()">
             <div class="mc-ico"><i class="fa-solid fa-user-slash"></i></div>
-            <div>
-                <div class="mc-t">Bu makler — shikoyat yuborish</div>
-                <div class="mc-s">Boshqalarni ogohlantiring</div>
-            </div>
+            <div><div class="mc-t">Bu makler — shikoyat yuborish</div><div class="mc-s">Boshqalarni ogohlantiring</div></div>
         </button>
-        <button class="btn btn-outline btn-sm btn-block"
-                style="margin-top:6px;"
-                onclick="mClose('afterCallM')">
-            Keyinroq
-        </button>
+        <button class="btn btn-outline btn-sm btn-block" style="margin-top:6px;" onclick="mClose('afterCallM')">Keyinroq</button>
     </div>
 </div>
-
-<!-- Report -->
 <div class="m-overlay" id="reportM">
     <div class="m-box">
-        <div class="m-ico" style="background:#fef2f2;">
-            <i class="fa-solid fa-flag" style="color:#ef4444;"></i>
-        </div>
+        <div class="m-ico" style="background:#fef2f2;"><i class="fa-solid fa-flag" style="color:#ef4444;"></i></div>
         <h3>Shikoyat yuborish</h3>
-        <p>
-            Uy egasini <strong>makler</strong> sifatida belgilaysiz.
-            5 ta shikoyat to'plansa, u <strong>bloklanadi</strong>.
-        </p>
+        <p>Uy egasini <strong>makler</strong> sifatida belgilaysiz. 5 ta shikoyat to'plansa, u <strong>bloklanadi</strong>.</p>
         <div class="m-btns">
             <button class="btn btn-outline" onclick="mClose('reportM')">Bekor</button>
             <form method="post" action="{% url 'report' house.pk %}" style="flex:1;">
@@ -1512,104 +663,120 @@
 {% block extra_js %}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-/* ─── CONSTANTS ─── */
 const IS_AUTH  = {{ user.is_authenticated|yesno:"true,false" }};
 const HAS_SUB  = {{ has_sub|yesno:"true,false" }};
 const CALL_URL = "{% url 'call' house.pk %}";
 const ALL_IMGS = [{% for img in images %}"{{ img.image.url }}"{% if not forloop.last %},{% endif %}{% endfor %}];
 
-/* ─── LIGHTBOX ─── */
+/* LIGHTBOX */
 let lbIdx = 0;
 function lbOpen(i) {
     lbIdx = i;
     document.getElementById('lbImg').src = ALL_IMGS[i];
     document.getElementById('lb').classList.add('open');
-    lbUpdateThumb();
-    lbUpdateCnt();
-    document.body.style.overflow = 'hidden';
+    lbSync(); document.body.style.overflow = 'hidden';
 }
-function lbClose() {
-    document.getElementById('lb').classList.remove('open');
-    document.body.style.overflow = '';
-}
-function lbChange(d) {
-    lbGo((lbIdx + d + ALL_IMGS.length) % ALL_IMGS.length);
-}
-function lbGo(i) {
-    lbIdx = i;
-    document.getElementById('lbImg').src = ALL_IMGS[i];
-    lbUpdateThumb();
-    lbUpdateCnt();
-}
-function lbUpdateThumb() {
-    document.querySelectorAll('.lb-thumb').forEach((t, n) => {
-        t.classList.toggle('on', n === lbIdx);
-    });
-}
-function lbUpdateCnt() {
+function lbClose() { document.getElementById('lb').classList.remove('open'); document.body.style.overflow = ''; }
+function lbChange(d) { lbGo((lbIdx + d + ALL_IMGS.length) % ALL_IMGS.length); }
+function lbGo(i) { lbIdx = i; document.getElementById('lbImg').src = ALL_IMGS[i]; lbSync(); }
+function lbSync() {
+    document.querySelectorAll('.lb-thumb').forEach((t,n) => t.classList.toggle('on', n === lbIdx));
     const el = document.getElementById('lbCnt');
-    if (el) el.textContent = (lbIdx + 1) + ' / ' + ALL_IMGS.length;
+    if (el) el.textContent = (lbIdx+1) + ' / ' + ALL_IMGS.length;
 }
 document.addEventListener('keydown', e => {
-    const lb = document.getElementById('lb');
-    if (!lb.classList.contains('open')) return;
-    if (e.key === 'Escape')     lbClose();
-    if (e.key === 'ArrowLeft')  lbChange(-1);
+    if (!document.getElementById('lb').classList.contains('open')) return;
+    if (e.key === 'Escape') lbClose();
+    if (e.key === 'ArrowLeft') lbChange(-1);
     if (e.key === 'ArrowRight') lbChange(1);
 });
 
-/* ─── MAP ─── */
+/* MAP */
 {% if house.latitude and house.longitude %}
 document.addEventListener('DOMContentLoaded', () => {
     const lat = parseFloat("{{ house.latitude }}");
     const lng = parseFloat("{{ house.longitude }}");
-    const map = L.map('dpMap', { scrollWheelZoom: false }).setView([lat, lng], 15);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap', maxZoom: 19
-    }).addTo(map);
+    const map = L.map('dpMap', { scrollWheelZoom:false }).setView([lat, lng], 15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'© OpenStreetMap', maxZoom:19 }).addTo(map);
     const icon = L.divIcon({
-        html: `<div style="width:36px;height:36px;background:#e8622a;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid white;box-shadow:0 4px 14px rgba(232,98,42,0.45);"></div>`,
-        iconSize: [36, 36], iconAnchor: [18, 36], className: ''
+        html: `<div style="width:30px;height:30px;background:var(--accent);border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid white;box-shadow:0 3px 10px rgba(0,0,0,.25);"></div>`,
+        iconSize:[30,30], iconAnchor:[15,30], className:''
     });
-    L.marker([lat, lng], { icon }).addTo(map)
-     .bindPopup(`<div style="font-family:sans-serif;padding:3px 0;min-width:150px;"><b style="color:#1c2b4a;font-size:0.85rem;">{{ house.full_address }}</b><br><span style="color:#e8622a;font-weight:700;">${{ house.price_usd }}$/oy</span></div>`)
+    L.marker([lat, lng], {icon}).addTo(map)
+     .bindPopup(`<b style="font-size:12px;">{{ house.full_address }}</b><br><span style="color:var(--accent);font-weight:700;">${{ house.price_usd }}$/oy</span>`)
      .openPopup();
 });
 {% endif %}
 
-/* ─── CALL ─── */
+/* WISHLIST AJAX */
+function toggleWish(houseId, btn) {
+    if (!IS_AUTH) { mOpen('loginM'); return; }
+    fetch('/houses/' + houseId + '/wishlist/', {
+        method: 'POST',
+        headers: { 'X-CSRFToken': '{{ csrf_token }}', 'X-Requested-With': 'XMLHttpRequest' }
+    }).then(r => {
+        if (!r.ok) return;
+        const icon = btn.querySelector('i');
+        const txt  = btn.querySelector('span');
+        const isSaved = icon.classList.contains('fa-solid');
+        if (isSaved) {
+            icon.className = 'fa-regular fa-heart';
+            if (txt) txt.textContent = 'Saqlash';
+            btn.classList.remove('saved','btn-danger'); btn.classList.add('btn-outline');
+        } else {
+            icon.className = 'fa-solid fa-heart';
+            if (txt) txt.textContent = 'Saqlangan';
+            btn.classList.add('saved','btn-danger'); btn.classList.remove('btn-outline','btn-secondary');
+        }
+        /* Ikkinchi tugmani ham yangilash */
+        ['galWishBtn','sideWishBtn'].forEach(id => {
+            const other = document.getElementById(id);
+            if (other && other !== btn) {
+                const oi = other.querySelector('i');
+                const ot = other.querySelector('span');
+                if (isSaved) {
+                    oi.className = 'fa-regular fa-heart';
+                    if (ot) ot.textContent = 'Saqlash';
+                    other.classList.remove('saved','btn-danger'); other.classList.add('btn-outline');
+                } else {
+                    oi.className = 'fa-solid fa-heart';
+                    if (ot) ot.textContent = 'Saqlangan';
+                    other.classList.add('saved','btn-danger'); other.classList.remove('btn-outline');
+                }
+            }
+        });
+    });
+}
+
+/* CALL */
 function doCall() {
     if (!IS_AUTH) { mOpen('loginM'); return; }
     if (!HAS_SUB) { mOpen('noSubM'); return; }
     const btn = document.getElementById('callBtn');
     btn.disabled = true;
     btn.innerHTML = '<div class="spinner"></div><span> Yuklanmoqda...</span>';
-    fetch(CALL_URL)
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
-                document.getElementById('phoneNum').textContent = data.phone;
-                document.getElementById('phoneBox').style.display = 'block';
-                btn.className = 'call-btn green-state';
-                btn.innerHTML = `<i class="fa-solid fa-phone-volume"></i><span>${data.phone}</span>`;
-                btn.disabled = false;
-                btn.onclick = null;
-                const rb = document.getElementById('reportBtn');
-                if (rb) rb.style.display = 'flex';
-                setTimeout(() => mOpen('afterCallM'), 5000);
-            } else {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-phone"></i><span>Telefon raqamni ko\'rish</span>';
-                mOpen('noSubM');
-            }
-        })
-        .catch(() => {
+    fetch(CALL_URL).then(r => r.json()).then(data => {
+        if (data.success) {
+            document.getElementById('phoneNum').textContent = data.phone;
+            document.getElementById('phoneBox').style.display = 'block';
+            btn.className = 'call-btn green';
+            btn.innerHTML = `<i class="fa-solid fa-phone-volume"></i><span>${data.phone}</span>`;
+            btn.disabled = false; btn.onclick = null;
+            const rb = document.getElementById('reportBtn');
+            if (rb) rb.style.display = 'flex';
+            setTimeout(() => mOpen('afterCallM'), 5000);
+        } else {
             btn.disabled = false;
             btn.innerHTML = '<i class="fa-solid fa-phone"></i><span>Telefon raqamni ko\'rish</span>';
-        });
+            mOpen('noSubM');
+        }
+    }).catch(() => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-phone"></i><span>Telefon raqamni ko\'rish</span>';
+    });
 }
 
-/* ─── MODALS ─── */
+/* MODALS */
 function mOpen(id)  { document.getElementById(id).classList.add('open'); }
 function mClose(id) { document.getElementById(id).classList.remove('open'); }
 function callToReport() { mClose('afterCallM'); mOpen('reportM'); }
@@ -1617,16 +784,14 @@ document.querySelectorAll('.m-overlay').forEach(o => {
     o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
 });
 document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-        document.querySelectorAll('.m-overlay.open').forEach(m => m.classList.remove('open'));
-    }
+    if (e.key === 'Escape') document.querySelectorAll('.m-overlay.open').forEach(m => m.classList.remove('open'));
 });
 
-/* ─── COMMENT COUNT ─── */
+/* COMMENT */
 function cCount() {
     const n = document.getElementById('cTxt')?.value.length || 0;
     const el = document.getElementById('cCnt');
-    if (el) { el.textContent = n + ' / 1000'; el.style.color = n > 900 ? '#ef4444' : 'var(--text-light)'; }
+    if (el) { el.textContent = n+' / 1000'; el.style.color = n>900?'#ef4444':'var(--text-light)'; }
 }
 </script>
 {% endblock %}

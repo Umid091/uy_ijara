@@ -5,9 +5,7 @@ from django.utils import timezone
 from .models import User, Tariff, UserSubscription, Payment, Notification
 
 
-# ─────────────────────────────────────────────
-# RO'YXATDAN O'TISH
-# ─────────────────────────────────────────────
+
 def register_view(request):
     if request.user.is_authenticated:
         return redirect('house_list')
@@ -49,15 +47,15 @@ def register_view(request):
     return render(request, 'users/register.html')
 
 
-# ─────────────────────────────────────────────
-# LOGIN
-# ─────────────────────────────────────────────
+
 def login_view(request):
     if request.user.is_authenticated:
+        if request.user.is_staff:
+            return redirect('admin_dashboard')
         return redirect('house_list')
 
     if request.method == 'POST':
-        phone    = request.POST.get('phone', '').strip()
+        phone = request.POST.get('phone', '').strip()
         password = request.POST.get('password', '')
 
         if not phone or not password:
@@ -66,25 +64,27 @@ def login_view(request):
 
         user = authenticate(request, username=phone, password=password)
 
-        if user is None:
+        if user is not None:
+            if user.is_blocked:
+                messages.error(request, "Sizning hisobingiz ko'p sonli shikoyatlar tufayli bloklangan.")
+                return render(request, 'users/login.html')
+
+            login(request, user)
+            messages.success(request, f"Xush kelibsiz, {user.first_name}!")
+
+            if user.is_staff:
+                return redirect('admin_dashboard')
+
+            next_url = request.GET.get('next', 'house_list')
+            return redirect(next_url)
+
+        else:
             messages.error(request, "Telefon raqam yoki parol noto'g'ri.")
             return render(request, 'users/login.html')
-
-        if user.is_blocked:
-            messages.error(request, "Sizning hisobingiz bloklangan.")
-            return render(request, 'users/login.html')
-
-        login(request, user)
-        messages.success(request, f"Xush kelibsiz, {user.first_name}!")
-        next_url = request.GET.get('next', 'house_list')
-        return redirect(next_url)
 
     return render(request, 'users/login.html')
 
 
-# ─────────────────────────────────────────────
-# LOGOUT
-# ─────────────────────────────────────────────
 def logout_view(request):
     if not request.user.is_authenticated:
         return redirect('house_list')
@@ -94,9 +94,7 @@ def logout_view(request):
     return redirect('house_list')
 
 
-# ─────────────────────────────────────────────
-# PROFIL
-# ─────────────────────────────────────────────
+
 def profile_view(request):
     if not request.user.is_authenticated:
         return redirect('/users/login/?next=/users/profile/')
@@ -130,9 +128,7 @@ def my_houses_view(request):
     })
 
 
-# ─────────────────────────────────────────────
-# PROFIL TAHRIRLASH
-# ─────────────────────────────────────────────
+
 def profile_edit_view(request):
     if not request.user.is_authenticated:
         return redirect(f"/users/login/?next=/users/profile/edit/")
@@ -167,9 +163,7 @@ def profile_edit_view(request):
     return render(request, 'users/profile_edit.html', {'user': user})
 
 
-# ─────────────────────────────────────────────
-# BALANS TO'LDIRISH
-# ─────────────────────────────────────────────
+
 def top_up_balance_view(request):
     if not request.user.is_authenticated:
         return redirect(f"/users/login/?next=/users/balance/top-up/")
@@ -193,9 +187,7 @@ def top_up_balance_view(request):
     return redirect('profile')
 
 
-# ─────────────────────────────────────────────
-# TARIFLAR SAHIFASI
-# ─────────────────────────────────────────────
+
 def tariff_list_view(request):
     if not request.user.is_authenticated:
         return redirect(f"/users/login/?next=/users/tariffs/")
@@ -210,9 +202,7 @@ def tariff_list_view(request):
     return render(request, 'users/tariffs.html', context)
 
 
-# ─────────────────────────────────────────────
-# TARIF SOTIB OLISH
-# ─────────────────────────────────────────────
+
 def buy_tariff_view(request, tariff_id):
     if not request.user.is_authenticated:
         return redirect(f"/users/login/?next=/users/tariffs/{tariff_id}/buy/")
@@ -231,16 +221,13 @@ def buy_tariff_view(request, tariff_id):
             )
             return render(request, 'users/buy_tariff.html', {'tariff': tariff, 'user': user})
 
-        # Avvalgi aktiv obunani o'chirish
         user.subscriptions.filter(is_active=True).update(is_active=False)
 
-        # Yangi obuna yaratish
         subscription = UserSubscription.objects.create(
             user   = user,
             tariff = tariff,
         )
 
-        # To'lov yaratish
         card_masked = '**** **** **** ----'
         if user.card_number and len(user.card_number) >= 4:
             card_masked = '**** **** **** ' + user.card_number[-4:]
@@ -254,11 +241,9 @@ def buy_tariff_view(request, tariff_id):
             status             = Payment.Status.SUCCESS,
         )
 
-        # Balansdan yechish
         user.balance -= tariff.price
         user.save(update_fields=['balance'])
 
-        # Bildirishnoma
         Notification.objects.create(
             user    = user,
             type    = Notification.Type.GENERAL,
@@ -283,9 +268,7 @@ def buy_tariff_view(request, tariff_id):
     return render(request, 'users/buy_tariff.html', context)
 
 
-# ─────────────────────────────────────────────
-# WISHLIST
-# ─────────────────────────────────────────────
+
 def wishlist_view(request):
     if not request.user.is_authenticated:
         return redirect(f"/users/login/?next=/users/wishlist/")
@@ -295,12 +278,159 @@ def wishlist_view(request):
     return render(request, 'users/wishlist.html', context)
 
 
-# ─────────────────────────────────────────────
-# BILDIRISHNOMALARNI O'QILGAN QILISH
-# ─────────────────────────────────────────────
+
 def mark_notifications_read(request):
     if not request.user.is_authenticated:
         return redirect('login')
 
     request.user.notifications.filter(is_read=False).update(is_read=True)
     return redirect('profile')
+
+
+from django.shortcuts import render
+from django.contrib.admin.views.decorators import staff_member_required
+from django.db.models import Sum, Count
+from django.utils import timezone
+from datetime import timedelta
+from .models import User, Payment, UserSubscription
+from houses.models import House, Report
+
+
+@staff_member_required
+def admin_dashboard(request):
+
+    today = timezone.now()
+    week_ago = today - timedelta(days=7)
+    month_ago = today - timedelta(days=30)
+
+
+    total_users = User.objects.count()
+    total_houses = House.objects.filter(is_active=True).count()
+    total_reports = Report.objects.count()
+    blocked_users_count = User.objects.filter(is_blocked=True).count()
+    new_users_week = User.objects.filter(date_joined__gte=week_ago).count()
+
+
+    active_subscribers = UserSubscription.objects.filter(
+        is_active=True,
+        end_date__gte=today
+    ).values('user').distinct().count()
+
+    weekly_income = Payment.objects.filter(
+        status=Payment.Status.SUCCESS,
+        created_at__gte=week_ago
+    ).aggregate(total=Sum('amount'))['total'] or 0
+
+    monthly_income = Payment.objects.filter(
+        status=Payment.Status.SUCCESS,
+        created_at__gte=month_ago
+    ).aggregate(total=Sum('amount'))['total'] or 0
+
+    reported_users = User.objects.annotate(
+        reports_count_attr=Count('received_reports')
+    ).filter(reports_count_attr__gt=0).order_by('-reports_count_attr')[:5]
+
+    latest_payments = Payment.objects.filter(
+        status=Payment.Status.SUCCESS
+    ).select_related('user', 'tariff').order_by('-created_at')[:10]
+
+    subscribers_percentage = 0
+    if total_users > 0:
+        subscribers_percentage = round((active_subscribers / total_users) * 100)
+
+    context = {
+        'total_users': total_users,
+        'total_houses': total_houses,
+        'total_reports': total_reports,
+        'blocked_users': blocked_users_count,
+        'new_users_week': new_users_week,
+        'active_subscribers': active_subscribers,
+        'weekly_income': weekly_income,
+        'monthly_income': monthly_income,
+        'reported_users': reported_users,
+        'latest_payments': latest_payments,
+        'subscribers_percentage': subscribers_percentage,
+    }
+
+    return render(request, 'admin_custom/dashboard.html', context)
+
+
+
+
+@staff_member_required
+def admin_houses(request):
+    houses = House.objects.select_related('owner', 'region').order_by('-created_at')
+    return render(request, 'admin_custom/house_list.html', {'houses': houses})
+
+
+@staff_member_required
+def admin_users(request):
+    users = User.objects.annotate(
+        reports_count_attr=Count('received_reports')
+    ).order_by('-date_joined')
+    return render(request, 'admin_custom/user_list.html', {'users': users})
+
+
+@staff_member_required
+def admin_payments(request):
+    payments = Payment.objects.select_related('user', 'tariff').order_by('-created_at')
+    return render(request, 'admin_custom/payment_list.html', {'payments': payments})
+
+@staff_member_required
+def admin_reports(request):
+    reports = Report.objects.select_related('reporter', 'reported_user', 'house').order_by('-created_at')
+    return render(request, 'admin_custom/report_list.html', {'reports': reports})
+
+
+
+@staff_member_required
+def admin_user_block(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    user.is_blocked = not user.is_blocked
+    user.save()
+    if user.is_blocked:
+        user.houses.all().delete()
+    messages.success(request, f"{user.first_name} holati o'zgartirildi.")
+    return redirect('admin_users')
+
+@staff_member_required
+def admin_house_delete(request, pk):
+    house = get_object_or_404(House, pk=pk)
+    house.delete()
+    messages.success(request, "Uy muvaffaqiyatli o'chirildi.")
+    return redirect('admin_houses')
+
+
+from django.shortcuts import redirect, get_object_or_404
+from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
+from .models import User
+
+
+@staff_member_required
+def admin_user_toggle_block(request, pk):
+    user = get_object_or_404(User, pk=pk)
+
+    if user == request.user:
+        messages.error(request, "Siz o'zingizni bloklay olmaysiz!")
+        return redirect('admin_users')
+
+    user.is_blocked = not user.is_blocked
+
+    if user.is_blocked:
+        houses_count = user.houses.count()
+        user.houses.all().delete()
+        user.save()
+        messages.warning(request,
+                         f"{user.get_full_name()} bloklandi va uning {houses_count} ta e'loni o'chirib tashlandi.")
+    else:
+        user.save()
+        messages.success(request, f"{user.get_full_name()} blokdan chiqarildi.")
+
+    return redirect('admin_users')
+
+
+@staff_member_required
+def admin_house_detail(request, pk):
+    house = get_object_or_404(House.objects.prefetch_related('images', 'comments__user'), pk=pk)
+    return render(request, 'admin_custom/house_detail_admin.html', {'house': house})
