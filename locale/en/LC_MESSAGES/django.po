@@ -1,0 +1,994 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: UyIjara 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2025-01-01 00:00+0500\n"
+"Last-Translator: UyIjara\n"
+"Language-Team: en\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Shahar, tuman yoki ko'cha..."
+msgstr "City, district or street..."
+
+msgid "Topish"
+msgstr "Find"
+
+msgid "E'lonlar"
+msgstr "Listings"
+
+msgid "Tariflar"
+msgstr "Plans"
+
+msgid "Uylarim"
+msgstr "My houses"
+
+msgid "Til"
+msgstr "Language"
+
+msgid "Rejim"
+msgstr "Mode"
+
+msgid "Saqlangan"
+msgstr "Saved"
+
+msgid "Bildirishnomalar"
+msgstr "Notifications"
+
+msgid "Profilim"
+msgstr "My profile"
+
+msgid "Mening uylarim"
+msgstr "My houses"
+
+msgid "Tahrirlash"
+msgstr "Edit"
+
+msgid "Admin panel"
+msgstr "Admin panel"
+
+msgid "Chiqish"
+msgstr "Logout"
+
+msgid "Kirish"
+msgstr "Login"
+
+msgid "Ro'yxat"
+msgstr "Sign up"
+
+msgid "E'lon"
+msgstr "Listing"
+
+msgid "Maklersiz uy ijara platformasi"
+msgstr "House rental platform without brokers"
+
+msgid "Profil"
+msgstr "Profile"
+
+msgid "Maklersiz uy ijara platformasi. Eng yaxshi e'lonlarni toping."
+msgstr "Brokerless rental platform. Find the best listings."
+
+msgid "Uylar"
+msgstr "Houses"
+
+msgid "Joylashuv"
+msgstr "Location"
+
+msgid "Min narx"
+msgstr "Min price"
+
+msgid "Max narx"
+msgstr "Max price"
+
+msgid "Qidirish"
+msgstr "Search"
+
+msgid "Barcha viloyatlar"
+msgstr "All regions"
+
+msgid "Hammasi"
+msgstr "All"
+
+msgid "Top"
+msgstr "Top"
+
+msgid "Arzon"
+msgstr "Cheaper"
+
+msgid "Tozalash"
+msgstr "Clear"
+
+msgid "Barcha e'lonlar"
+msgstr "All listings"
+
+msgid "Narx"
+msgstr "Price"
+
+msgid "Rasm yo'q"
+msgstr "No image"
+
+msgid "oy"
+msgstr "mo"
+
+msgid "Saqlash"
+msgstr "Save"
+
+msgid "Ijaraga berildi"
+msgstr "Rented"
+
+msgid "E'lonlar topilmadi"
+msgstr "No listings found"
+
+msgid "Qidiruv shartlarini o'zgartirib ko'ring"
+msgstr "Try changing your search filters"
+
+msgid "Hammasini ko'rish"
+msgstr "Show all"
+
+msgid "Viloyat"
+msgstr "Region"
+
+msgid "Makler"
+msgstr "Brokers"
+
+msgid "Bepul"
+msgstr "Free"
+
+msgid "Hisobingizga kiring"
+msgstr "Sign in to your account"
+
+msgid "Telefon raqam"
+msgstr "Phone number"
+
+msgid "Parol"
+msgstr "Password"
+
+msgid "Hisobingiz yo'qmi?"
+msgstr "Don't have an account?"
+
+msgid "Ro'yxatdan o'ting"
+msgstr "Sign up"
+
+msgid "Ro'yxatdan o'tish"
+msgstr "Sign up"
+
+msgid "Yangi hisob yarating"
+msgstr "Create a new account"
+
+msgid "Ism"
+msgstr "First name"
+
+msgid "Familiya"
+msgstr "Last name"
+
+msgid "Kamida 8 ta belgi"
+msgstr "At least 8 characters"
+
+msgid "Parolni tasdiqlang"
+msgstr "Confirm password"
+
+msgid "Parolni qayta kiriting"
+msgstr "Re-enter password"
+
+msgid "Hisobingiz bormi?"
+msgstr "Already have an account?"
+
+msgid "Kiring"
+msgstr "Sign in"
+
+msgid "Kirilmoqda..."
+msgstr "Signing in..."
+
+msgid "Yaratilmoqda..."
+msgstr "Creating..."
+
+msgid "Juda zaif"
+msgstr "Very weak"
+
+msgid "O'rtacha"
+msgstr "Medium"
+
+msgid "Yaxshi"
+msgstr "Good"
+
+msgid "Kuchli"
+msgstr "Strong"
+
+msgid "Parollar mos"
+msgstr "Passwords match"
+
+msgid "Parollar mos emas"
+msgstr "Passwords don't match"
+
+msgid "Mening profilim"
+msgstr "My profile"
+
+msgid "E'lonlarim"
+msgstr "My listings"
+
+msgid "To'lovlar"
+msgstr "Payments"
+
+msgid "so'm balans"
+msgstr "soum balance"
+
+msgid "Faol"
+msgstr "Active"
+
+msgid "gacha"
+msgstr "until"
+
+msgid "Uzaytirish"
+msgstr "Extend"
+
+msgid "Tarif yo'q"
+msgstr "No plan"
+
+msgid "Uy e'lon qilish va raqam ko'rish uchun tarif oling"
+msgstr "Buy a plan to post listings and view phone numbers"
+
+msgid "Tarif olish"
+msgstr "Buy plan"
+
+msgid "Saqlangan uylar"
+msgstr "Saved houses"
+
+msgid "ta e'lon"
+msgstr "listings"
+
+msgid "ta saqlangan"
+msgstr "saved"
+
+msgid "Premium imkoniyatlar"
+msgstr "Premium features"
+
+msgid "Uy qo'shish"
+msgstr "Add house"
+
+msgid "Yangi e'lon berish"
+msgstr "Post a new listing"
+
+msgid "Joriy balans"
+msgstr "Current balance"
+
+msgid "so'm"
+msgstr "soum"
+
+msgid "Qancha so'm qo'shish?"
+msgstr "How much to add?"
+
+msgid "To'ldirish"
+msgstr "Top up"
+
+msgid "Karta egasi"
+msgstr "Cardholder"
+
+msgid "Muddat"
+msgstr "Expires"
+
+msgid "O'zgartirish"
+msgstr "Change"
+
+msgid "Karta qo'shish"
+msgstr "Add card"
+
+msgid "Tarif to'lovi uchun karta kiriting"
+msgstr "Add a card to pay for plans"
+
+msgid "To'lovlar tarixi"
+msgstr "Payment history"
+
+msgid "Tarif"
+msgstr "Plan"
+
+msgid "Summa"
+msgstr "Amount"
+
+msgid "Karta"
+msgstr "Card"
+
+msgid "Holat"
+msgstr "Status"
+
+msgid "Sana"
+msgstr "Date"
+
+msgid "Hali hech qanday to'lov amalga oshirilmagan"
+msgstr "No payments yet"
+
+msgid "O'qildi"
+msgstr "Read"
+
+msgid "Hamma bildirishnomalar o'qilgan"
+msgstr "All notifications read"
+
+msgid "Uyni o'chirish"
+msgstr "Delete house"
+
+msgid "Uyni o'chirishni tasdiqlang"
+msgstr "Confirm house deletion"
+
+msgid "e'lonini o'chirishga tayyormisiz?"
+msgstr "are you ready to delete?"
+
+msgid "Bu amal qaytarilmaydi."
+msgstr "This action cannot be undone."
+
+msgid "Bekor qilish"
+msgstr "Cancel"
+
+msgid "Bekor"
+msgstr "Cancel"
+
+msgid "Ha, o'chirish"
+msgstr "Yes, delete"
+
+msgid "Shikoyat yuborish"
+msgstr "Report"
+
+msgid ""
+"Bu e'lon haqida shikoyatingiz tasdiqlanadi. Foydalanuvchi 5+ shikoyat "
+"olgach, hisobingiz bloklanadi."
+msgstr "Your complaint will be reviewed. Accounts blocked after 5+ reports."
+
+msgid "Yuborish"
+msgstr "Send"
+
+msgid "Ko'proq uylar"
+msgstr "More houses"
+
+msgid "Ko'rish"
+msgstr "View"
+
+msgid "Ko'rishlar"
+msgstr "Views"
+
+msgid "ko'rishlar"
+msgstr "views"
+
+msgid "Saqlangan ro'yxatdan o'chirish"
+msgstr "Remove from saved"
+
+msgid "Saqlangan uylar yo'q"
+msgstr "No saved houses"
+
+msgid "Yoqqan uylarni saqlang va keyinroq qarang"
+msgstr "Save houses you like to view later"
+
+msgid "Uylarni ko'rish"
+msgstr "Browse houses"
+
+msgid "Yangi e'lon"
+msgstr "New listing"
+
+msgid "Tarif yo'q — uy qo'sha olmaysiz"
+msgstr "Without a plan you can't post houses"
+
+msgid "Uy e'lon qilish uchun avval premium tarif sotib oling"
+msgstr "Buy a premium plan to post listings"
+
+msgid "Hali e'lon yo'q"
+msgstr "No listings yet"
+
+msgid "Birinchi uyingizni e'lon qiling va ijarachilar toping"
+msgstr "Post your first listing and find tenants"
+
+msgid "Uy e'lon qilish uchun avval tarif sotib oling"
+msgstr "First buy a plan"
+
+msgid "rasm"
+msgstr "photos"
+
+msgid "oldin"
+msgstr "ago"
+
+msgid "Bosh sahifa"
+msgstr "Home"
+
+msgid "ta rasm"
+msgstr "photos"
+
+msgid "Rasm yuklanmagan"
+msgstr "No uploaded images"
+
+msgid "Oylik narx"
+msgstr "Monthly price"
+
+msgid "Tuman"
+msgstr "District"
+
+msgid "Ko'cha"
+msgstr "Street"
+
+msgid "Uy haqida"
+msgstr "About the house"
+
+msgid "Joylashuv xaritada"
+msgstr "Location on map"
+
+msgid "Koordinatalar kiritilmagan"
+msgstr "Coordinates not provided"
+
+msgid "Reyting"
+msgstr "Rating"
+
+msgid "ta baho"
+msgstr "ratings"
+
+msgid "ta foydalanuvchi baholagan"
+msgstr "users rated"
+
+msgid "Bahoyingizni qoldiring:"
+msgstr "Leave your rating:"
+
+msgid "Baho berish uchun"
+msgstr "To rate"
+
+msgid "kiring"
+msgstr "sign in"
+
+msgid "Izohlar"
+msgstr "Comments"
+
+msgid "Fikr yoki savolingizni yozing..."
+msgstr "Write your comment or question..."
+
+msgid "Izoh qoldirish uchun"
+msgstr "To leave a comment"
+
+msgid "Hali izoh yo'q"
+msgstr "No comments yet"
+
+msgid "Oylik ijara narxi"
+msgstr "Monthly rent"
+
+msgid "AQSh dollari / oy"
+msgstr "US dollar / month"
+
+msgid "Uy egasi"
+msgstr "House owner"
+
+msgid "Telefon raqamni ko'rish"
+msgstr "Show phone number"
+
+msgid "Yuklanmoqda..."
+msgstr "Loading..."
+
+msgid "Shikoyat"
+msgstr "Report"
+
+msgid "O'chirish"
+msgstr "Delete"
+
+msgid "Rasmlar"
+msgstr "Images"
+
+msgid "ta"
+msgstr "items"
+
+msgid "Tizimga kiring"
+msgstr "Sign in"
+
+msgid "Uy egasining telefon raqamini ko'rish uchun avval kiring."
+msgstr "Sign in first to see the owner's phone."
+
+msgid "Premium tarif kerak"
+msgstr "Premium plan required"
+
+msgid "Uy egasining telefon raqamini ko'rish uchun tarif sotib oling."
+msgstr "Buy a plan to see the owner's phone."
+
+msgid "Qo'ng'iroq qildingizmi?"
+msgstr "Did you call?"
+
+msgid "Uy egasi haqida fikringizni bildiring."
+msgstr "Share your feedback about the owner."
+
+msgid "Makler emas — hammasi yaxshi"
+msgstr "Not a broker — all good"
+
+msgid "To'g'ridan-to'g'ri uy egasi"
+msgstr "Direct house owner"
+
+msgid "Bu makler — shikoyat yuborish"
+msgstr "This is a broker — report"
+
+msgid "Boshqalarni ogohlantiring"
+msgstr "Warn others"
+
+msgid "Keyinroq"
+msgstr "Later"
+
+msgid ""
+"Uy egasini makler sifatida belgilaysiz. 5 ta shikoyat to'plansa, u "
+"bloklanadi."
+msgstr ""
+"You're marking the owner as a broker. After 5 reports they'll be blocked."
+
+msgid "Ha, makler"
+msgstr "Yes, broker"
+
+msgid "Manzil ma'lumotlari"
+msgstr "Address details"
+
+msgid "Viloyatni tanlang"
+msgstr "Select region"
+
+msgid "Avval viloyat tanlang"
+msgstr "Select a region first"
+
+msgid "Tumanni tanlang"
+msgstr "Select district"
+
+msgid "Tumanlar topilmadi"
+msgstr "No districts found"
+
+msgid "Xato yuz berdi"
+msgstr "An error occurred"
+
+msgid "Masalan: Amir Temur ko'chasi"
+msgstr "Example: Amir Temur street"
+
+msgid "To'liq manzil"
+msgstr "Full address"
+
+msgid "Ko'cha, uy raqami, qavat"
+msgstr "Street, house number, floor"
+
+msgid "Uy ma'lumotlari"
+msgstr "House information"
+
+msgid "Narx (dollar, oyiga)"
+msgstr "Price (USD, monthly)"
+
+msgid "Narx (dollar)"
+msgstr "Price (USD)"
+
+msgid "Masalan: 350"
+msgstr "Example: 350"
+
+msgid "Masalan"
+msgstr "Example"
+
+msgid "Tavsif"
+msgstr "Description"
+
+msgid "Uy haqida batafsil: xona soni, qavat, jihozlar, sharoitlar..."
+msgstr "Details: rooms, floor, furniture, conditions..."
+
+msgid "1 dan 10 tagacha"
+msgstr "1 to 10"
+
+msgid "Rasmlarni tanlash yoki sudrab olib keling"
+msgstr "Choose images or drag them here"
+
+msgid "Birinchi rasm asosiy bo'ladi"
+msgstr "First image will be the main one"
+
+msgid "ixtiyoriy"
+msgstr "optional"
+
+msgid ""
+"Xaritada uyning joylashgan joyini bosing — koordinatalar avtomatik "
+"to'ldiriladi"
+msgstr "Click on the map — coordinates fill automatically"
+
+msgid "Kenglik (Latitude)"
+msgstr "Latitude"
+
+msgid "Uzunlik (Longitude)"
+msgstr "Longitude"
+
+msgid "Xaritada bosing"
+msgstr "Click on the map"
+
+msgid "E'lon qo'shish"
+msgstr "Post listing"
+
+msgid "Asosiy"
+msgstr "Main"
+
+msgid "Yangi"
+msgstr "New"
+
+msgid "Saqlanmoqda..."
+msgstr "Saving..."
+
+msgid "Ko'pi bilan 10 ta rasm yuklash mumkin!"
+msgstr "Maximum 10 images allowed!"
+
+msgid "Kamida 1 ta rasm yuklang!"
+msgstr "Upload at least 1 image!"
+
+msgid "Uyni tahrirlash"
+msgstr "Edit house"
+
+msgid "Bu uy ijaraga berilgan"
+msgstr "This house is rented"
+
+msgid "Belgilasangiz, e'londa 'Ijaraga berildi' yorlig'i ko'rinadi"
+msgstr "If checked, a 'Rented' tag will appear"
+
+msgid "Mavjud rasmlar:"
+msgstr "Existing images:"
+
+msgid "Rasmni o'chirishni tasdiqlaysizmi?"
+msgstr "Delete this image?"
+
+msgid "Yangi rasmlar qo'shish"
+msgstr "Add new images"
+
+msgid "Yana rasm qo'shishingiz mumkin (max 10 ta)"
+msgstr "You can add more images (up to 10)"
+
+msgid ""
+"Maksimal rasm soni (10) to'ldi. Yangi rasm qo'shish uchun avval birini "
+"o'chiring."
+msgstr "Image limit (10) reached. Delete one to add a new one."
+
+msgid "Joylashuv koordinatalari"
+msgstr "Location coordinates"
+
+msgid "O'zgarishlarni saqlash"
+msgstr "Save changes"
+
+msgid "Tariflarni tanlang"
+msgstr "Choose a plan"
+
+msgid "Uy egasining raqamini ko'ring, o'z uyingizni e'lon qiling"
+msgstr "See owner phones, post your own listings"
+
+msgid "gacha amal qiladi"
+msgstr "valid until"
+
+msgid "Mashhur"
+msgstr "Popular"
+
+msgid "Uy egasining raqamini ko'rish"
+msgstr "View owner's phone"
+
+msgid "Uy e'lon qilish"
+msgstr "Post listings"
+
+msgid "Cheksiz uy ko'rish"
+msgstr "Unlimited browsing"
+
+msgid "Faol tarif"
+msgstr "Active plan"
+
+msgid "Sotib olish"
+msgstr "Buy"
+
+msgid "Nima kiritilgan"
+msgstr "What's included"
+
+msgid "Uy egasining telefon raqami"
+msgstr "Owner's phone"
+
+msgid "Makler himoyasi"
+msgstr "Broker protection"
+
+msgid "Ha"
+msgstr "Yes"
+
+msgid "Tarif nomi"
+msgstr "Plan name"
+
+msgid "kun"
+msgstr "days"
+
+msgid "Sizning balansingiz"
+msgstr "Your balance"
+
+msgid "To'lov miqdori"
+msgstr "Payment amount"
+
+msgid "Balans yetarli"
+msgstr "Balance sufficient"
+
+msgid "Balans yetarli emas."
+msgstr "Insufficient balance."
+
+msgid "Karta ma'lumotlari yo'q."
+msgstr "No card on file."
+
+msgid "Profildan"
+msgstr "In profile"
+
+msgid "kartani qo'shing."
+msgstr "add a card."
+
+msgid "Balansni to'ldirish"
+msgstr "Top up balance"
+
+msgid "Orqaga"
+msgstr "Back"
+
+msgid "To'lanmoqda..."
+msgstr "Paying..."
+
+msgid "Profilni tahrirlash"
+msgstr "Edit profile"
+
+msgid "Profil rasmi"
+msgstr "Profile photo"
+
+msgid "Maksimal 5 MB"
+msgstr "Maximum 5 MB"
+
+msgid "Rasm tanlash"
+msgstr "Choose photo"
+
+msgid "Shaxsiy ma'lumotlar"
+msgstr "Personal information"
+
+msgid "Karta ma'lumotlari"
+msgstr "Card details"
+
+msgid "ISMINGIZ FAMILIYANGIZ"
+msgstr "YOUR NAME SURNAME"
+
+msgid "Kartaning orqa tomoni"
+msgstr "Card back side"
+
+msgid "Karta raqami"
+msgstr "Card number"
+
+msgid "Birinchi 4 raqamdan karta turi aniqlanadi"
+msgstr "Card type detected from first 4 digits"
+
+msgid "Karta egasi (lotin harfida)"
+msgstr "Cardholder (latin letters)"
+
+msgid "Amal qilish muddati"
+msgstr "Expiry date"
+
+msgid "kartaning orqa tomoni"
+msgstr "back side"
+
+msgid "Qo'llab-quvvatlanadigan kartalar:"
+msgstr "Supported cards:"
+
+msgid "Uy qo'shish uchun avval tarif sotib oling."
+msgstr "Buy a plan first to add a house."
+
+msgid "Barcha majburiy maydonlarni to'ldiring."
+msgstr "Please fill in all required fields."
+
+msgid "Barcha majburiy maydonlarni to'ldiring"
+msgstr "Please fill in all required fields"
+
+msgid "Kamida 1 ta rasm yuklang."
+msgstr "Upload at least 1 image."
+
+msgid "Ko'pi bilan 10 ta rasm yuklash mumkin."
+msgstr "You can upload up to 10 images."
+
+msgid "Narxni to'g'ri kiriting."
+msgstr "Enter a valid price."
+
+msgid "Uy muvaffaqiyatli qo'shildi!"
+msgstr "House added successfully!"
+
+msgid "Siz bu uyni tahrirlash huquqiga ega emassiz."
+msgstr "You don't have permission to edit this house."
+
+msgid "Uy tahrirlash uchun aktiv tarif kerak."
+msgstr "An active plan is required to edit."
+
+msgid "Rasmlar soni 10 tadan oshib ketadi."
+msgstr "Total images would exceed 10."
+
+msgid "Uy ma'lumotlari yangilandi."
+msgstr "House details updated."
+
+msgid "Siz bu uyni o'chirish huquqiga ega emassiz."
+msgstr "You don't have permission to delete this house."
+
+msgid "Uy o'chirildi."
+msgstr "House deleted."
+
+msgid "Telefon raqamni ko'rish uchun premium tarif sotib oling."
+msgstr "Buy a premium plan to see the phone number."
+
+msgid "O'z uyingizni report qila olmaysiz."
+msgstr "You can't report your own house."
+
+msgid "Siz bu uy uchun allaqachon shikoyat yuborgansiz."
+msgstr "You've already reported this house."
+
+msgid "Shikoyatingiz qabul qilindi. Rahmat!"
+msgstr "Your complaint has been received. Thanks!"
+
+msgid "Uy saqlanganlardan olib tashlandi."
+msgstr "House removed from saved."
+
+msgid "Uy saqlanganlar ro'yxatiga qo'shildi."
+msgstr "House added to saved."
+
+msgid "Izoh matni bo'sh bo'lishi mumkin emas."
+msgstr "Comment text cannot be empty."
+
+msgid "Izoh 1000 ta belgidan oshmasligi kerak."
+msgstr "Comment cannot exceed 1000 characters."
+
+msgid "Izohingiz qo'shildi."
+msgstr "Your comment has been added."
+
+msgid "O'z uyingizga baho bera olmaysiz."
+msgstr "You can't rate your own house."
+
+msgid "Baho 1 dan 5 gacha bo'lishi kerak."
+msgstr "Rating must be between 1 and 5."
+
+msgid "Bahoyingiz qabul qilindi."
+msgstr "Your rating has been accepted."
+
+msgid "Ruxsat yo'q."
+msgstr "Access denied."
+
+msgid "Rasm o'chirildi."
+msgstr "Image deleted."
+
+msgid "Barcha maydonlarni to'ldiring."
+msgstr "Fill in all fields."
+
+msgid "Parollar mos kelmadi."
+msgstr "Passwords don't match."
+
+msgid "Parol kamida 8 ta belgidan iborat bo'lishi kerak."
+msgstr "Password must be at least 8 characters."
+
+msgid "Bu telefon raqam allaqachon ro'yxatdan o'tgan."
+msgstr "This phone number is already registered."
+
+msgid "Ro'yxatdan muvaffaqiyatli o'tdingiz!"
+msgstr "You've successfully registered!"
+
+msgid "Telefon va parolni kiriting."
+msgstr "Enter phone and password."
+
+msgid "Sizning hisobingiz ko'p sonli shikoyatlar tufayli bloklangan."
+msgstr "Your account is blocked due to multiple complaints."
+
+msgid "Xush kelibsiz, %(name)s!"
+msgstr "Welcome, %(name)s!"
+
+msgid "Telefon raqam yoki parol noto'g'ri."
+msgstr "Wrong phone or password."
+
+msgid "Tizimdan chiqdingiz."
+msgstr "You've logged out."
+
+msgid "Ism va familiyani kiriting."
+msgstr "Enter first and last name."
+
+msgid "Ma'lumotlar muvaffaqiyatli yangilandi."
+msgstr "Profile updated successfully."
+
+msgid "Noto'g'ri summa kiritildi."
+msgstr "Invalid amount."
+
+msgid "Balansga %(amount)s so'm qo'shildi."
+msgstr "%(amount)s soum added to balance."
+
+msgid ""
+"Balansda mablag' yetarli emas. Kerakli summa: %(need)s so'm. Sizning "
+"balansingiz: %(have)s so'm."
+msgstr "Insufficient balance. Need: %(need)s soum. You have: %(have)s soum."
+
+msgid "Tarif faollashtirildi"
+msgstr "Plan activated"
+
+msgid ""
+"%(name)s tarifi muvaffaqiyatli faollashtirildi. Muddati: %(date)s gacha."
+msgstr "Plan %(name)s activated successfully. Valid until %(date)s."
+
+msgid "%(name)s muvaffaqiyatli sotib olindi! Muddati: %(date)s gacha."
+msgstr "%(name)s purchased successfully! Valid until %(date)s."
+
+msgid "Siz o'zingizni bloklay olmaysiz!"
+msgstr "You can't block yourself!"
+
+msgid "%(name)s holati o'zgartirildi."
+msgstr "%(name)s status updated."
+
+msgid "Uy muvaffaqiyatli o'chirildi."
+msgstr "House deleted successfully."
+
+msgid "%(name)s bloklandi va uning %(count)s ta e'loni o'chirib tashlandi."
+msgstr "%(name)s blocked, %(count)s listings removed."
+
+msgid "%(name)s blokdan chiqarildi."
+msgstr "%(name)s unblocked."
+
+msgid "O'zbekcha"
+msgstr "Uzbek"
+
+msgid "Русский"
+msgstr "Russian"
+
+msgid "English"
+msgstr "English"
+
+msgid "ta faol e'lon — eng yangi birinchi"
+msgstr "active listings — newest first"
+
+msgid "ta uy saqlangan"
+msgstr "saved houses"
+
+msgid "kun qoldi"
+msgstr "days left"
+
+msgid "%(t)s oldin"
+msgstr "%(t)s ago"
+
+msgid "%(c)s ta"
+msgstr "%(c)s items"
+
+msgid "%(counter)s ta faol e'lon — eng yangi birinchi"
+msgstr "%(counter)s active listings — newest first"
+
+msgid "%(c)s ta uy saqlangan"
+msgstr "%(c)s saved houses"
+
+msgid "%(d)s kun qoldi"
+msgstr "%(d)s days left"
+
+msgid "%(d)s tumanidagi boshqa uylar"
+msgstr "Other houses in %(d)s district"
+
+msgid "%(n)s sotib olish"
+msgstr "Buy %(n)s"
+
+msgid "%(d)s kunlik premium obuna"
+msgstr "%(d)s-day premium plan"
+
+msgid "%(d)s kunlik obuna"
+msgstr "%(d)s-day plan"
+
+msgid "%(d)s kun davomida faol"
+msgstr "Active for %(d)s days"
+
+msgid "%(p)s so'm to'lash"
+msgstr "Pay %(p)s soum"
+
+msgid "Bosh"
+msgstr "Home"
+
+msgid "Qo'shish"
+msgstr "Add"
+
+msgid "Xabar"
+msgstr "Notify"
+
+msgid "yangi"
+msgstr "new"
+
+msgid "Hammasini o'qildi"
+msgstr "Mark all read"
+
+msgid "Bildirishnomalar yo'q"
+msgstr "No notifications"
+
+msgid "Tarif, hisob va e'lonlar haqidagi yangiliklar shu yerda ko'rinadi"
+msgstr "Updates about plans, account and listings appear here"
+
+msgid "Sahifa topilmadi"
+msgstr "Page not found"
+
+msgid "Siz qidirayotgan sahifa mavjud emas yoki ko'chirilgan bo'lishi mumkin."
+msgstr "The page you're looking for doesn't exist or has been moved."
+
+msgid "Bosh sahifaga"
+msgstr "Go home"
+
+msgid "Server xatosi"
+msgstr "Server error"
+
+msgid "Kechirasiz, kutilmagan xato yuz berdi. Texnik jamoa xabardor qilindi."
+msgstr "An unexpected error occurred. The technical team has been notified."

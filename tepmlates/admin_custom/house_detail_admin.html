@@ -1,91 +1,208 @@
 {% extends 'admin_custom/base_admin.html' %}
-{% load humanize %}
+{% load humanize i18n %}
+
+{% block title %}{% trans "Uy" %} #{{ house.id }}{% endblock %}
+{% block page_title %}{% trans "Uy ma'lumotlari" %} #{{ house.id }}{% endblock %}
+{% block page_subtitle %}{{ house.full_address }}{% endblock %}
+
+{% block extra_css %}
+.dh2-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; }
+@media (max-width: 1000px) { .dh2-grid { grid-template-columns: 1fr; } }
+.dh2-actions { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+.dh2-img-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 18px; }
+@media (max-width: 700px) { .dh2-img-grid { grid-template-columns: repeat(2, 1fr); } }
+.dh2-img { aspect-ratio: 4/3; border-radius: 10px; overflow: hidden; background: var(--bg); }
+.dh2-img img { width: 100%; height: 100%; object-fit: cover; }
+.dh2-info-row { display: flex; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.dh2-info-row:last-child { border-bottom: none; }
+.dh2-info-row .l { color: var(--text-muted); font-weight: 600; }
+.dh2-info-row .v { font-weight: 800; color: var(--primary); text-align: right; max-width: 60%; word-wrap: break-word; }
+.dh2-comment { display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+.dh2-comment:last-child { border-bottom: none; }
+.dh2-comment .body { flex: 1; }
+.dh2-comment .head { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; }
+.dh2-comment .name { font-weight: 800; font-size: 13px; }
+.dh2-comment .time { font-size: 11px; color: var(--text-light); }
+.dh2-comment .text { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+{% endblock %}
 
 {% block admin_content %}
-<div class="d-flex align-items-center justify-content-between mb-4">
-    <a href="{% url 'admin_houses' %}" class="btn btn-sm btn-outline-secondary rounded-3">
-        <i class="fas fa-arrow-left me-1"></i> Orqaga
+<div class="dh2-actions">
+    <a href="{% url 'admin_houses' %}" class="ap-btn ap-btn-outline">
+        <i class="fa-solid fa-arrow-left"></i> {% trans "Orqaga" %}
     </a>
-    <div class="d-flex gap-2">
-        <form action="{% url 'admin_house_delete' house.pk %}" method="POST" onsubmit="return confirm('E\'lonni o\'chirmoqchimisiz?');">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-sm btn-danger rounded-3">
-                <i class="fas fa-trash me-1"></i> E'lonni o'chirish
-            </button>
-        </form>
-    </div>
+    <a href="{% url 'house_detail' house.id %}" target="_blank" class="ap-btn ap-btn-primary">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i> {% trans "Saytda ko'rish" %}
+    </a>
+    <form method="post" action="{% url 'admin_house_delete' house.pk %}"
+          onsubmit="return confirm('{% trans "E\'lonni o\'chirishni tasdiqlaysizmi?" %}')" style="display:inline;">
+        {% csrf_token %}
+        <button class="ap-btn ap-btn-danger">
+            <i class="fa-solid fa-trash"></i> {% trans "O'chirish" %}
+        </button>
+    </form>
 </div>
 
-<div class="row">
-    <div class="col-lg-8">
-        <div class="card border-0 shadow-sm rounded-4 mb-4">
-            <div class="card-body">
-                <h4 class="fw-bold mb-3">{{ house.full_address }}</h4>
-                
-                <div class="row g-2 mb-4">
+<div class="dh2-grid">
+    <div>
+        <!-- Images -->
+        <div class="ap-card" style="margin-bottom:18px;">
+            <div class="ap-card-head">
+                <div class="ap-card-title">
+                    <i class="fa-solid fa-images"></i>
+                    {% trans "Rasmlar" %}
+                    <span class="ap-pill info" style="margin-left:6px;">{{ house.images.count }}</span>
+                </div>
+            </div>
+            {% if house.images.all %}
+                <div class="dh2-img-grid">
                     {% for img in house.images.all %}
-                    <div class="col-md-4">
-                        <img src="{{ img.image.url }}" class="img-fluid rounded-3 shadow-sm w-100" style="height: 150px; object-fit: cover;">
-                    </div>
+                        <div class="dh2-img"><img src="{{ img.image.url }}" alt=""></div>
                     {% endfor %}
                 </div>
+            {% else %}
+                <div class="ap-empty"><i class="fa-regular fa-image"></i><span>{% trans "Rasm yo'q" %}</span></div>
+            {% endif %}
+        </div>
 
-                <h6 class="fw-bold">Tavsif:</h6>
-                <p class="text-muted">{{ house.description }}</p>
+        <!-- Description -->
+        <div class="ap-card" style="margin-bottom:18px;">
+            <div class="ap-card-head">
+                <div class="ap-card-title"><i class="fa-solid fa-align-left"></i> {% trans "Tavsif" %}</div>
+            </div>
+            <div class="ap-card-body">
+                <div style="font-size:14px;color:var(--text);line-height:1.7;white-space:pre-line;">{{ house.description }}</div>
             </div>
         </div>
 
-        <div class="card border-0 shadow-sm rounded-4">
-            <div class="card-header bg-white py-3"><h6 class="mb-0 fw-bold">Foydalanuvchilar izohlari</h6></div>
-            <div class="card-body">
-                {% for comment in house.comments.all %}
-                <div class="d-flex mb-3 border-bottom pb-3">
-                    <img src="https://ui-avatars.com/api/?name={{ comment.user.first_name }}&background=random" class="rounded-circle me-3" width="40" height="40">
-                    <div>
-                        <div class="fw-bold small">{{ comment.user.get_full_name }}</div>
-                        <div class="text-muted small">{{ comment.text }}</div>
-                        <div class="text-muted mt-1" style="font-size: 10px;">{{ comment.created_at|date:"d.m.Y H:i" }}</div>
-                    </div>
+        <!-- Comments -->
+        <div class="ap-card">
+            <div class="ap-card-head">
+                <div class="ap-card-title">
+                    <i class="fa-solid fa-comments"></i>
+                    {% trans "Izohlar" %}
+                    <span class="ap-pill info" style="margin-left:6px;">{{ house.comments.count }}</span>
                 </div>
-                {% empty %}
-                <p class="text-center text-muted small py-3">Bu uyga hali izoh yozilmagan.</p>
-                {% endfor %}
             </div>
-        </div>
-    </div>
-
-    <div class="col-lg-4">
-        <div class="card border-0 shadow-sm rounded-4 mb-4">
-            <div class="card-header bg-white py-3 text-primary fw-bold">Uy egasi haqida</div>
-            <div class="card-body">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="icon-box bg-light text-primary me-3 p-3 rounded-circle">
-                        <i class="fas fa-user"></i>
-                    </div>
-                    <div>
-                        <div class="fw-bold">{{ house.owner.get_full_name }}</div>
-                        <div class="text-muted small">{{ house.owner.phone }}</div>
-                    </div>
-                </div>
-                <hr>
-                <div class="mb-2 d-flex justify-content-between">
-                    <span class="text-muted small">ID:</span>
-                    <span class="fw-bold small">#{{ house.id }}</span>
-                </div>
-                <div class="mb-2 d-flex justify-content-between">
-                    <span class="text-muted small">Narxi:</span>
-                    <span class="text-success fw-bold">${{ house.price_usd|intcomma }}</span>
-                </div>
-                <div class="mb-2 d-flex justify-content-between">
-                    <span class="text-muted small">Joylashuv:</span>
-                    <span class="fw-bold small text-end">{{ house.region.name }}, {{ house.district.name }}</span>
-                </div>
-                <div class="mb-2 d-flex justify-content-between">
-                    <span class="text-muted small">E'lon sanasi:</span>
-                    <span class="fw-bold small">{{ house.created_at|date:"d.m.Y" }}</span>
-                </div>
+            <div class="ap-card-body">
+                {% if house.comments.all %}
+                    {% for c in house.comments.all %}
+                        <div class="dh2-comment">
+                            <div class="ap-avatar">
+                                {% if c.user.avatar %}<img src="{{ c.user.avatar.url }}">
+                                {% else %}{{ c.user.first_name|first|upper }}{% endif %}
+                            </div>
+                            <div class="body">
+                                <div class="head">
+                                    <span class="name">{{ c.user.get_full_name }}</span>
+                                    <span class="time">{{ c.created_at|date:"d.m.Y H:i" }}</span>
+                                </div>
+                                <div class="text">{{ c.text }}</div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="ap-empty"><i class="fa-regular fa-comment-dots"></i><span>{% trans "Izoh yo'q" %}</span></div>
+                {% endif %}
             </div>
         </div>
     </div>
+
+    <!-- Sidebar -->
+    <aside>
+        <!-- Owner -->
+        <div class="ap-card" style="margin-bottom:18px;">
+            <div class="ap-card-head">
+                <div class="ap-card-title"><i class="fa-solid fa-user"></i> {% trans "Uy egasi" %}</div>
+            </div>
+            <div class="ap-card-body">
+                <div class="ap-user-cell" style="margin-bottom:14px;">
+                    <div class="ap-avatar" style="width:46px;height:46px;font-size:14px;">
+                        {% if house.owner.avatar %}<img src="{{ house.owner.avatar.url }}">
+                        {% else %}{{ house.owner.first_name|first|upper }}{{ house.owner.last_name|first|upper }}{% endif %}
+                    </div>
+                    <div>
+                        <div class="name" style="font-size:14px;">{{ house.owner.get_full_name }}</div>
+                        <div class="sub" style="font-family:monospace;">{{ house.owner.phone }}</div>
+                    </div>
+                </div>
+                <div class="dh2-info-row">
+                    <span class="l">{% trans "Balans" %}</span>
+                    <span class="v">{{ house.owner.balance|floatformat:0|intcomma }} {% trans "so'm" %}</span>
+                </div>
+                <div class="dh2-info-row">
+                    <span class="l">{% trans "Holat" %}</span>
+                    <span class="v">
+                        {% if house.owner.is_blocked %}
+                            <span class="ap-pill danger">{% trans "Bloklangan" %}</span>
+                        {% else %}
+                            <span class="ap-pill success">{% trans "Faol" %}</span>
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="dh2-info-row">
+                    <span class="l">{% trans "Shikoyatlar" %}</span>
+                    <span class="v">{{ house.owner.received_reports.count }}</span>
+                </div>
+                <div class="dh2-info-row">
+                    <span class="l">{% trans "Boshqa e'lonlari" %}</span>
+                    <span class="v">{{ house.owner.houses.count }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- House info -->
+        <div class="ap-card">
+            <div class="ap-card-head">
+                <div class="ap-card-title"><i class="fa-solid fa-circle-info"></i> {% trans "Uy haqida" %}</div>
+            </div>
+            <div class="ap-card-body">
+                <div class="dh2-info-row">
+                    <span class="l">ID</span>
+                    <span class="v" style="font-family:monospace;">#{{ house.id }}</span>
+                </div>
+                <div class="dh2-info-row">
+                    <span class="l">{% trans "Narx" %}</span>
+                    <span class="v" style="color:var(--accent);">${{ house.price_usd }}<span style="font-size:11px;color:var(--text-light);font-weight:500;">/{% trans "oy" %}</span></span>
+                </div>
+                <div class="dh2-info-row">
+                    <span class="l">{% trans "Viloyat" %}</span>
+                    <span class="v">{{ house.region.display_name }}</span>
+                </div>
+                <div class="dh2-info-row">
+                    <span class="l">{% trans "Tuman" %}</span>
+                    <span class="v">{{ house.district.display_name }}</span>
+                </div>
+                <div class="dh2-info-row">
+                    <span class="l">{% trans "Ko'cha" %}</span>
+                    <span class="v">{{ house.street }}</span>
+                </div>
+                <div class="dh2-info-row">
+                    <span class="l">{% trans "Holat" %}</span>
+                    <span class="v">
+                        {% if house.is_rented %}
+                            <span class="ap-pill warning">{% trans "Ijaraga berildi" %}</span>
+                        {% elif house.is_active %}
+                            <span class="ap-pill success">{% trans "Faol" %}</span>
+                        {% else %}
+                            <span class="ap-pill muted">{% trans "Nofaol" %}</span>
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="dh2-info-row">
+                    <span class="l">{% trans "Ko'rishlar" %}</span>
+                    <span class="v">{{ house.view_count }}</span>
+                </div>
+                <div class="dh2-info-row">
+                    <span class="l">{% trans "Reyting" %}</span>
+                    <span class="v">⭐ {{ house.average_rating }} / 5</span>
+                </div>
+                <div class="dh2-info-row">
+                    <span class="l">{% trans "Sana" %}</span>
+                    <span class="v">{{ house.created_at|date:"d.m.Y H:i" }}</span>
+                </div>
+            </div>
+        </div>
+    </aside>
 </div>
 {% endblock %}

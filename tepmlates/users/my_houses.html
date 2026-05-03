@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-{% block title %}Mening uylarim — UyIjara{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Mening uylarim" %} — UyIjara{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -67,7 +68,7 @@
             <a href="{% url 'profile' %}" class="btn btn-outline btn-sm">
                 <i class="fa-solid fa-arrow-left"></i>
             </a>
-            <h1>Mening uylarim
+            <h1>{% trans "Mening uylarim" %}
                 <span class="badge badge-info" style="font-size:0.75rem;margin-left:6px;">
                     {{ houses.count }}
                 </span>
@@ -75,7 +76,7 @@
         </div>
         {% if subscription %}
             <a href="{% url 'house_add' %}" class="btn btn-primary">
-                <i class="fa-solid fa-plus"></i> Yangi e'lon
+                <i class="fa-solid fa-plus"></i> {% trans "Yangi e'lon" %}
             </a>
         {% endif %}
     </div>
@@ -84,11 +85,11 @@
         <div class="no-sub-banner">
             <div class="nsb-ico"><i class="fa-solid fa-lock"></i></div>
             <div style="flex:1;">
-                <div class="nsb-t">Tarif yo'q — uy qo'sha olmaysiz</div>
-                <div class="nsb-s">Uy e'lon qilish uchun avval premium tarif sotib oling</div>
+                <div class="nsb-t">{% trans "Tarif yo'q — uy qo'sha olmaysiz" %}</div>
+                <div class="nsb-s">{% trans "Uy e'lon qilish uchun avval premium tarif sotib oling" %}</div>
             </div>
             <a href="{% url 'tariff_list' %}" class="btn btn-primary btn-sm">
-                <i class="fa-solid fa-crown"></i> Tarif olish
+                <i class="fa-solid fa-crown"></i> {% trans "Tarif olish" %}
             </a>
         </div>
     {% endif %}
@@ -105,27 +106,27 @@
                                 <div class="ni"><i class="fa-solid fa-image"></i></div>
                             {% endif %}
                         {% endwith %}
-                        <div class="price-tag">${{ house.price_usd }}/oy</div>
+                        <div class="price-tag">${{ house.price_usd }}/{% trans "oy" %}</div>
                     </div>
                     <div class="mh-body">
                         <div class="mh-loc">
                             <i class="fa-solid fa-location-dot"></i>
-                            {{ house.district.name }}, {{ house.region.name }}
+                            {{ house.district.display_name }}, {{ house.region.display_name }}
                         </div>
                         <div class="mh-addr">{{ house.full_address }}</div>
                         <div class="mh-meta">
-                            <span><i class="fa-solid fa-images"></i> {{ house.images.count }} rasm</span>
-                            <span><i class="fa-regular fa-clock"></i> {{ house.created_at|timesince }} oldin</span>
+                            <span><i class="fa-solid fa-images"></i> {{ house.images.count }} {% trans "rasm" %}</span>
+                            <span><i class="fa-regular fa-clock"></i> {% blocktrans with t=house.created_at|timesince %}{{ t }} oldin{% endblocktrans %}</span>
                             <span><i class="fa-solid fa-comments"></i> {{ house.comments.count }}</span>
                         </div>
                         <div class="mh-acts">
                             <a href="{% url 'house_detail' house.pk %}"
                                class="btn btn-outline btn-sm">
-                                <i class="fa-solid fa-eye"></i> Ko'rish
+                                <i class="fa-solid fa-eye"></i> {% trans "Ko'rish" %}
                             </a>
                             <a href="{% url 'house_edit' house.pk %}"
                                class="btn btn-secondary btn-sm">
-                                <i class="fa-solid fa-pen"></i> Tahrirlash
+                                <i class="fa-solid fa-pen"></i> {% trans "Tahrirlash" %}
                             </a>
                             <a href="{% url 'house_delete' house.pk %}"
                                class="btn btn-danger btn-sm">
@@ -139,21 +140,21 @@
     {% else %}
         <div class="mh-empty">
             <i class="fa-solid fa-house-circle-plus"></i>
-            <h3>Hali e'lon yo'q</h3>
+            <h3>{% trans "Hali e'lon yo'q" %}</h3>
             <p>
                 {% if subscription %}
-                    Birinchi uyingizni e'lon qiling va ijarachilar toping
+                    {% trans "Birinchi uyingizni e'lon qiling va ijarachilar toping" %}
                 {% else %}
-                    Uy e'lon qilish uchun avval tarif sotib oling
+                    {% trans "Uy e'lon qilish uchun avval tarif sotib oling" %}
                 {% endif %}
             </p>
             {% if subscription %}
                 <a href="{% url 'house_add' %}" class="btn btn-primary">
-                    <i class="fa-solid fa-plus"></i> Uy qo'shish
+                    <i class="fa-solid fa-plus"></i> {% trans "Uy qo'shish" %}
                 </a>
             {% else %}
                 <a href="{% url 'tariff_list' %}" class="btn btn-primary">
-                    <i class="fa-solid fa-crown"></i> Tarif olish
+                    <i class="fa-solid fa-crown"></i> {% trans "Tarif olish" %}
                 </a>
             {% endif %}
         </div>

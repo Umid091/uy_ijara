@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-{% block title %}Uy qo'shish — UyIjara{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Uy qo'shish" %} — UyIjara{% endblock %}
 
 {% block extra_css %}
 .add-wrapper {
@@ -138,10 +139,10 @@
             <a href="{% url 'house_list' %}" class="btn btn-outline btn-sm">
                 <i class="fa-solid fa-arrow-left"></i>
             </a>
-            <h1 class="page-title" style="margin:0;">Uy qo'shish</h1>
+            <h1 class="page-title" style="margin:0;">{% trans "Uy qo'shish" %}</h1>
         </div>
         <p class="page-subtitle" style="margin-left:52px;">
-            Barcha majburiy maydonlarni to'ldiring
+            {% trans "Barcha majburiy maydonlarni to'ldiring" %}
         </p>
     </div>
 
@@ -152,42 +153,42 @@
         <div class="form-section">
             <div class="form-section-header">
                 <div class="sec-icon"><i class="fa-solid fa-location-dot"></i></div>
-                <h3>Manzil ma'lumotlari</h3>
+                <h3>{% trans "Manzil ma'lumotlari" %}</h3>
             </div>
             <div class="form-section-body">
                 <div class="form-row" style="margin-bottom:16px;">
                     <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label">Viloyat <span>*</span></label>
+                        <label class="form-label">{% trans "Viloyat" %} <span>*</span></label>
                         <select name="region" id="regionSel" class="form-control"
                                 onchange="loadDistricts(this.value)" required>
-                            <option value="">— Viloyatni tanlang —</option>
+                            <option value="">— {% trans "Viloyatni tanlang" %} —</option>
                             {% for r in regions %}
-                                <option value="{{ r.id }}">{{ r.name }}</option>
+                                <option value="{{ r.id }}">{{ r.display_name }}</option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label">Tuman <span>*</span></label>
+                        <label class="form-label">{% trans "Tuman" %} <span>*</span></label>
                         <select name="district" id="districtSel"
                                 class="form-control" required>
-                            <option value="">— Avval viloyat tanlang —</option>
+                            <option value="">— {% trans "Avval viloyat tanlang" %} —</option>
                         </select>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label">Ko'cha <span>*</span></label>
+                        <label class="form-label">{% trans "Ko'cha" %} <span>*</span></label>
                         <div class="form-control-icon">
                             <input type="text" name="street" class="form-control"
-                                   placeholder="Masalan: Amir Temur ko'chasi" required>
+                                   placeholder="{% trans 'Masalan: Amir Temur ko\'chasi' %}" required>
                             <i class="fa-solid fa-road"></i>
                         </div>
                     </div>
                     <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label">To'liq manzil <span>*</span></label>
+                        <label class="form-label">{% trans "To'liq manzil" %} <span>*</span></label>
                         <div class="form-control-icon">
                             <input type="text" name="full_address" class="form-control"
-                                   placeholder="Ko'cha, uy raqami, qavat" required>
+                                   placeholder="{% trans 'Ko\'cha, uy raqami, qavat' %}" required>
                             <i class="fa-solid fa-map-marker-alt"></i>
                         </div>
                     </div>
@@ -199,21 +200,21 @@
         <div class="form-section">
             <div class="form-section-header">
                 <div class="sec-icon"><i class="fa-solid fa-house"></i></div>
-                <h3>Uy ma'lumotlari</h3>
+                <h3>{% trans "Uy ma'lumotlari" %}</h3>
             </div>
             <div class="form-section-body">
                 <div class="form-group">
-                    <label class="form-label">Narx (dollar, oyiga) <span>*</span></label>
+                    <label class="form-label">{% trans "Narx (dollar, oyiga)" %} <span>*</span></label>
                     <div class="form-control-icon">
                         <input type="number" name="price_usd" class="form-control"
-                               placeholder="Masalan: 350" min="1" step="1" required>
+                               placeholder="{% trans 'Masalan: 350' %}" min="1" step="1" required>
                         <i class="fa-solid fa-dollar-sign"></i>
                     </div>
                 </div>
                 <div class="form-group" style="margin-bottom:0;">
-                    <label class="form-label">Tavsif <span>*</span></label>
+                    <label class="form-label">{% trans "Tavsif" %} <span>*</span></label>
                     <textarea name="description" class="form-control"
-                              placeholder="Uy haqida batafsil: xona soni, qavat, jihozlar, sharoitlar..."
+                              placeholder="{% trans 'Uy haqida batafsil: xona soni, qavat, jihozlar, sharoitlar...' %}"
                               rows="5" required></textarea>
                 </div>
             </div>
@@ -223,9 +224,9 @@
         <div class="form-section">
             <div class="form-section-header">
                 <div class="sec-icon"><i class="fa-solid fa-images"></i></div>
-                <h3>Rasmlar
+                <h3>{% trans "Rasmlar" %}
                     <span style="font-weight:400;color:var(--text-muted);font-size:0.82rem;margin-left:6px;">
-                        (1 dan 10 tagacha)
+                        ({% trans "1 dan 10 tagacha" %})
                     </span>
                 </h3>
             </div>
@@ -237,8 +238,8 @@
                     <div class="uz-icon">
                         <i class="fa-solid fa-cloud-arrow-up"></i>
                     </div>
-                    <div class="uz-title">Rasmlarni tanlash yoki sudrab olib keling</div>
-                    <div class="uz-hint">JPG, PNG, WEBP • Birinchi rasm asosiy bo'ladi</div>
+                    <div class="uz-title">{% trans "Rasmlarni tanlash yoki sudrab olib keling" %}</div>
+                    <div class="uz-hint">JPG, PNG, WEBP • {% trans "Birinchi rasm asosiy bo'ladi" %}</div>
                 </div>
                 <div class="preview-grid" id="previewGrid"></div>
             </div>
@@ -248,29 +249,29 @@
         <div class="form-section">
             <div class="form-section-header">
                 <div class="sec-icon"><i class="fa-solid fa-map"></i></div>
-                <h3>Joylashuv xaritada
+                <h3>{% trans "Joylashuv xaritada" %}
                     <span style="font-weight:400;color:var(--text-muted);font-size:0.82rem;margin-left:6px;">
-                        (ixtiyoriy)
+                        ({% trans "ixtiyoriy" %})
                     </span>
                 </h3>
             </div>
             <div id="addMap"></div>
             <div class="map-hint">
                 <i class="fa-solid fa-hand-pointer"></i>
-                Xaritada uyning joylashgan joyini bosing — koordinatalar avtomatik to'ldiriladi
+                {% trans "Xaritada uyning joylashgan joyini bosing — koordinatalar avtomatik to'ldiriladi" %}
             </div>
             <div class="form-section-body" style="padding-top:14px;">
                 <div class="form-row">
                     <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label">Kenglik (Latitude)</label>
+                        <label class="form-label">{% trans "Kenglik (Latitude)" %}</label>
                         <input type="text" name="latitude" id="latInput"
-                               class="form-control" placeholder="Xaritada bosing"
+                               class="form-control" placeholder="{% trans 'Xaritada bosing' %}"
                                readonly style="background:var(--bg);">
                     </div>
                     <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label">Uzunlik (Longitude)</label>
+                        <label class="form-label">{% trans "Uzunlik (Longitude)" %}</label>
                         <input type="text" name="longitude" id="lngInput"
-                               class="form-control" placeholder="Xaritada bosing"
+                               class="form-control" placeholder="{% trans 'Xaritada bosing' %}"
                                readonly style="background:var(--bg);">
                     </div>
                 </div>
@@ -280,10 +281,10 @@
         <!-- Submit -->
         <div class="form-footer">
             <a href="{% url 'house_list' %}" class="btn btn-outline">
-                <i class="fa-solid fa-xmark"></i> Bekor qilish
+                <i class="fa-solid fa-xmark"></i> {% trans "Bekor qilish" %}
             </a>
             <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
-                <i class="fa-solid fa-plus"></i> E'lon qo'shish
+                <i class="fa-solid fa-plus"></i> {% trans "E'lon qo'shish" %}
             </button>
         </div>
     </form>
@@ -292,15 +293,36 @@
 
 {% block extra_js %}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+{% trans "Yuklanmoqda..." as t_loading %}
+{% trans "Avval viloyat tanlang" as t_pick_region %}
+{% trans "Tumanni tanlang" as t_pick_district %}
+{% trans "Tumanlar topilmadi" as t_no_districts %}
+{% trans "Xato yuz berdi" as t_error %}
+{% trans "Asosiy" as t_main %}
+{% trans "Ko'pi bilan 10 ta rasm yuklash mumkin!" as t_max_images %}
+{% trans "Kamida 1 ta rasm yuklang!" as t_min_images %}
+{% trans "Saqlanmoqda..." as t_saving %}
 <script>
+const I18N = {
+    loading: "{{ t_loading|escapejs }}",
+    pickRegion: "{{ t_pick_region|escapejs }}",
+    pickDistrict: "{{ t_pick_district|escapejs }}",
+    noDistricts: "{{ t_no_districts|escapejs }}",
+    error: "{{ t_error|escapejs }}",
+    main: "{{ t_main|escapejs }}",
+    maxImages: "{{ t_max_images|escapejs }}",
+    minImages: "{{ t_min_images|escapejs }}",
+    saving: "{{ t_saving|escapejs }}",
+};
+
 // ── Districts yuklash ──
 function loadDistricts(regionId) {
     const sel = document.getElementById('districtSel');
-    sel.innerHTML = '<option value="">— Yuklanmoqda... —</option>';
+    sel.innerHTML = '<option value="">— ' + I18N.loading + ' —</option>';
     sel.disabled = true;
 
     if (!regionId) {
-        sel.innerHTML = '<option value="">— Avval viloyat tanlang —</option>';
+        sel.innerHTML = '<option value="">— ' + I18N.pickRegion + ' —</option>';
         sel.disabled = false;
         return;
     }
@@ -308,7 +330,7 @@ function loadDistricts(regionId) {
     fetch(`/districts/?region_id=${regionId}`)
         .then(r => r.json())
         .then(data => {
-            sel.innerHTML = '<option value="">— Tumanni tanlang —</option>';
+            sel.innerHTML = '<option value="">— ' + I18N.pickDistrict + ' —</option>';
             if (data.districts && data.districts.length > 0) {
                 data.districts.forEach(d => {
                     const opt = document.createElement('option');
@@ -317,13 +339,13 @@ function loadDistricts(regionId) {
                     sel.appendChild(opt);
                 });
             } else {
-                sel.innerHTML = '<option value="">Tumanlar topilmadi</option>';
+                sel.innerHTML = '<option value="">' + I18N.noDistricts + '</option>';
             }
             sel.disabled = false;
         })
         .catch(err => {
             console.error('Districts error:', err);
-            sel.innerHTML = '<option value="">Xato yuz berdi</option>';
+            sel.innerHTML = '<option value="">' + I18N.error + '</option>';
             sel.disabled = false;
         });
 }
@@ -335,7 +357,7 @@ function previewImages(input) {
     const files = Array.from(input.files);
 
     if (files.length > 10) {
-        alert("Ko'pi bilan 10 ta rasm yuklash mumkin!");
+        alert(I18N.maxImages);
         input.value = '';
         return;
     }
@@ -347,7 +369,7 @@ function previewImages(input) {
             div.className = 'preview-item';
             div.innerHTML = `
                 <img src="${e.target.result}" alt="">
-                ${i === 0 ? '<div class="main-tag">Asosiy</div>' : ''}
+                ${i === 0 ? '<div class="main-tag">' + I18N.main + '</div>' : ''}
             `;
             grid.appendChild(div);
         };
@@ -426,11 +448,11 @@ document.getElementById('addForm').addEventListener('submit', function (e) {
     const images = document.getElementById('imgInput').files;
     if (images.length === 0) {
         e.preventDefault();
-        alert("Kamida 1 ta rasm yuklang!");
+        alert(I18N.minImages);
         return;
     }
     const btn = document.getElementById('submitBtn');
-    btn.innerHTML = '<div class="spinner"></div> Saqlanmoqda...';
+    btn.innerHTML = '<div class="spinner"></div> ' + I18N.saving;
     btn.disabled = true;
 });
 </script>

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-{% block title %}Uylar — UyIjara{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Uylar" %} — UyIjara{% endblock %}
 
 {% block extra_css %}
 .hl-hero {
@@ -41,30 +42,89 @@
 .hl-sort-btn:hover { border-color: var(--accent); color: var(--accent); }
 .hl-sort-btn.on { background: var(--accent-soft); border-color: var(--accent-border); color: var(--accent); }
 
-.hc { background:#fff; border:1px solid #ede9fe; border-radius:16px; overflow:hidden; cursor:pointer; transition:transform .2s,box-shadow .2s,border-color .2s; }
-.hc:hover { transform:translateY(-4px); box-shadow:0 10px 32px rgba(124,58,237,.14); border-color:#c4b5fd; }
-.hc-img { width:100%; height:180px; position:relative; overflow:hidden; background:#ede9fe; }
-.hc-img img { display:block; width:100%; height:100%; object-fit:cover; transition:transform .4s; }
-.hc:hover .hc-img img { transform:scale(1.05); }
-.hc-no-img { width:100%; height:100%; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:6px; color:#a78bfa; opacity:.5; }
-.hc-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(30,27,75,.6) 0%,transparent 50%); pointer-events:none; }
-.hc-fav { position:absolute; top:10px; right:10px; width:30px; height:30px; background:white; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; z-index:4; box-shadow:0 2px 8px rgba(0,0,0,.12); border:none; cursor:pointer; transition:transform .18s; }
-.hc-fav:hover { transform:scale(1.12); }
-.hc-views { position:absolute; bottom:34px; right:9px; background:rgba(0,0,0,.35); color:rgba(255,255,255,.9); padding:2px 7px; border-radius:5px; font-size:9px; font-weight:600; z-index:3; display:flex; align-items:center; gap:3px; }
-.hc-price { position:absolute; bottom:10px; left:10px; background:white; color:#7c3aed; padding:4px 11px; border-radius:8px; font-size:13px; font-weight:900; box-shadow:0 2px 10px rgba(0,0,0,.14); z-index:3; }
-.hc-body { padding:12px 13px 13px; }
-.hc-loc { font-size:11px; color:#9d8fc8; margin-bottom:4px; display:flex; align-items:center; gap:3px; }
-.hc-loc i { color:#7c3aed; font-size:10px; }
-.hc-addr { font-size:13px; font-weight:700; color:#1e1b4b; line-height:1.38; margin-bottom:10px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-.hc-foot { display:flex; align-items:center; justify-content:space-between; padding-top:9px; border-top:1px solid #f5f3ff; }
-.hc-price-text { font-size:14px; font-weight:900; color:#7c3aed; }
-.hc-price-text span { font-size:11px; font-weight:500; color:#9d8fc8; }
+.hc-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+@media (max-width: 1100px) { .hc-grid { grid-template-columns:repeat(3,1fr); } }
+@media (max-width: 800px)  { .hc-grid { grid-template-columns:repeat(2,1fr); gap:12px; } }
+@media (max-width: 480px)  { .hc-grid { grid-template-columns:1fr; } }
+
+.hc {
+    background:var(--card-bg);
+    border:1px solid var(--card-border);
+    border-radius:var(--radius-lg);
+    overflow:hidden;
+    cursor:pointer;
+    transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+    display:flex; flex-direction:column;
+}
+.hc:hover {
+    transform:translateY(-4px);
+    box-shadow:0 14px 36px rgba(124,58,237,.16);
+    border-color:var(--accent-border);
+}
+.hc-img { width:100%; aspect-ratio:4/3; position:relative; overflow:hidden; background:var(--accent-soft); }
+.hc-img img { display:block; width:100%; height:100%; object-fit:cover; transition:transform .5s ease; }
+.hc:hover .hc-img img { transform:scale(1.07); }
+.hc-no-img { width:100%; height:100%; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:6px; color:var(--accent-light); opacity:.5; }
+.hc-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(30,27,75,.7) 0%,transparent 55%); pointer-events:none; }
+.hc-fav {
+    position:absolute; top:12px; right:12px;
+    width:34px; height:34px; background:rgba(255,255,255,.95);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:14px; z-index:4;
+    box-shadow:0 4px 12px rgba(0,0,0,.15);
+    border:none; cursor:pointer;
+    transition:transform .18s ease, background .18s ease;
+    backdrop-filter:blur(4px);
+}
+.hc-fav:hover { transform:scale(1.12); background:white; }
+.hc-status {
+    position:absolute; top:12px; left:12px;
+    padding:4px 10px; border-radius:6px;
+    font-size:10px; font-weight:800;
+    z-index:4; text-transform:uppercase; letter-spacing:.05em;
+    backdrop-filter:blur(4px);
+}
+.hc-status.rented { background:rgba(254,226,226,.95); color:#991b1b; }
+.hc-views {
+    position:absolute; bottom:14px; right:12px;
+    background:rgba(0,0,0,.55); color:rgba(255,255,255,.95);
+    padding:3px 8px; border-radius:6px;
+    font-size:10px; font-weight:600;
+    z-index:3; display:flex; align-items:center; gap:4px;
+    backdrop-filter:blur(4px);
+}
+.hc-price {
+    position:absolute; bottom:12px; left:12px;
+    background:white; color:var(--accent);
+    padding:6px 12px; border-radius:8px;
+    font-size:14px; font-weight:900;
+    box-shadow:0 4px 12px rgba(0,0,0,.18);
+    z-index:3;
+    letter-spacing:-.3px;
+}
+.hc-price small { font-size:10px; font-weight:600; opacity:.7; margin-left:2px; }
+.hc-body { padding:14px 14px 16px; flex:1; display:flex; flex-direction:column; }
+.hc-loc { font-size:12px; color:var(--text-light); margin-bottom:6px; display:flex; align-items:center; gap:4px; font-weight:600; }
+.hc-loc i { color:var(--accent); font-size:10px; }
+.hc-addr {
+    font-size:14px; font-weight:700; color:var(--primary);
+    line-height:1.4; margin-bottom:12px;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+    flex:1;
+}
+.hc-foot {
+    display:flex; align-items:center; justify-content:space-between;
+    padding-top:10px; border-top:1px solid var(--accent-pale);
+}
+.hc-price-text { font-size:15px; font-weight:900; color:var(--accent); letter-spacing:-.3px; }
+.hc-price-text span { font-size:11px; font-weight:500; color:var(--text-light); }
 .hc-stars { display:flex; align-items:center; gap:1px; }
-.hc-stars i { font-size:11px; }
-.hc-owner { display:flex; align-items:center; gap:6px; margin-top:8px; }
-.hc-av { width:22px; height:22px; border-radius:50%; background:#ede9fe; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:#7c3aed; overflow:hidden; flex-shrink:0; }
+.hc-stars i { font-size:12px; }
+.hc-owner { display:flex; align-items:center; gap:7px; margin-top:10px; padding-top:10px; border-top:1px dashed var(--border); }
+.hc-av { width:24px; height:24px; border-radius:50%; background:var(--accent-soft); display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:800; color:var(--accent); overflow:hidden; flex-shrink:0; }
 .hc-av img { width:100%; height:100%; object-fit:cover; }
-.hc-oname { font-size:11px; color:#9d8fc8; }
+.hc-oname { font-size:11px; color:var(--text-light); font-weight:600; }
 {% endblock %}
 
 {% block content %}
@@ -72,35 +132,35 @@
 <div class="hl-hero">
     <div class="hl-live-row">
         <div class="hl-live-dot"></div>
-        <span class="hl-live-txt">{{ houses|length }} ta faol e'lon — eng yangi birinchi</span>
+        <span class="hl-live-txt">{% blocktrans count counter=total_count %}{{ counter }} ta faol e'lon — eng yangi birinchi{% plural %}{{ counter }} ta faol e'lon — eng yangi birinchi{% endblocktrans %}</span>
     </div>
     <div class="hl-stats">
-        <div class="hl-stat"><div class="hl-stat-n">5,200+</div><div class="hl-stat-l">E'lonlar</div></div>
-        <div class="hl-stat"><div class="hl-stat-n">14</div><div class="hl-stat-l">Viloyat</div></div>
-        <div class="hl-stat"><div class="hl-stat-n">0</div><div class="hl-stat-l">Makler</div></div>
-        <div class="hl-stat"><div class="hl-stat-n">Bepul</div><div class="hl-stat-l">Ro'yxat</div></div>
+        <div class="hl-stat"><div class="hl-stat-n">{{ total_count }}+</div><div class="hl-stat-l">{% trans "E'lonlar" %}</div></div>
+        <div class="hl-stat"><div class="hl-stat-n">14</div><div class="hl-stat-l">{% trans "Viloyat" %}</div></div>
+        <div class="hl-stat"><div class="hl-stat-n">0</div><div class="hl-stat-l">{% trans "Makler" %}</div></div>
+        <div class="hl-stat"><div class="hl-stat-n">{% trans "Bepul" %}</div><div class="hl-stat-l">{% trans "Ro'yxat" %}</div></div>
     </div>
     <form class="hl-search-form" method="get" action="{% url 'house_list' %}">
         <div class="hl-searchbar">
             <div class="hl-sf">
-                <div class="hl-sf-lbl">📍 Joylashuv</div>
+                <div class="hl-sf-lbl">📍 {% trans "Joylashuv" %}</div>
                 <select name="region">
-                    <option value="">Barcha viloyatlar</option>
+                    <option value="">{% trans "Barcha viloyatlar" %}</option>
                     {% for r in regions %}
-                        <option value="{{ r.id }}" {% if request.GET.region == r.id|stringformat:'s' %}selected{% endif %}>{{ r.name }}</option>
+                        <option value="{{ r.id }}" {% if request.GET.region == r.id|stringformat:'s' %}selected{% endif %}>{{ r.display_name }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div class="hl-sf">
-                <div class="hl-sf-lbl">💰 Min narx ($)</div>
+                <div class="hl-sf-lbl">💰 {% trans "Min narx" %} ($)</div>
                 <input type="number" name="min_price" placeholder="100" value="{{ request.GET.min_price|default:'' }}">
             </div>
             <div class="hl-sf">
-                <div class="hl-sf-lbl">💰 Max narx ($)</div>
+                <div class="hl-sf-lbl">💰 {% trans "Max narx" %} ($)</div>
                 <input type="number" name="max_price" placeholder="500" value="{{ request.GET.max_price|default:'' }}">
             </div>
             <button type="submit" class="hl-sbtn">
-                <i class="fa-solid fa-magnifying-glass"></i> Qidirish
+                <i class="fa-solid fa-magnifying-glass"></i> {% trans "Qidirish" %}
             </button>
         </div>
     </form>
@@ -108,22 +168,22 @@
 
 <div class="hl-filters">
     <a href="{% url 'house_list' %}" class="hl-fp {% if not request.GET.sort and not request.GET.region and not request.GET.min_price and not request.GET.max_price %}on{% endif %}">
-        <i class="fa-solid fa-house"></i> Hammasi
+        <i class="fa-solid fa-house"></i> {% trans "Hammasi" %}
     </a>
     <a href="{% url 'house_list' %}?sort=top" class="hl-fp {% if request.GET.sort == 'top' %}on{% endif %}">
-        <i class="fa-solid fa-star"></i> Top
+        <i class="fa-solid fa-star"></i> {% trans "Top" %}
     </a>
     <a href="{% url 'house_list' %}?sort=cheap" class="hl-fp {% if request.GET.sort == 'cheap' %}on{% endif %}">
-        <i class="fa-solid fa-tag"></i> Arzon
+        <i class="fa-solid fa-tag"></i> {% trans "Arzon" %}
     </a>
     {% for region in regions %}
         <a href="{% url 'house_list' %}?region={{ region.id }}" class="hl-fp {% if request.GET.region == region.id|stringformat:'s' %}on{% endif %}">
-            <i class="fa-solid fa-location-dot"></i> {{ region.name }}
+            <i class="fa-solid fa-location-dot"></i> {{ region.display_name }}
         </a>
     {% endfor %}
-    {% if request.GET.region or request.GET.sort or request.GET.min_price or request.GET.max_price %}
+    {% if request.GET.region or request.GET.sort or request.GET.min_price or request.GET.max_price or request.GET.q %}
         <a href="{% url 'house_list' %}" class="hl-fp clear">
-            <i class="fa-solid fa-xmark"></i> Tozalash
+            <i class="fa-solid fa-xmark"></i> {% trans "Tozalash" %}
         </a>
     {% endif %}
 </div>
@@ -131,44 +191,48 @@
 <div class="hl-body">
     <div class="hl-top-row">
         <div class="hl-top-left">
-            <div class="hl-top-title">Barcha e'lonlar</div>
-            {% if houses %}<div class="hl-top-cnt">{{ houses|length }} ta</div>{% endif %}
+            <div class="hl-top-title">{% trans "Barcha e'lonlar" %}</div>
+            {% if total_count %}<div class="hl-top-cnt">{% blocktrans count c=total_count %}{{ c }} ta{% plural %}{{ c }} ta{% endblocktrans %}</div>{% endif %}
         </div>
         <div class="hl-sort-row">
-            <a href="?sort=cheap" class="hl-sort-btn {% if request.GET.sort == 'cheap' %}on{% endif %}">
-                <i class="fa-solid fa-arrow-down-short-wide"></i> Narx ↓
+            <a href="?sort=cheap{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="hl-sort-btn {% if request.GET.sort == 'cheap' %}on{% endif %}">
+                <i class="fa-solid fa-arrow-down-short-wide"></i> {% trans "Narx" %} ↓
             </a>
-            <a href="?sort=expensive" class="hl-sort-btn {% if request.GET.sort == 'expensive' %}on{% endif %}">
-                <i class="fa-solid fa-arrow-up-short-wide"></i> Narx ↑
+            <a href="?sort=expensive{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" class="hl-sort-btn {% if request.GET.sort == 'expensive' %}on{% endif %}">
+                <i class="fa-solid fa-arrow-up-short-wide"></i> {% trans "Narx" %} ↑
             </a>
         </div>
     </div>
 
     {% if houses %}
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
+        <div class="hc-grid">
             {% for house in houses %}
                 <div class="hc" onclick="window.location='{% url 'house_detail' house.pk %}'">
 
                     <div class="hc-img">
                         {% with img=house.main_image %}
                             {% if img %}
-                                <img src="{{ img.image.url }}" alt="">
+                                <img src="{{ img.image.url }}" alt="{{ house.full_address }}" loading="lazy">
                             {% else %}
                                 <div class="hc-no-img">
                                     <i class="fa-solid fa-image" style="font-size:2rem;"></i>
-                                    <span style="font-size:11px;font-weight:600;">Rasm yo'q</span>
+                                    <span style="font-size:11px;font-weight:600;">{% trans "Rasm yo'q" %}</span>
                                 </div>
                             {% endif %}
                         {% endwith %}
                         <div class="hc-overlay"></div>
 
+                        {% if house.is_rented %}
+                            <div class="hc-status rented">{% trans "Ijaraga berildi" %}</div>
+                        {% endif %}
+
                         {% if user.is_authenticated %}
                             <button class="hc-fav"
                                     id="fav-btn-{{ house.pk }}"
                                     onclick="event.stopPropagation(); toggleWishlist({{ house.pk }}, this)"
-                                    title="Saqlash">
-                                <i class="fa-{% if house in user.wishlist.all %}solid{% else %}regular{% endif %} fa-heart"
-                                   style="color:{% if house in user.wishlist.all %}#ef4444{% else %}#7c3aed{% endif %}"></i>
+                                    title="{% trans 'Saqlash' %}">
+                                <i class="fa-{% if house in user_wishlist %}solid{% else %}regular{% endif %} fa-heart"
+                                   style="color:{% if house in user_wishlist %}#ef4444{% else %}#7c3aed{% endif %}"></i>
                             </button>
                         {% else %}
                             <button class="hc-fav"
@@ -178,30 +242,28 @@
                         {% endif %}
 
                         <div class="hc-views">
-                            <i class="fa-regular fa-eye"></i> {{ house.comments.count|add:"12" }}
+                            <i class="fa-regular fa-eye"></i> {{ house.view_count }}
                         </div>
-                        <div class="hc-price">${{ house.price_usd }}/oy</div>
+                        <div class="hc-price">${{ house.price_usd }}<small>/{% trans "oy" %}</small></div>
                     </div>
 
                     <div class="hc-body">
                         <div class="hc-loc">
                             <i class="fa-solid fa-location-dot"></i>
-                            {{ house.district.name }}, {{ house.region.name }}
+                            {{ house.district.display_name }}, {{ house.region.display_name }}
                         </div>
                         <div class="hc-addr">{{ house.full_address }}</div>
                         <div class="hc-foot">
                             <div class="hc-price-text">
-                                ${{ house.price_usd }}<span>/oy</span>
+                                ${{ house.price_usd }}<span>/{% trans "oy" %}</span>
                             </div>
-                            {% with avg=house.ratings.all|length %}
                             <div class="hc-stars">
-                                <i class="fa-solid fa-star" style="color:{% if avg >= 1 %}#fbbf24{% else %}#e5e7eb{% endif %}"></i>
-                                <i class="fa-solid fa-star" style="color:{% if avg >= 2 %}#fbbf24{% else %}#e5e7eb{% endif %}"></i>
-                                <i class="fa-solid fa-star" style="color:{% if avg >= 3 %}#fbbf24{% else %}#e5e7eb{% endif %}"></i>
-                                <i class="fa-solid fa-star" style="color:{% if avg >= 4 %}#fbbf24{% else %}#e5e7eb{% endif %}"></i>
-                                <i class="fa-solid fa-star" style="color:{% if avg >= 5 %}#fbbf24{% else %}#e5e7eb{% endif %}"></i>
+                                {% with avg=house.average_rating %}
+                                    {% for i in "12345" %}
+                                        <i class="fa-solid fa-star" style="color:{% if avg|floatformat:0|add:0 >= forloop.counter %}#fbbf24{% else %}#e5e7eb{% endif %}"></i>
+                                    {% endfor %}
+                                {% endwith %}
                             </div>
-                            {% endwith %}
                         </div>
                         <div class="hc-owner">
                             <div class="hc-av">
@@ -219,15 +281,37 @@
             {% endfor %}
         </div>
 
+        {% if page_obj.has_other_pages %}
+        <nav class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.region %}region={{ request.GET.region }}&{% endif %}{% if request.GET.sort %}sort={{ request.GET.sort }}&{% endif %}{% if request.GET.min_price %}min_price={{ request.GET.min_price }}&{% endif %}{% if request.GET.max_price %}max_price={{ request.GET.max_price }}&{% endif %}page={{ page_obj.previous_page_number }}"><i class="fa-solid fa-chevron-left"></i></a>
+            {% else %}
+                <span class="disabled"><i class="fa-solid fa-chevron-left"></i></span>
+            {% endif %}
+            {% for n in page_obj.paginator.page_range %}
+                {% if n == page_obj.number %}
+                    <span class="current">{{ n }}</span>
+                {% elif n >= page_obj.number|add:-2 and n <= page_obj.number|add:2 %}
+                    <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.region %}region={{ request.GET.region }}&{% endif %}{% if request.GET.sort %}sort={{ request.GET.sort }}&{% endif %}{% if request.GET.min_price %}min_price={{ request.GET.min_price }}&{% endif %}{% if request.GET.max_price %}max_price={{ request.GET.max_price }}&{% endif %}page={{ n }}">{{ n }}</a>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.region %}region={{ request.GET.region }}&{% endif %}{% if request.GET.sort %}sort={{ request.GET.sort }}&{% endif %}{% if request.GET.min_price %}min_price={{ request.GET.min_price }}&{% endif %}{% if request.GET.max_price %}max_price={{ request.GET.max_price }}&{% endif %}page={{ page_obj.next_page_number }}"><i class="fa-solid fa-chevron-right"></i></a>
+            {% else %}
+                <span class="disabled"><i class="fa-solid fa-chevron-right"></i></span>
+            {% endif %}
+        </nav>
+        {% endif %}
+
     {% else %}
         <div style="text-align:center;padding:52px 20px;">
-            <div style="width:68px;height:68px;border-radius:18px;background:#ede9fe;color:#7c3aed;display:flex;align-items:center;justify-content:center;font-size:1.7rem;margin:0 auto 14px;">
+            <div style="width:68px;height:68px;border-radius:18px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:1.7rem;margin:0 auto 14px;">
                 <i class="fa-solid fa-house-circle-exclamation"></i>
             </div>
-            <h3 style="font-size:16px;font-weight:800;color:#1e1b4b;margin-bottom:6px;">E'lonlar topilmadi</h3>
-            <p style="font-size:13px;color:#9d8fc8;margin-bottom:18px;">Qidiruv shartlarini o'zgartirib ko'ring</p>
+            <h3 style="font-size:16px;font-weight:800;color:var(--primary);margin-bottom:6px;">{% trans "E'lonlar topilmadi" %}</h3>
+            <p style="font-size:13px;color:var(--text-light);margin-bottom:18px;">{% trans "Qidiruv shartlarini o'zgartirib ko'ring" %}</p>
             <a href="{% url 'house_list' %}" class="btn btn-primary">
-                <i class="fa-solid fa-rotate-left"></i> Hammasini ko'rish
+                <i class="fa-solid fa-rotate-left"></i> {% trans "Hammasini ko'rish" %}
             </a>
         </div>
     {% endif %}

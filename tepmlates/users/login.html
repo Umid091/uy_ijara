@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-{% block title %}Kirish — UyIjara{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Kirish" %} — UyIjara{% endblock %}
 
 {% block extra_css %}
 .auth-wrapper {
@@ -8,45 +9,28 @@
     align-items: center;
     justify-content: center;
     padding: 40px 24px;
-    background: linear-gradient(135deg, #f7f5f0 0%, #ede8e0 100%);
+    background: linear-gradient(135deg, var(--hero-start) 0%, var(--hero-mid) 60%, var(--hero-end) 100%);
 }
 .auth-card {
     background: white;
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 30px 60px rgba(0,0,0,.25);
     width: 100%;
     max-width: 440px;
     overflow: hidden;
 }
 .auth-header {
-    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-mid) 100%);
     padding: 36px 36px 32px;
     text-align: center;
     color: white;
 }
-.auth-logo {
-    font-family: var(--font-display);
-    font-size: 1.8rem;
-    margin-bottom: 8px;
-}
-.auth-logo span { color: var(--accent); }
-.auth-header p {
-    opacity: 0.75;
-    font-size: 0.9rem;
-}
+.auth-logo { font-size: 2rem; font-weight: 900; margin-bottom: 8px; letter-spacing:-.5px; }
+.auth-logo span { color: #fde68a; }
+.auth-header p { opacity: 0.85; font-size: 0.9rem; }
 .auth-body { padding: 36px; }
-.auth-footer {
-    padding: 20px 36px;
-    border-top: 1px solid var(--border);
-    text-align: center;
-    font-size: 0.88rem;
-    color: var(--text-muted);
-    background: var(--bg);
-}
-.auth-footer a {
-    color: var(--accent);
-    font-weight: 700;
-}
+.auth-footer { padding: 20px 36px; border-top: 1px solid var(--border); text-align: center; font-size: 0.88rem; color: var(--text-muted); background: var(--accent-pale); }
+.auth-footer a { color: var(--accent); font-weight: 700; }
 {% endblock %}
 
 {% block content %}
@@ -54,13 +38,14 @@
     <div class="auth-card">
         <div class="auth-header">
             <div class="auth-logo">Uy<span>Ijara</span></div>
-            <p>Hisobingizga kiring</p>
+            <p>{% trans "Hisobingizga kiring" %}</p>
         </div>
         <div class="auth-body">
             <form method="post" id="loginForm">
                 {% csrf_token %}
+                {% if request.GET.next %}<input type="hidden" name="next" value="{{ request.GET.next }}">{% endif %}
                 <div class="form-group">
-                    <label class="form-label">Telefon raqam <span>*</span></label>
+                    <label class="form-label">{% trans "Telefon raqam" %} <span>*</span></label>
                     <div class="form-control-icon">
                         <input type="text" name="phone" class="form-control"
                                placeholder="+998901234567"
@@ -69,7 +54,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Parol <span>*</span></label>
+                    <label class="form-label">{% trans "Parol" %} <span>*</span></label>
                     <div class="form-control-icon" style="position:relative;">
                         <input type="password" name="password" class="form-control"
                                placeholder="••••••••" id="passInput" required>
@@ -86,13 +71,13 @@
                 <button type="submit" class="btn btn-primary btn-block btn-lg"
                         style="margin-top:8px;" id="loginBtn">
                     <i class="fa-solid fa-right-to-bracket"></i>
-                    Kirish
+                    {% trans "Kirish" %}
                 </button>
             </form>
         </div>
         <div class="auth-footer">
-            Hisobingiz yo'qmi?
-            <a href="{% url 'register' %}">Ro'yxatdan o'ting</a>
+            {% trans "Hisobingiz yo'qmi?" %}
+            <a href="{% url 'register' %}">{% trans "Ro'yxatdan o'ting" %}</a>
         </div>
     </div>
 </div>
@@ -113,7 +98,7 @@
     }
     document.getElementById('loginForm').addEventListener('submit', function() {
         const btn = document.getElementById('loginBtn');
-        btn.innerHTML = '<div class="spinner"></div> Kirilmoqda...';
+        btn.innerHTML = '<div class="spinner"></div> {% trans "Kirilmoqda..." %}';
         btn.disabled = true;
     });
 </script>

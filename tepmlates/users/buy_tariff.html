@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-{% block title %}{{ tariff.name }} sotib olish — UyIjara{% endblock %}
+{% load i18n %}
+{% block title %}{% blocktrans with n=tariff.name %}{{ n }} sotib olish{% endblocktrans %} — UyIjara{% endblock %}
 
 {% block extra_css %}
 .buy-wrapper {
@@ -92,7 +93,7 @@
                 {% endif %}
             </div>
             <h2>{{ tariff.name }}</h2>
-            <p>{{ tariff.duration_days }} kunlik premium obuna</p>
+            <p>{% blocktrans with d=tariff.duration_days %}{{ d }} kunlik premium obuna{% endblocktrans %}</p>
         </div>
 
         <div class="buy-body">
@@ -100,20 +101,20 @@
             <!-- Summary -->
             <div class="tariff-summary">
                 <div class="tariff-summary-row">
-                    <span class="key">Tarif nomi</span>
+                    <span class="key">{% trans "Tarif nomi" %}</span>
                     <span class="val">{{ tariff.name }}</span>
                 </div>
                 <div class="tariff-summary-row">
-                    <span class="key">Muddat</span>
-                    <span class="val">{{ tariff.duration_days }} kun</span>
+                    <span class="key">{% trans "Muddat" %}</span>
+                    <span class="val">{{ tariff.duration_days }} {% trans "kun" %}</span>
                 </div>
                 <div class="tariff-summary-row">
-                    <span class="key">Sizning balansingiz</span>
-                    <span class="val">{{ user.balance|floatformat:0 }} so'm</span>
+                    <span class="key">{% trans "Sizning balansingiz" %}</span>
+                    <span class="val">{{ user.balance|floatformat:0 }} {% trans "so'm" %}</span>
                 </div>
                 <div class="tariff-summary-row total">
-                    <span class="key" style="font-weight:700;">To'lov miqdori</span>
-                    <span class="val">{{ tariff.price|floatformat:0 }} so'm</span>
+                    <span class="key" style="font-weight:700;">{% trans "To'lov miqdori" %}</span>
+                    <span class="val">{{ tariff.price|floatformat:0 }} {% trans "so'm" %}</span>
                 </div>
             </div>
 
@@ -122,16 +123,14 @@
                 <div class="balance-check ok">
                     <i class="fa-solid fa-circle-check"></i>
                     <div>
-                        <strong>Balans yetarli</strong> —
-                        To'lovdan keyin: {{ user.balance|floatformat:0 }} - {{ tariff.price|floatformat:0 }} so'm
+                        <strong>{% trans "Balans yetarli" %}</strong>
                     </div>
                 </div>
             {% else %}
                 <div class="balance-check low">
                     <i class="fa-solid fa-circle-exclamation"></i>
                     <div>
-                        <strong>Balans yetarli emas.</strong>
-                        Yana {{ tariff.price|floatformat:0 }} - {{ user.balance|floatformat:0 }} so'm kerak.
+                        <strong>{% trans "Balans yetarli emas." %}</strong>
                     </div>
                 </div>
             {% endif %}
@@ -140,9 +139,9 @@
             {% if not user.card_number %}
                 <div class="alert alert-warning" style="margin-bottom:16px;">
                     <i class="fa-solid fa-triangle-exclamation"></i>
-                    Karta ma'lumotlari yo'q.
-                    <a href="{% url 'profile_edit' %}" style="font-weight:700;">Profildan</a>
-                    kartani qo'shing.
+                    {% trans "Karta ma'lumotlari yo'q." %}
+                    <a href="{% url 'profile_edit' %}" style="font-weight:700;">{% trans "Profildan" %}</a>
+                    {% trans "kartani qo'shing." %}
                 </div>
             {% endif %}
 
@@ -154,18 +153,18 @@
                         <button type="submit" class="btn btn-primary btn-block btn-lg"
                                 id="buyBtn">
                             <i class="fa-solid fa-lock-open"></i>
-                            {{ tariff.price|floatformat:0 }} so'm to'lash
+                            {% blocktrans with p=tariff.price|floatformat:0 %}{{ p }} so'm to'lash{% endblocktrans %}
                         </button>
                     </form>
                 {% else %}
                     <a href="{% url 'profile' %}#balance"
                        class="btn btn-primary btn-block btn-lg">
                         <i class="fa-solid fa-wallet"></i>
-                        Balansni to'ldirish
+                        {% trans "Balansni to'ldirish" %}
                     </a>
                 {% endif %}
                 <a href="{% url 'tariff_list' %}" class="btn btn-outline btn-block">
-                    <i class="fa-solid fa-arrow-left"></i> Orqaga
+                    <i class="fa-solid fa-arrow-left"></i> {% trans "Orqaga" %}
                 </a>
             </div>
         </div>
@@ -179,7 +178,7 @@
     if (form) {
         form.addEventListener('submit', function() {
             const btn = document.getElementById('buyBtn');
-            btn.innerHTML = '<div class="spinner"></div> To\'lanmoqda...';
+            btn.innerHTML = '<div class="spinner"></div> {% trans "To\\'lanmoqda..." %}';
             btn.disabled = true;
         });
     }

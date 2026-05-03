@@ -1,32 +1,55 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.conf import settings
+from django.utils.translation import gettext_lazy as _, get_language
 
 
 class Region(models.Model):
-    name = models.CharField(max_length=100, unique=True)
+    name    = models.CharField(max_length=100, unique=True)
+    name_ru = models.CharField(max_length=100, blank=True, default='')
+    name_en = models.CharField(max_length=100, blank=True, default='')
 
     class Meta:
-        verbose_name        = 'Viloyat'
-        verbose_name_plural = 'Viloyatlar'
+        verbose_name        = _('Viloyat')
+        verbose_name_plural = _('Viloyatlar')
         ordering            = ['name']
 
     def __str__(self):
         return self.name
 
+    @property
+    def display_name(self):
+        lang = (get_language() or 'uz')[:2]
+        if lang == 'ru' and self.name_ru:
+            return self.name_ru
+        if lang == 'en' and self.name_en:
+            return self.name_en
+        return self.name
+
 
 class District(models.Model):
-    region = models.ForeignKey(Region, on_delete=models.CASCADE, related_name='districts')
-    name   = models.CharField(max_length=100)
+    region  = models.ForeignKey(Region, on_delete=models.CASCADE, related_name='districts')
+    name    = models.CharField(max_length=100)
+    name_ru = models.CharField(max_length=100, blank=True, default='')
+    name_en = models.CharField(max_length=100, blank=True, default='')
 
     class Meta:
-        verbose_name        = 'Tuman'
-        verbose_name_plural = 'Tumanlar'
+        verbose_name        = _('Tuman')
+        verbose_name_plural = _('Tumanlar')
         ordering            = ['name']
         unique_together     = ('region', 'name')
 
     def __str__(self):
         return f"{self.name}, {self.region.name}"
+
+    @property
+    def display_name(self):
+        lang = (get_language() or 'uz')[:2]
+        if lang == 'ru' and self.name_ru:
+            return self.name_ru
+        if lang == 'en' and self.name_en:
+            return self.name_en
+        return self.name
 
 
 class House(models.Model):
@@ -40,12 +63,14 @@ class House(models.Model):
     price_usd    = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
     description  = models.TextField()
     is_active    = models.BooleanField(default=True)
+    is_rented    = models.BooleanField(default=False, verbose_name=_('Ijaraga berildi'))
+    view_count   = models.PositiveIntegerField(default=0)
     created_at   = models.DateTimeField(auto_now_add=True)
     updated_at   = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name        = 'Uy'
-        verbose_name_plural = 'Uylar'
+        verbose_name        = _('Uy')
+        verbose_name_plural = _('Uylar')
         ordering            = ['-created_at']
 
     def __str__(self):

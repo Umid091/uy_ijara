@@ -1,8 +1,11 @@
+{% load i18n %}
+{% load static %}
 <!DOCTYPE html>
-<html lang="uz" data-theme="dark">
+<html lang="{{ LANGUAGE_CODE }}" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{% trans 'Maklersiz uy ijara platformasi. Eng yaxshi e\'lonlarni toping.' %}">
     <title>{% block title %}UyIjara{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -20,6 +23,10 @@
         --accent-pale    : #f5f3ff;
         --accent-border  : #c4b5fd;
         --primary        : #1e1b4b;
+        --primary-light  : #4338ca;
+        --bg             : #fafaf8;
+        --font           : 'Inter', system-ui, sans-serif;
+        --font-display   : 'Inter', system-ui, sans-serif;
         --surface        : #ffffff;
         --border         : #ede9fe;
         --text           : #1e1b4b;
@@ -62,6 +69,10 @@
         --accent-pale    : #f5f3ff;
         --accent-border  : #a5b4fc;
         --primary        : #1e1940;
+        --primary-light  : #6366f1;
+        --bg             : #f8f9ff;
+        --font           : 'Inter', system-ui, sans-serif;
+        --font-display   : 'Inter', system-ui, sans-serif;
         --surface        : #ffffff;
         --border         : #e0e7ff;
         --text           : #1e1940;
@@ -147,11 +158,27 @@
     .theme-knob { width: 18px; height: 18px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center; font-size: 10px; transition: transform .25s cubic-bezier(.34,1.56,.64,1); }
     [data-theme="dark"]  .theme-knob { transform: translateX(0); }
     [data-theme="light"] .theme-knob { transform: translateX(22px); }
+
+    .lang-wrap { position: relative; flex-shrink: 0; }
+    .lang-btn { display: flex; align-items: center; gap: 5px; height: 28px; padding: 0 10px; background: rgba(255,255,255,.11); border: 1.5px solid rgba(255,255,255,.18); border-radius: 8px; color: white; font-size: 11px; font-weight: 700; cursor: pointer; text-transform: uppercase; }
+    .lang-btn:hover { background: rgba(255,255,255,.18); }
+    .lang-menu { display: none; position: absolute; top: calc(100% + 8px); right: 0; background: white; border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.18); min-width: 130px; overflow: hidden; z-index: 2000; border: 1px solid var(--border); }
+    .lang-menu.open { display: block; }
+    .lang-menu form { display: block; }
+    .lang-menu button { display: flex; align-items: center; gap: 8px; width: 100%; padding: 9px 12px; background: none; border: none; cursor: pointer; font-size: 12px; font-weight: 600; color: var(--text); text-align: left; }
+    .lang-menu button:hover { background: var(--accent-pale); color: var(--accent); }
+    .lang-menu button.active { background: var(--accent-soft); color: var(--accent); font-weight: 800; }
+    .lang-flag { font-size: 14px; }
+
+    .nav-bell { position: relative; width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,.11); border: 1.5px solid rgba(255,255,255,.18); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: background .18s; }
+    .nav-bell:hover { background: rgba(255,255,255,.18); }
+    .nav-bell-count { position: absolute; top: -3px; right: -3px; min-width: 16px; height: 16px; background: #ef4444; color: white; font-size: 9px; font-weight: 800; border-radius: 8px; display: flex; align-items: center; justify-content: center; padding: 0 4px; border: 2px solid var(--nav-bg); }
+
     .nav-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: white; font-weight: 800; font-size: 12px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px solid rgba(255,255,255,.2); cursor: pointer; transition: border .18s; flex-shrink: 0; user-select: none; }
     .nav-avatar:hover { border-color: rgba(255,255,255,.5); }
     .nav-avatar img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
     .nav-user { position: relative; }
-    .nav-user-menu { display: none; position: absolute; top: calc(100% + 10px); right: 0; background: white; border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 8px 32px rgba(0,0,0,.14); min-width: 190px; overflow: hidden; z-index: 2000; animation: mDrop .2s ease; }
+    .nav-user-menu { display: none; position: absolute; top: calc(100% + 10px); right: 0; background: white; border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 8px 32px rgba(0,0,0,.14); min-width: 200px; overflow: hidden; z-index: 2000; animation: mDrop .2s ease; }
     .nav-user-menu.open { display: block; }
     @keyframes mDrop { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
     .nav-user-info { padding: 12px 14px; border-bottom: 1px solid var(--border); background: var(--accent-pale); }
@@ -226,6 +253,12 @@
     .spinner { width:16px; height:16px; border:2px solid rgba(255,255,255,.3); border-top-color:white; border-radius:50%; animation:spin .7s linear infinite; display:inline-block; }
     @keyframes spin { to { transform:rotate(360deg); } }
 
+    .pagination { display:flex; justify-content:center; gap:6px; margin-top:30px; flex-wrap:wrap; }
+    .pagination a, .pagination span { display:inline-flex; align-items:center; justify-content:center; min-width:36px; height:36px; padding:0 10px; border:1.5px solid var(--border); border-radius:9px; font-size:12px; font-weight:700; color:var(--text-muted); background:var(--surface); transition:var(--transition); }
+    .pagination a:hover { border-color:var(--accent); color:var(--accent); }
+    .pagination .current { background:var(--accent); color:white; border-color:var(--accent); }
+    .pagination .disabled { opacity:.4; cursor:not-allowed; }
+
     .site-footer { background: var(--footer-bg); color: rgba(255,255,255,.42); padding: 24px; margin-top: 60px; font-size: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; transition: background .25s; }
     .site-footer .f-logo { font-size: 15px; font-weight: 900; color: white; }
     .site-footer .f-logo em { color: #a5b4fc; font-style: normal; }
@@ -233,9 +266,66 @@
     .site-footer a:hover { color: #a5b4fc; }
 
     @media (max-width: 900px) { .nav-links { display: none; } }
-    @media (max-width: 560px) { .navbar { padding: 0 14px; gap: 8px; } }
+    @media (max-width: 700px) { .nav-search { max-width: 200px; } .nav-search-btn { display:none; } }
+    @media (max-width: 560px) {
+        .navbar { padding: 0 12px; gap: 6px; height: 52px; }
+        .nav-search { display:none; }
+        .nav-logo { font-size: 15px; }
+        .lang-btn span { display:none; }
+        .lang-btn { padding: 0 8px; }
+    }
 
-    /* ══ CHILD TEMPLATE CSS SHU YERGA TUSHADI ══ */
+    /* Mobile bottom navigation */
+    .mobile-tabs {
+        display: none;
+        position: fixed;
+        left: 0; right: 0; bottom: 0;
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        z-index: 999;
+        padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+        box-shadow: 0 -4px 16px rgba(0,0,0,.08);
+    }
+    .mobile-tabs-row { display: flex; justify-content: space-around; }
+    .mtab {
+        flex: 1;
+        display: flex; flex-direction: column;
+        align-items: center; gap: 2px;
+        padding: 6px 4px;
+        font-size: 10px; font-weight: 600;
+        color: var(--text-light);
+        text-decoration: none;
+        border-radius: 8px;
+        position: relative;
+        transition: color .15s;
+    }
+    .mtab i { font-size: 17px; }
+    .mtab.active { color: var(--accent); }
+    .mtab.add { color: white; }
+    .mtab.add .mtab-add-circle {
+        width: 38px; height: 38px;
+        background: var(--accent);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        margin-top: -16px;
+        box-shadow: 0 4px 14px rgba(124,58,237,.4);
+    }
+    .mtab.add span { color: var(--text-light); margin-top: 0; }
+    .mtab .mtab-badge {
+        position: absolute; top: 2px; right: 12px;
+        min-width: 14px; height: 14px;
+        padding: 0 4px;
+        background: #ef4444; color: white;
+        font-size: 9px; font-weight: 800;
+        border-radius: 7px;
+        display: flex; align-items: center; justify-content: center;
+    }
+    @media (max-width: 760px) {
+        .mobile-tabs { display: block; }
+        body { padding-bottom: 70px; }
+        .site-footer { display: none; }
+    }
+
     {% block extra_css %}{% endblock %}
 
     </style>
@@ -246,32 +336,58 @@
     <a href="{% url 'house_list' %}" class="nav-logo">Uy<em>Ijara</em></a>
     <form class="nav-search" method="get" action="{% url 'house_list' %}">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" name="q" placeholder="Shahar, tuman yoki ko'cha..." value="{{ request.GET.q|default:'' }}">
-        <button type="submit" class="nav-search-btn">Topish</button>
+        <input type="text" name="q" placeholder="{% trans 'Shahar, tuman yoki ko\'cha...' %}" value="{{ request.GET.q|default:'' }}">
+        <button type="submit" class="nav-search-btn">{% trans 'Topish' %}</button>
     </form>
     <div class="nav-links">
         <a href="{% url 'house_list' %}" class="nav-link {% if request.resolver_match.url_name == 'house_list' %}active{% endif %}">
-            <i class="fa-solid fa-house" style="margin-right:3px;font-size:11px;"></i>E'lonlar
+            <i class="fa-solid fa-house" style="margin-right:3px;font-size:11px;"></i>{% trans "E'lonlar" %}
         </a>
         <a href="{% url 'tariff_list' %}" class="nav-link {% if request.resolver_match.url_name == 'tariff_list' %}active{% endif %}">
-            <i class="fa-solid fa-crown" style="margin-right:3px;font-size:11px;"></i>Tariflar
+            <i class="fa-solid fa-crown" style="margin-right:3px;font-size:11px;"></i>{% trans 'Tariflar' %}
         </a>
         {% if user.is_authenticated %}
             <a href="{% url 'my_houses' %}" class="nav-link {% if request.resolver_match.url_name == 'my_houses' %}active{% endif %}">
-                <i class="fa-solid fa-house-user" style="margin-right:3px;font-size:11px;"></i>Uylarim
+                <i class="fa-solid fa-house-user" style="margin-right:3px;font-size:11px;"></i>{% trans 'Uylarim' %}
             </a>
         {% endif %}
     </div>
     <div class="nav-right">
-        <div class="theme-btn" id="themeBtn" title="Rejim">
+        <div class="lang-wrap" id="langWrap">
+            <button class="lang-btn" id="langBtn" type="button" title="{% trans 'Til' %}">
+                <i class="fa-solid fa-globe" style="font-size:11px;"></i>
+                <span>{{ LANGUAGE_CODE|upper }}</span>
+            </button>
+            <div class="lang-menu" id="langMenu">
+                <form action="{% url 'set_language' %}" method="post">{% csrf_token %}
+                    <input name="next" type="hidden" value="{{ request.get_full_path }}">
+                    {% get_current_language as CURRENT_LANG %}
+                    {% get_available_languages as LANGUAGES %}
+                    {% for lang_code, lang_name in LANGUAGES %}
+                        <button type="submit" name="language" value="{{ lang_code }}" class="{% if lang_code == CURRENT_LANG %}active{% endif %}">
+                            <span class="lang-flag">
+                                {% if lang_code == 'uz' %}🇺🇿{% elif lang_code == 'ru' %}🇷🇺{% else %}🇬🇧{% endif %}
+                            </span>
+                            <span>{{ lang_name }}</span>
+                            {% if lang_code == CURRENT_LANG %}<i class="fa-solid fa-check" style="margin-left:auto;color:var(--accent);font-size:10px;"></i>{% endif %}
+                        </button>
+                    {% endfor %}
+                </form>
+            </div>
+        </div>
+        <div class="theme-btn" id="themeBtn" title="{% trans 'Rejim' %}">
             <div class="theme-knob"><span id="themeIcon">🌙</span></div>
         </div>
         {% if user.is_authenticated %}
             <a href="{% url 'house_add' %}" class="btn btn-nav btn-sm">
-                <i class="fa-solid fa-plus"></i> E'lon
+                <i class="fa-solid fa-plus"></i> {% trans "E'lon" %}
             </a>
-            <a href="{% url 'wishlist' %}" class="btn btn-nav btn-sm" style="width:34px;height:34px;padding:0;" title="Saqlangan">
+            <a href="{% url 'wishlist' %}" class="nav-bell" title="{% trans 'Saqlangan' %}" style="font-size:13px;">
                 <i class="fa-regular fa-heart"></i>
+            </a>
+            <a href="{% url 'notifications' %}" class="nav-bell" title="{% trans 'Bildirishnomalar' %}">
+                <i class="fa-regular fa-bell" style="font-size:13px;"></i>
+                {% if unread_notifications_count %}<span class="nav-bell-count">{{ unread_notifications_count }}</span>{% endif %}
             </a>
             <div class="nav-user" id="navUser">
                 <div class="nav-avatar" id="navAvatar">
@@ -283,17 +399,20 @@
                         <div class="nav-user-name">{{ user.get_full_name }}</div>
                         <div class="nav-user-phone">{{ user.phone }}</div>
                     </div>
-                    <a href="{% url 'profile' %}" class="nav-menu-item"><i class="fa-solid fa-user"></i> Profilim</a>
-                    <a href="{% url 'my_houses' %}" class="nav-menu-item"><i class="fa-solid fa-house"></i> Mening uylarim</a>
-                    <a href="{% url 'wishlist' %}" class="nav-menu-item"><i class="fa-regular fa-heart"></i> Saqlangan</a>
-                    <a href="{% url 'tariff_list' %}" class="nav-menu-item"><i class="fa-solid fa-crown"></i> Tariflar</a>
-                    <a href="{% url 'profile_edit' %}" class="nav-menu-item"><i class="fa-solid fa-pen"></i> Tahrirlash</a>
-                    <a href="{% url 'logout' %}" class="nav-menu-item danger"><i class="fa-solid fa-right-from-bracket"></i> Chiqish</a>
+                    <a href="{% url 'profile' %}" class="nav-menu-item"><i class="fa-solid fa-user"></i> {% trans 'Profilim' %}</a>
+                    <a href="{% url 'my_houses' %}" class="nav-menu-item"><i class="fa-solid fa-house"></i> {% trans 'Mening uylarim' %}</a>
+                    <a href="{% url 'wishlist' %}" class="nav-menu-item"><i class="fa-regular fa-heart"></i> {% trans 'Saqlangan' %}</a>
+                    <a href="{% url 'tariff_list' %}" class="nav-menu-item"><i class="fa-solid fa-crown"></i> {% trans 'Tariflar' %}</a>
+                    <a href="{% url 'profile_edit' %}" class="nav-menu-item"><i class="fa-solid fa-pen"></i> {% trans 'Tahrirlash' %}</a>
+                    {% if user.is_staff %}
+                        <a href="{% url 'admin_dashboard' %}" class="nav-menu-item"><i class="fa-solid fa-gauge"></i> {% trans 'Admin panel' %}</a>
+                    {% endif %}
+                    <a href="{% url 'logout' %}" class="nav-menu-item danger"><i class="fa-solid fa-right-from-bracket"></i> {% trans 'Chiqish' %}</a>
                 </div>
             </div>
         {% else %}
-            <a href="{% url 'login' %}" style="font-size:12px;color:rgba(255,255,255,.65);padding:6px 10px;border-radius:8px;transition:all .18s;" onmouseover="this.style.background='rgba(255,255,255,.09)'" onmouseout="this.style.background='none'">Kirish</a>
-            <a href="{% url 'register' %}" class="btn btn-nav btn-sm">Ro'yxat</a>
+            <a href="{% url 'login' %}" style="font-size:12px;color:rgba(255,255,255,.65);padding:6px 10px;border-radius:8px;transition:all .18s;" onmouseover="this.style.background='rgba(255,255,255,.09)'" onmouseout="this.style.background='none'">{% trans 'Kirish' %}</a>
+            <a href="{% url 'register' %}" class="btn btn-nav btn-sm">{% trans "Ro'yxat" %}</a>
         {% endif %}
     </div>
 </nav>
@@ -319,13 +438,55 @@
 
 <footer class="site-footer">
     <div class="f-logo">Uy<em>Ijara</em></div>
-    <div>© 2025 UyIjara — Maklersiz uy ijara platformasi</div>
+    <div>© 2025 UyIjara — {% trans "Maklersiz uy ijara platformasi" %}</div>
     <div style="display:flex;gap:16px;">
-        <a href="{% url 'house_list' %}">E'lonlar</a>
-        <a href="{% url 'tariff_list' %}">Tariflar</a>
-        {% if user.is_authenticated %}<a href="{% url 'profile' %}">Profil</a>{% endif %}
+        <a href="{% url 'house_list' %}">{% trans "E'lonlar" %}</a>
+        <a href="{% url 'tariff_list' %}">{% trans 'Tariflar' %}</a>
+        {% if user.is_authenticated %}<a href="{% url 'profile' %}">{% trans 'Profil' %}</a>{% endif %}
     </div>
 </footer>
+
+{# Mobile bottom navigation — only shows on small screens via CSS #}
+<nav class="mobile-tabs">
+    <div class="mobile-tabs-row">
+        <a href="{% url 'house_list' %}" class="mtab {% if request.resolver_match.url_name == 'house_list' %}active{% endif %}">
+            <i class="fa-solid fa-house"></i>
+            <span>{% trans "Bosh" %}</span>
+        </a>
+        {% if user.is_authenticated %}
+            <a href="{% url 'wishlist' %}" class="mtab {% if request.resolver_match.url_name == 'wishlist' %}active{% endif %}">
+                <i class="fa-regular fa-heart"></i>
+                <span>{% trans "Saqlangan" %}</span>
+            </a>
+            <a href="{% url 'house_add' %}" class="mtab add">
+                <div class="mtab-add-circle"><i class="fa-solid fa-plus"></i></div>
+                <span>{% trans "Qo'shish" %}</span>
+            </a>
+            <a href="{% url 'notifications' %}" class="mtab {% if request.resolver_match.url_name == 'notifications' %}active{% endif %}">
+                <i class="fa-regular fa-bell"></i>
+                {% if unread_notifications_count %}<span class="mtab-badge">{{ unread_notifications_count }}</span>{% endif %}
+                <span>{% trans "Xabar" %}</span>
+            </a>
+            <a href="{% url 'profile' %}" class="mtab {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+                <i class="fa-solid fa-user"></i>
+                <span>{% trans "Profil" %}</span>
+            </a>
+        {% else %}
+            <a href="{% url 'tariff_list' %}" class="mtab {% if request.resolver_match.url_name == 'tariff_list' %}active{% endif %}">
+                <i class="fa-solid fa-crown"></i>
+                <span>{% trans "Tariflar" %}</span>
+            </a>
+            <a href="{% url 'register' %}" class="mtab add">
+                <div class="mtab-add-circle"><i class="fa-solid fa-user-plus"></i></div>
+                <span>{% trans "Ro'yxat" %}</span>
+            </a>
+            <a href="{% url 'login' %}" class="mtab {% if request.resolver_match.url_name == 'login' %}active{% endif %}">
+                <i class="fa-solid fa-right-to-bracket"></i>
+                <span>{% trans "Kirish" %}</span>
+            </a>
+        {% endif %}
+    </div>
+</nav>
 
 <script>
 (function(){
@@ -355,6 +516,18 @@ if(navAvatar&&navMenu){
     });
     document.addEventListener('click',function(e){
         if(navUser&&!navUser.contains(e.target)) navMenu.classList.remove('open');
+    });
+}
+var langBtn=document.getElementById('langBtn');
+var langMenu=document.getElementById('langMenu');
+var langWrap=document.getElementById('langWrap');
+if(langBtn&&langMenu){
+    langBtn.addEventListener('click',function(e){
+        e.stopPropagation();
+        langMenu.classList.toggle('open');
+    });
+    document.addEventListener('click',function(e){
+        if(langWrap&&!langWrap.contains(e.target)) langMenu.classList.remove('open');
     });
 }
 </script>

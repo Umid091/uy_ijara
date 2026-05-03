@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-{% block title %}Tariflar — UyIjara{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Tariflar" %} — UyIjara{% endblock %}
 
 {% block extra_css %}
 .tariffs-wrapper {
@@ -194,8 +195,8 @@
 
     <!-- Header -->
     <div class="tariffs-header">
-        <h1>Tariflarni tanlang</h1>
-        <p>Uy egasining raqamini ko'ring, o'z uyingizni e'lon qiling</p>
+        <h1>{% trans "Tariflarni tanlang" %}</h1>
+        <p>{% trans "Uy egasining raqamini ko'ring, o'z uyingizni e'lon qiling" %}</p>
     </div>
 
     <!-- Active subscription -->
@@ -203,10 +204,10 @@
         <div class="current-sub-banner">
             <div class="icon"><i class="fa-solid fa-crown"></i></div>
             <div>
-                <h4>{{ subscription.tariff.name }} — Faol</h4>
+                <h4>{{ subscription.tariff.name }} — {% trans "Faol" %}</h4>
                 <p>
-                    {{ subscription.days_left }} kun qoldi •
-                    {{ subscription.end_date|date:"d.m.Y" }} gacha amal qiladi
+                    {% blocktrans with d=subscription.days_left %}{{ d }} kun qoldi{% endblocktrans %} •
+                    {{ subscription.end_date|date:"d.m.Y" }} {% trans "gacha amal qiladi" %}
                 </p>
             </div>
         </div>
@@ -217,7 +218,7 @@
         {% for tariff in tariffs %}
             <div class="tariff-card {% if tariff.duration_days == 7 %}popular{% endif %}">
                 {% if tariff.duration_days == 7 %}
-                    <div class="popular-badge">⚡ Mashhur</div>
+                    <div class="popular-badge">⚡ {% trans "Mashhur" %}</div>
                 {% endif %}
                 <div class="tariff-top">
                     <div class="tariff-icon">
@@ -230,40 +231,40 @@
                     <div class="tariff-name">{{ tariff.name }}</div>
                     <div class="tariff-price">
                         {{ tariff.price|floatformat:0 }}
-                        <span>so'm</span>
+                        <span>{% trans "so'm" %}</span>
                     </div>
                     <div class="tariff-duration">
-                        {{ tariff.duration_days }} kunlik obuna
+                        {% blocktrans with d=tariff.duration_days %}{{ d }} kunlik obuna{% endblocktrans %}
                     </div>
                 </div>
                 <div class="tariff-features">
                     <div class="tariff-feature">
                         <i class="fa-solid fa-check-circle"></i>
-                        Uy egasining raqamini ko'rish
+                        {% trans "Uy egasining raqamini ko'rish" %}
                     </div>
                     <div class="tariff-feature">
                         <i class="fa-solid fa-check-circle"></i>
-                        Uy e'lon qilish
+                        {% trans "Uy e'lon qilish" %}
                     </div>
                     <div class="tariff-feature">
                         <i class="fa-solid fa-check-circle"></i>
-                        Cheksiz uy ko'rish
+                        {% trans "Cheksiz uy ko'rish" %}
                     </div>
                     <div class="tariff-feature">
                         <i class="fa-solid fa-check-circle"></i>
-                        {{ tariff.duration_days }} kun davomida faol
+                        {% blocktrans with d=tariff.duration_days %}{{ d }} kun davomida faol{% endblocktrans %}
                     </div>
                 </div>
                 <div class="tariff-action">
                     {% if subscription and subscription.tariff == tariff %}
                         <button class="btn btn-outline btn-block" disabled>
-                            <i class="fa-solid fa-check"></i> Faol tarif
+                            <i class="fa-solid fa-check"></i> {% trans "Faol tarif" %}
                         </button>
                     {% else %}
                         <a href="{% url 'buy_tariff' tariff.id %}"
                            class="btn btn-{% if tariff.duration_days == 7 %}primary{% else %}secondary{% endif %} btn-block">
                             <i class="fa-solid fa-shopping-cart"></i>
-                            Sotib olish
+                            {% trans "Sotib olish" %}
                         </a>
                     {% endif %}
                 </div>
@@ -273,22 +274,22 @@
 
     <!-- Features -->
     <div class="features-section">
-        <h3><i class="fa-solid fa-list-check" style="color:var(--accent);margin-right:8px;"></i>Nima kiritilgan</h3>
+        <h3><i class="fa-solid fa-list-check" style="color:var(--accent);margin-right:8px;"></i>{% trans "Nima kiritilgan" %}</h3>
         <div class="feature-row">
-            <span class="f-name">Uy egasining telefon raqami</span>
-            <span class="f-check"><i class="fa-solid fa-check"></i> Ha</span>
+            <span class="f-name">{% trans "Uy egasining telefon raqami" %}</span>
+            <span class="f-check"><i class="fa-solid fa-check"></i> {% trans "Ha" %}</span>
         </div>
         <div class="feature-row">
-            <span class="f-name">Uy e'lon qilish</span>
-            <span class="f-check"><i class="fa-solid fa-check"></i> Ha</span>
+            <span class="f-name">{% trans "Uy e'lon qilish" %}</span>
+            <span class="f-check"><i class="fa-solid fa-check"></i> {% trans "Ha" %}</span>
         </div>
         <div class="feature-row">
-            <span class="f-name">Cheksiz uy ko'rish</span>
-            <span class="f-check"><i class="fa-solid fa-check"></i> Ha</span>
+            <span class="f-name">{% trans "Cheksiz uy ko'rish" %}</span>
+            <span class="f-check"><i class="fa-solid fa-check"></i> {% trans "Ha" %}</span>
         </div>
         <div class="feature-row">
-            <span class="f-name">Makler himoyasi</span>
-            <span class="f-check"><i class="fa-solid fa-check"></i> Ha</span>
+            <span class="f-name">{% trans "Makler himoyasi" %}</span>
+            <span class="f-check"><i class="fa-solid fa-check"></i> {% trans "Ha" %}</span>
         </div>
     </div>
 

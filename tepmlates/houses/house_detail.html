@@ -1,585 +1,838 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% block title %}{{ house.full_address }} — UyIjara{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
-.dp-wrap { max-width: 1200px; margin: 0 auto; padding: 20px 20px 60px; }
+/* ═══════════════════════════════════════════
+   HOUSE DETAIL — modern, minimal, scannable
+═══════════════════════════════════════════ */
+.dp { max-width: 1180px; margin: 0 auto; padding: 14px 20px 80px; }
 
-/* BREADCRUMB */
-.dp-crumb { display:flex; align-items:center; gap:6px; font-size:12px; flex-wrap:wrap; margin-bottom:16px; color:var(--text-muted); }
-.dp-crumb a { color:var(--accent); font-weight:500; }
-.dp-crumb a:hover { text-decoration:underline; }
+/* Breadcrumb */
+.dp-crumb { display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:12px; font-weight:600; color:var(--text-light); margin-bottom:14px; }
+.dp-crumb a { color:var(--text-muted); transition:color .15s; }
+.dp-crumb a:hover { color:var(--accent); }
+.dp-crumb i { font-size:8px; opacity:.5; }
 
-/* GALLERY */
-.dp-gallery {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    grid-template-rows: 220px 110px;
-    gap: 5px;
-    border-radius: 14px;
-    overflow: hidden;
-    margin-bottom: 22px;
-    background: var(--accent-soft);
+/* ── HERO CAROUSEL — single image with arrows ─ */
+.dp-hero {
+    position:relative;
+    width:100%;
+    aspect-ratio:16/10;
+    max-height:520px;
+    border-radius:18px;
+    overflow:hidden;
+    margin-bottom:24px;
+    background:var(--accent-soft);
+    user-select:none;
 }
-.gal-main { grid-row: 1/3; position:relative; overflow:hidden; cursor:pointer; }
-.gal-main img { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
-.gal-main:hover img { transform:scale(1.03); }
-.gal-sub { position:relative; overflow:hidden; cursor:pointer; }
-.gal-sub img { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
-.gal-sub:hover img { transform:scale(1.04); }
-.gal-sub.more::after { content:''; position:absolute; inset:0; background:rgba(0,0,0,.38); }
-.gal-more-txt { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:white; font-size:1.1rem; font-weight:700; z-index:2; flex-direction:column; gap:3px; }
-.gal-more-txt span { font-size:11px; opacity:.8; font-weight:400; }
-.gal-nophoto { grid-column:1/3; grid-row:1/3; display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--accent-soft); color:var(--accent-light); gap:8px; opacity:.5; }
-.gal-actions { position:absolute; top:12px; right:12px; display:flex; gap:7px; z-index:5; }
-.gal-btn { display:flex; align-items:center; gap:5px; padding:6px 12px; background:rgba(255,255,255,.94); border-radius:8px; font-size:12px; font-weight:600; color:var(--text); cursor:pointer; border:none; font-family:'Inter',sans-serif; box-shadow:0 2px 8px rgba(0,0,0,.1); transition:all .18s; }
-.gal-btn:hover { background:white; transform:translateY(-1px); }
-.gal-btn.saved { background:#fff5f5; color:#ef4444; }
-.gal-btn.saved i { color:#ef4444; }
+.gh-slide {
+    position:absolute; inset:0;
+    opacity:0;
+    transition:opacity .35s ease;
+    cursor:zoom-in;
+}
+.gh-slide.active { opacity:1; z-index:2; }
+.gh-slide img { width:100%; height:100%; object-fit:cover; display:block; }
 
-/* LIGHTBOX */
-.lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,.94); z-index:9999; align-items:center; justify-content:center; flex-direction:column; }
-.lightbox.open { display:flex; }
-.lb-wrap { position:relative; max-width:90vw; max-height:80vh; }
-.lb-wrap img { max-width:90vw; max-height:80vh; object-fit:contain; border-radius:8px; }
-.lb-close { position:absolute; top:16px; right:16px; width:38px; height:38px; background:rgba(255,255,255,.15); border:none; border-radius:50%; color:white; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-.lb-close:hover { background:rgba(255,255,255,.25); }
-.lb-arr { position:absolute; top:50%; transform:translateY(-50%); width:40px; height:40px; background:rgba(255,255,255,.12); border:none; border-radius:50%; color:white; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-.lb-arr:hover { background:rgba(255,255,255,.22); }
-.lb-arr.l { left:14px; } .lb-arr.r { right:14px; }
-.lb-cnt { color:rgba(255,255,255,.55); font-size:12px; margin-top:12px; }
-.lb-thumbs { display:flex; gap:5px; margin-top:10px; overflow-x:auto; max-width:90vw; }
-.lb-thumbs::-webkit-scrollbar { display:none; }
-.lb-thumb { width:54px; height:40px; border-radius:5px; overflow:hidden; flex-shrink:0; cursor:pointer; opacity:.4; border:2px solid transparent; transition:all .15s; }
-.lb-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
-.lb-thumb.on { opacity:1; border-color:var(--accent); }
+.gh-arr {
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:46px; height:46px; border-radius:50%;
+    background:rgba(255,255,255,.94);
+    border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--primary); font-size:14px;
+    box-shadow:0 6px 18px rgba(0,0,0,.18);
+    z-index:10;
+    transition:transform .15s, background .15s;
+    backdrop-filter:blur(6px);
+}
+.gh-arr:hover { background:white; transform:translateY(-50%) scale(1.08); }
+.gh-arr.l { left:14px; }
+.gh-arr.r { right:14px; }
 
-/* MAIN GRID */
-.dp-grid { display:grid; grid-template-columns:1fr 340px; gap:20px; align-items:start; }
-.dp-left { min-width:0; }
-.dp-sidebar { position:sticky; top:74px; }
+.gh-counter {
+    position:absolute; bottom:14px; left:14px;
+    padding:6px 12px; border-radius:8px;
+    background:rgba(15,20,40,.65); backdrop-filter:blur(6px);
+    color:white; font-size:12px; font-weight:700;
+    z-index:10;
+    display:flex; align-items:center; gap:6px;
+}
+.gh-counter i { font-size:10px; opacity:.85; }
 
-/* TAGS + TITLE */
-.dp-tags { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
-.dp-title { font-size:1.35rem; font-weight:800; color:var(--primary); line-height:1.35; margin-bottom:16px; }
+.gh-actions { position:absolute; top:14px; right:14px; display:flex; gap:8px; z-index:10; }
+.gh-btn {
+    display:inline-flex; align-items:center; gap:6px;
+    padding:9px 14px;
+    background:rgba(255,255,255,.95); backdrop-filter:blur(8px);
+    border:none; border-radius:10px;
+    font-family:'Inter',sans-serif; font-size:12px; font-weight:700;
+    color:var(--text); cursor:pointer;
+    box-shadow:0 4px 14px rgba(0,0,0,.18);
+    transition:transform .15s, background .15s;
+}
+.gh-btn:hover { transform:translateY(-1px); background:white; }
+.gh-btn.saved { background:rgba(254,242,242,.95); color:#ef4444; }
 
-/* META STRIP */
-.dp-meta { display:flex; background:var(--card-bg); border:1px solid var(--card-border); border-radius:12px; overflow:hidden; margin-bottom:16px; }
-.dmi { flex:1; padding:12px 14px; border-right:1px solid var(--border); display:flex; flex-direction:column; gap:2px; }
-.dmi:last-child { border-right:none; }
-.dmi-lbl { font-size:9px; font-weight:700; color:var(--text-light); text-transform:uppercase; letter-spacing:.05em; }
-.dmi-val { font-size:13px; font-weight:700; color:var(--primary); }
+.gh-dots {
+    position:absolute; bottom:16px; left:50%; transform:translateX(-50%);
+    display:flex; gap:6px; z-index:10;
+}
+.gh-dot {
+    width:7px; height:7px; border-radius:50%;
+    background:rgba(255,255,255,.5);
+    border:1.5px solid rgba(0,0,0,.15);
+    cursor:pointer; padding:0;
+    transition:all .2s;
+}
+.gh-dot.on { background:white; width:24px; border-radius:7px; }
 
-/* CARD */
-.dp-card { background:var(--card-bg); border:1px solid var(--card-border); border-radius:14px; overflow:hidden; margin-bottom:14px; }
-.dp-ch { padding:12px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:8px; background:var(--accent-pale); }
-.dp-ch-ico { width:28px; height:28px; border-radius:7px; background:var(--accent-soft); color:var(--accent); display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0; }
-.dp-ch h3 { font-size:13px; font-weight:700; color:var(--primary); flex:1; margin:0; }
-.dp-cb { padding:16px; }
-.dp-desc { font-size:13px; color:var(--text-muted); line-height:1.85; white-space:pre-line; }
+.gh-empty {
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:12px;
+    color:var(--accent-light); opacity:.5;
+}
+.gh-empty i { font-size:3rem; }
 
-/* MAP */
-#dpMap { height:220px; width:100%; display:block; z-index:1; }
-.dp-map-foot { padding:9px 14px; background:var(--accent-pale); border-top:1px solid var(--border); font-size:11px; color:var(--text-muted); display:flex; align-items:center; gap:5px; }
-.dp-map-foot i { color:var(--accent); }
+/* ── HEAD: title + tags ──────────────── */
+.dp-head { margin-bottom:22px; }
+.dp-tags { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+.tag {
+    display:inline-flex; align-items:center; gap:6px;
+    padding:5px 11px; border-radius:999px;
+    font-size:11px; font-weight:800; letter-spacing:.02em;
+}
+.tag.location { background:var(--accent-soft); color:var(--accent); }
+.tag.active   { background:#dcfce7; color:#15803d; }
+.tag.rented   { background:#fee2e2; color:#991b1b; }
+.tag.rating   { background:#fef3c7; color:#a16207; }
+.tag.muted    { background:transparent; border:1px solid var(--border); color:var(--text-light); padding:4px 10px; }
+.tag.muted i  { color:var(--accent); }
+.dp-title {
+    font-size:1.7rem; font-weight:900;
+    color:var(--primary); line-height:1.25;
+    letter-spacing:-.5px;
+}
 
-/* RATING */
-.rating-display { display:flex; align-items:center; gap:14px; padding:12px 14px; background:var(--accent-pale); border-radius:10px; margin-bottom:14px; border:1px solid var(--border); }
-.rd-score { font-size:2.2rem; font-weight:800; color:var(--primary); line-height:1; flex-shrink:0; }
-.rd-stars { color:#f59e0b; font-size:13px; margin-bottom:2px; }
-.rd-cnt { font-size:11px; color:var(--text-light); }
-.star-row { display:flex; flex-direction:row-reverse; gap:2px; margin:8px 0 10px; }
+/* ── 2-COLUMN LAYOUT ─────────────────── */
+.dp-grid { display:grid; grid-template-columns:minmax(0,1fr) 360px; gap:32px; align-items:start; }
+.dp-main { min-width:0; }
+.dp-side { position:sticky; top:72px; display:flex; flex-direction:column; gap:14px; }
+
+/* ── SUMMARY STRIP ───────────────────── */
+.dp-summary {
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    background:var(--card-bg);
+    border:1px solid var(--card-border);
+    border-radius:16px;
+    overflow:hidden;
+    margin-bottom:28px;
+    box-shadow:0 4px 14px rgba(0,0,0,.05);
+}
+.sm-cell {
+    padding:18px 20px;
+    border-right:1px solid var(--border);
+    display:flex; flex-direction:column; justify-content:center;
+    min-height:88px;
+}
+.sm-cell:last-child { border-right:none; }
+.sm-lbl { font-size:11px; font-weight:800; color:var(--text-light); text-transform:uppercase; letter-spacing:.07em; margin-bottom:7px; display:flex; align-items:center; gap:6px; }
+.sm-lbl i { color:var(--accent); font-size:11px; }
+.sm-val {
+    font-size:15px; font-weight:800;
+    color:var(--primary);
+    word-break:break-word;
+}
+.sm-val.accent { color:var(--accent); font-size:20px; letter-spacing:-.4px; }
+
+/* ── SECTION ─────────────────────────── */
+.dp-section {
+    background:var(--card-bg);
+    border:1px solid var(--card-border);
+    border-radius:16px;
+    padding:22px 24px;
+    margin-bottom:18px;
+    box-shadow:0 4px 14px rgba(0,0,0,.04);
+}
+.dp-section h2 {
+    font-size:17px; font-weight:900;
+    color:var(--primary); letter-spacing:-.2px;
+    margin-bottom:16px;
+    display:flex; align-items:center; gap:10px;
+}
+.dp-section h2 i { color:var(--accent); font-size:16px; }
+.dp-section h2 .count { background:var(--accent-soft); color:var(--accent); font-size:12px; padding:3px 10px; border-radius:14px; margin-left:auto; font-weight:800; }
+
+.dp-desc {
+    font-size:15px; color:var(--text); line-height:1.85;
+    white-space:pre-line;
+}
+
+/* Section variants — map and rating use no inner padding */
+.dp-section.no-pad { padding:0; overflow:hidden; }
+.dp-section.no-pad h2 { padding:22px 24px 0; margin-bottom:0; }
+.dp-section.no-pad h2 .count { margin-right:0; }
+.dp-section.no-pad .map-body,
+.dp-section.no-pad .rt-body { padding:14px 24px 22px; }
+
+/* ── MAP ─────────────────────────────── */
+.dp-map-empty {
+    padding:36px 24px;
+    background:var(--accent-soft);
+    border:1px dashed var(--accent-border);
+    border-radius:14px;
+    text-align:center; color:var(--text-muted);
+}
+.dp-map-empty i { font-size:2.2rem; opacity:.45; display:block; margin-bottom:10px; color:var(--accent); }
+.dp-map-empty span { font-size:14px; font-weight:600; }
+
+/* Map container — strict bounds so Leaflet can never escape */
+.dp-map-box {
+    position:relative;
+    width:100%;
+    height:300px;
+    overflow:hidden;
+}
+#dpMap {
+    position:absolute !important;
+    top:0; left:0; right:0; bottom:0;
+    width:100% !important;
+    height:100% !important;
+    background:var(--accent-soft);
+}
+.leaflet-container {
+    background:var(--accent-soft) !important;
+    width:100% !important;
+    height:100% !important;
+    max-height:100% !important;
+}
+
+/* ── RATING ──────────────────────────── */
+.rt-card {
+    display:flex; align-items:center; gap:18px;
+    padding:18px 20px;
+    background:linear-gradient(135deg, var(--accent-pale) 0%, var(--accent-soft) 100%);
+    border:1px solid var(--accent-border);
+    border-radius:14px;
+    margin-bottom:14px;
+}
+.rt-score { font-size:2.6rem; font-weight:900; color:var(--accent); line-height:1; letter-spacing:-1.5px; flex-shrink:0; }
+.rt-stars i { font-size:14px; color:#f59e0b; margin-right:1px; }
+.rt-stars i.empty { color:#e5e7eb; }
+.rt-text { font-size:13px; color:var(--text-muted); margin-top:4px; font-weight:600; }
+.rt-form { padding:14px 0 0; }
+.rt-form-lbl { font-size:13px; color:var(--text-muted); font-weight:700; margin-bottom:8px; }
+.star-row { display:flex; flex-direction:row-reverse; justify-content:flex-end; gap:4px; margin-bottom:12px; }
 .star-row input { display:none; }
-.star-row label { font-size:1.5rem; color:#d4d4d4; cursor:pointer; transition:color .12s; line-height:1; }
+.star-row label { font-size:1.8rem; color:#d4d4d4; cursor:pointer; transition:color .12s, transform .12s; line-height:1; }
+.star-row label:hover { transform:scale(1.15); }
 .star-row input:checked ~ label,
 .star-row label:hover,
 .star-row label:hover ~ label { color:#f59e0b; }
+.rt-login {
+    padding:14px 16px; background:var(--surface);
+    border:1px dashed var(--border); border-radius:12px;
+    text-align:center; font-size:13px; color:var(--text-muted);
+}
+.rt-login a { color:var(--accent); font-weight:700; }
 
-/* COMMENTS */
-.cs-section { background:var(--card-bg); border:1px solid var(--card-border); border-radius:14px; overflow:hidden; margin-top:16px; }
-.cs-head { padding:13px 18px; border-bottom:1px solid var(--border); background:var(--accent-pale); display:flex; align-items:center; gap:8px; }
-.cs-head h3 { font-size:13px; font-weight:700; color:var(--primary); margin:0; display:flex; align-items:center; gap:7px; }
-.cs-body { padding:18px; }
-.ci-wrap { display:flex; gap:10px; align-items:flex-start; margin-bottom:18px; padding-bottom:18px; border-bottom:1px solid var(--border); }
-.ci-av { width:34px; height:34px; border-radius:50%; background:var(--accent); color:white; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; flex-shrink:0; overflow:hidden; }
-.ci-av img { width:100%; height:100%; object-fit:cover; }
-.ci-textarea { width:100%; padding:10px 13px; border:1.5px solid var(--border); border-radius:10px; font-family:'Inter',sans-serif; font-size:13px; resize:none; outline:none; min-height:72px; color:var(--text); background:var(--surface); display:block; }
-.ci-textarea:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(124,58,237,.08); }
-.ci-foot { display:flex; justify-content:space-between; align-items:center; margin-top:7px; }
-.ci-count { font-size:11px; color:var(--text-light); }
-.c-item { display:flex; gap:10px; padding:13px 0; border-bottom:1px solid var(--border); }
-.c-item:last-child { border-bottom:none; padding-bottom:0; }
-.c-av { width:34px; height:34px; border-radius:50%; background:var(--accent); color:white; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; flex-shrink:0; overflow:hidden; }
-.c-av img { width:100%; height:100%; object-fit:cover; }
-.c-name { font-weight:700; font-size:13px; color:var(--primary); }
-.c-date { font-size:11px; color:var(--text-light); margin-left:6px; }
-.c-text { font-size:13px; color:var(--text-muted); line-height:1.65; margin-top:3px; }
+/* ── COMMENTS ────────────────────────── */
+.cm-form { display:flex; gap:12px; align-items:flex-start; padding:18px; background:var(--surface); border:1px solid var(--card-border); border-radius:14px; margin-bottom:18px; }
+.cm-av { width:40px; height:40px; border-radius:50%; background:var(--accent); color:white; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; flex-shrink:0; overflow:hidden; }
+.cm-av img { width:100%; height:100%; object-fit:cover; }
+.cm-textarea {
+    width:100%; padding:12px 14px;
+    border:1.5px solid var(--border); border-radius:12px;
+    font-family:'Inter',sans-serif; font-size:14px;
+    resize:none; outline:none; min-height:80px;
+    color:var(--text); background:var(--surface);
+    transition:border-color .15s, box-shadow .15s;
+}
+.cm-textarea:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(124,58,237,.1); }
+.cm-foot { display:flex; justify-content:space-between; align-items:center; margin-top:10px; }
+.cm-counter { font-size:11px; color:var(--text-light); font-weight:600; }
+.cm-list { display:flex; flex-direction:column; gap:18px; }
+.cm-item { display:flex; gap:12px; }
+.cm-c-av { width:40px; height:40px; border-radius:50%; background:var(--accent); color:white; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:13px; flex-shrink:0; overflow:hidden; }
+.cm-c-av img { width:100%; height:100%; object-fit:cover; }
+.cm-c-body { flex:1; min-width:0; }
+.cm-c-head { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:5px; }
+.cm-c-name { font-size:14px; font-weight:800; color:var(--primary); }
+.cm-c-time { font-size:11px; color:var(--text-light); font-weight:500; }
+.cm-c-text { font-size:14px; color:var(--text); line-height:1.65; word-wrap:break-word; }
+.cm-empty { padding:40px 24px; text-align:center; color:var(--text-light); }
+.cm-empty i { font-size:2.4rem; opacity:.25; display:block; margin-bottom:10px; }
+.cm-login {
+    padding:14px 16px; background:var(--accent-pale);
+    border:1px solid var(--accent-border); border-radius:12px;
+    margin-bottom:18px; font-size:13px; color:var(--text-muted);
+    display:flex; align-items:center; gap:10px;
+}
+.cm-login i { color:var(--accent); }
+.cm-login a { color:var(--accent); font-weight:800; }
 
-/* SIMILAR */
-.sim-section { margin-top:16px; }
-.sim-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
-.sim-head h3 { font-size:14px; font-weight:800; color:var(--primary); display:flex; align-items:center; gap:7px; margin:0; }
-.sim-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
-.sim-card { background:var(--card-bg); border:1px solid var(--card-border); border-radius:12px; overflow:hidden; text-decoration:none; display:block; transition:all .2s; }
-.sim-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-md); border-color:var(--accent-border); }
-.sim-img { height:90px; overflow:hidden; background:var(--accent-soft); }
-.sim-img img { width:100%; height:100%; object-fit:cover; display:block; }
-.sim-img .ni { width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--accent-light); font-size:1.4rem; opacity:.25; }
-.sim-info { padding:8px 10px 10px; }
-.sim-price { font-weight:800; color:var(--accent); font-size:13px; }
-.sim-loc { font-size:10px; color:var(--text-light); margin-top:2px; }
-.sim-addr { font-size:11px; color:var(--primary); margin-top:2px; font-weight:500; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; line-height:1.35; }
+/* ── SIDEBAR PRICE CARD ──────────────── */
+.pcard {
+    background:var(--card-bg);
+    border:1px solid var(--card-border);
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 14px 40px rgba(15,20,40,.08);
+}
+.pcard-top {
+    padding:22px 22px 18px;
+    background:linear-gradient(135deg, var(--hero-start) 0%, var(--hero-mid) 50%, var(--hero-end) 100%);
+    color:white;
+    text-align:center;
+    position:relative; overflow:hidden;
+}
+.pcard-top::before {
+    content:''; position:absolute;
+    width:180px; height:180px; border-radius:50%;
+    background:rgba(255,255,255,.08);
+    top:-60px; right:-50px;
+}
+.pcard-top::after {
+    content:''; position:absolute;
+    width:120px; height:120px; border-radius:50%;
+    background:rgba(255,255,255,.05);
+    bottom:-40px; left:-30px;
+}
+.pc-lbl { font-size:11px; opacity:.8; text-transform:uppercase; letter-spacing:.1em; font-weight:700; position:relative; }
+.pc-price { font-size:2.4rem; font-weight:900; line-height:1; letter-spacing:-1.5px; margin-top:4px; position:relative; }
+.pc-period { font-size:12px; opacity:.7; margin-top:4px; position:relative; }
+.pcard-body { padding:18px; }
+.owner-row {
+    display:flex; align-items:center; gap:12px;
+    padding:12px 14px;
+    background:var(--accent-pale);
+    border:1px solid var(--accent-border);
+    border-radius:12px;
+    margin-bottom:14px;
+}
+.ow-av { width:46px; height:46px; border-radius:50%; background:var(--accent); color:white; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px; overflow:hidden; flex-shrink:0; }
+.ow-av img { width:100%; height:100%; object-fit:cover; }
+.ow-name { font-weight:800; font-size:14px; color:var(--primary); }
+.ow-tag { font-size:11px; color:#15803d; font-weight:700; margin-top:3px; display:flex; align-items:center; gap:5px; }
+.ow-tag i { font-size:7px; }
+.phone-show {
+    padding:14px 16px;
+    background:linear-gradient(135deg,#f0fdf4 0%,#dcfce7 100%);
+    border:2px solid #86efac; border-radius:12px;
+    text-align:center; margin-bottom:12px;
+    display:none;
+    animation:slide-in .25s ease;
+}
+@keyframes slide-in { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+.ph-lbl { font-size:10px; color:#15803d; font-weight:800; text-transform:uppercase; letter-spacing:.08em; margin-bottom:5px; display:flex; align-items:center; justify-content:center; gap:5px; }
+.ph-num a { font-size:1.4rem; font-weight:900; color:#14532d; letter-spacing:.3px; text-decoration:none; }
+.btn-call {
+    width:100%; padding:14px 18px;
+    background:var(--accent); color:white;
+    border:none; border-radius:12px;
+    font-size:15px; font-weight:800;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:9px;
+    margin-bottom:10px;
+    font-family:'Inter',sans-serif;
+    box-shadow:0 6px 18px rgba(124,58,237,.3);
+    transition:all .2s;
+}
+.btn-call:hover:not(:disabled) { filter:brightness(1.1); transform:translateY(-2px); box-shadow:0 8px 22px rgba(124,58,237,.4); }
+.btn-call:disabled { opacity:.65; cursor:not-allowed; }
+.btn-call.green { background:linear-gradient(135deg,#22c55e 0%,#16a34a 100%); box-shadow:0 6px 18px rgba(34,197,94,.3); }
+.side-actions { display:flex; gap:8px; }
+.side-actions .btn { flex:1; justify-content:center; font-size:13px; padding:11px 12px; }
+.side-divider { height:1px; background:var(--border); margin:14px 0; }
+.owner-actions { display:flex; gap:8px; }
+.owner-actions .btn { flex:1; justify-content:center; font-size:13px; padding:11px 12px; }
 
-/* SIDEBAR — PRICE CARD */
-.price-card { background:var(--card-bg); border:1px solid var(--card-border); border-radius:16px; overflow:hidden; box-shadow:var(--shadow-md); margin-bottom:12px; }
-.pc-top { background:linear-gradient(135deg,var(--hero-start) 0%,var(--hero-end) 100%); padding:20px 18px 16px; color:white; text-align:center; }
-.pc-lbl { font-size:10px; opacity:.6; text-transform:uppercase; letter-spacing:.1em; margin-bottom:3px; }
-.pc-price { font-size:2.2rem; font-weight:900; line-height:1; }
-.pc-period { font-size:11px; opacity:.5; margin-top:3px; }
-.pc-body { padding:14px; }
-.owner-block { display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--accent-pale); border-radius:10px; margin-bottom:12px; border:1px solid var(--border); }
-.ob-av { width:40px; height:40px; border-radius:50%; background:var(--accent); color:white; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; overflow:hidden; flex-shrink:0; }
-.ob-av img { width:100%; height:100%; object-fit:cover; }
-.ob-name { font-weight:700; font-size:13px; color:var(--primary); }
-.ob-tag { font-size:10px; color:var(--text-light); margin-top:2px; display:flex; align-items:center; gap:3px; }
-.ob-tag i { color:#22c55e; font-size:7px; }
-.phone-box { display:none; padding:11px 13px; background:#f0fdf4; border:1.5px solid #86efac; border-radius:10px; text-align:center; margin-bottom:10px; }
-.ph-lbl { font-size:10px; color:#16a34a; font-weight:700; text-transform:uppercase; letter-spacing:.06em; margin-bottom:3px; display:flex; align-items:center; justify-content:center; gap:4px; }
-.ph-num { font-size:1.3rem; font-weight:800; color:#14532d; }
-.call-btn { width:100%; padding:12px 16px; background:var(--accent); color:white; border:none; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px; transition:all .2s; margin-bottom:8px; font-family:'Inter',sans-serif; }
-.call-btn:hover:not(:disabled) { filter:brightness(1.1); transform:translateY(-1px); }
-.call-btn:disabled { opacity:.65; cursor:not-allowed; }
-.call-btn.green { background:#22c55e; }
-.sb-actions { display:flex; gap:8px; }
-.sb-actions .btn { flex:1; justify-content:center; font-size:12px; }
-.owner-edit { display:flex; gap:7px; margin-top:10px; padding-top:12px; border-top:1px solid var(--border); }
-.owner-edit .btn { flex:1; justify-content:center; font-size:12px; }
+/* Stats card */
+.stcard {
+    background:var(--card-bg);
+    border:1px solid var(--card-border);
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 4px 14px rgba(0,0,0,.04);
+}
+.st-row {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:13px 16px; border-bottom:1px solid var(--border);
+    transition:background .15s;
+}
+.st-row:hover { background:var(--accent-pale); }
+.st-row:last-child { border-bottom:none; }
+.st-lbl { display:flex; align-items:center; gap:9px; font-size:13px; color:var(--text-muted); font-weight:600; }
+.st-lbl i { color:var(--accent); width:14px; text-align:center; }
+.st-val { font-weight:800; font-size:13px; color:var(--primary); }
 
-/* STATS */
-.stats-card { background:var(--card-bg); border:1px solid var(--card-border); border-radius:12px; overflow:hidden; }
-.sc-row { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; border-bottom:1px solid var(--border); font-size:12px; }
-.sc-row:last-child { border-bottom:none; }
-.sc-lbl { display:flex; align-items:center; gap:7px; color:var(--text-muted); }
-.sc-lbl i { color:var(--accent); width:12px; text-align:center; }
-.sc-val { font-weight:700; color:var(--primary); font-size:12px; }
+/* ── SIMILAR ─────────────────────────── */
+.sim { margin-top:30px; }
+.sim-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:10px; }
+.sim-head h2 { font-size:20px; font-weight:900; color:var(--primary); letter-spacing:-.3px; margin:0; display:flex; align-items:center; gap:9px; }
+.sim-head h2 i { color:var(--accent); }
+.sim-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+.sim-card {
+    background:var(--card-bg);
+    border:1px solid var(--card-border);
+    border-radius:14px;
+    overflow:hidden;
+    text-decoration:none;
+    transition:transform .25s, box-shadow .25s, border-color .25s;
+}
+.sim-card:hover { transform:translateY(-4px); box-shadow:0 12px 28px rgba(0,0,0,.1); border-color:var(--accent-border); }
+.sim-img { aspect-ratio:4/3; overflow:hidden; background:var(--accent-soft); }
+.sim-img img { width:100%; height:100%; object-fit:cover; transition:transform .5s; }
+.sim-card:hover .sim-img img { transform:scale(1.06); }
+.sim-img .ni { width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:var(--accent-light); font-size:1.6rem; opacity:.3; }
+.sim-info { padding:11px 13px 13px; }
+.sim-price { font-weight:900; color:var(--accent); font-size:15px; letter-spacing:-.3px; }
+.sim-loc { font-size:11px; color:var(--text-light); margin-top:4px; font-weight:600; }
+.sim-addr { font-size:12px; color:var(--primary); margin-top:5px; font-weight:600; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
 
-/* MODALS */
-.m-overlay { display:none; position:fixed; inset:0; background:rgba(10,10,20,.55); z-index:9000; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(5px); }
+/* ── LIGHTBOX ────────────────────────── */
+.lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,.94); z-index:9999; align-items:center; justify-content:center; flex-direction:column; }
+.lightbox.open { display:flex; }
+.lb-wrap { position:relative; max-width:92vw; max-height:80vh; }
+.lb-wrap img { max-width:92vw; max-height:80vh; object-fit:contain; border-radius:8px; display:block; }
+.lb-close { position:absolute; top:16px; right:16px; width:42px; height:42px; background:rgba(255,255,255,.16); border:none; border-radius:50%; color:white; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(6px); }
+.lb-close:hover { background:rgba(255,255,255,.28); }
+.lb-arr { position:absolute; top:50%; transform:translateY(-50%); width:46px; height:46px; background:rgba(255,255,255,.16); border:none; border-radius:50%; color:white; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(6px); }
+.lb-arr:hover { background:rgba(255,255,255,.28); }
+.lb-arr.l { left:18px; } .lb-arr.r { right:18px; }
+.lb-cnt { color:rgba(255,255,255,.65); font-size:13px; margin-top:14px; font-weight:600; }
+.lb-thumbs { display:flex; gap:6px; margin-top:12px; overflow-x:auto; max-width:92vw; padding:0 12px; }
+.lb-thumbs::-webkit-scrollbar { display:none; }
+.lb-thumb { width:60px; height:44px; border-radius:6px; overflow:hidden; flex-shrink:0; cursor:pointer; opacity:.4; border:2px solid transparent; transition:opacity .15s, border-color .15s; }
+.lb-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+.lb-thumb.on { opacity:1; border-color:var(--accent); }
+
+/* ── MODALS ──────────────────────────── */
+.m-overlay { display:none; position:fixed; inset:0; background:rgba(10,10,20,.6); z-index:9000; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(6px); }
 .m-overlay.open { display:flex; }
-.m-box { background:white; border-radius:18px; padding:28px 22px 22px; max-width:380px; width:100%; box-shadow:0 24px 60px rgba(0,0,0,.18); animation:mPop .25s cubic-bezier(.34,1.56,.64,1); }
+.m-box { background:white; border-radius:20px; padding:30px 24px 22px; max-width:400px; width:100%; box-shadow:0 28px 70px rgba(0,0,0,.22); animation:mPop .25s cubic-bezier(.34,1.56,.64,1); }
 @keyframes mPop { from{opacity:0;transform:scale(.88)} to{opacity:1;transform:scale(1)} }
-.m-ico { width:58px; height:58px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.4rem; margin:0 auto 12px; }
-.m-box h3 { text-align:center; font-size:15px; font-weight:800; color:var(--primary); margin-bottom:6px; }
-.m-box p { text-align:center; font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:18px; }
-.m-btns { display:flex; gap:8px; }
-.m-btns .btn { flex:1; justify-content:center; }
-.m-choice { width:100%; display:flex; align-items:center; gap:10px; padding:10px 12px; border:1.5px solid var(--border); border-radius:10px; background:white; cursor:pointer; transition:all .17s; font-family:'Inter',sans-serif; margin-bottom:7px; text-align:left; }
+.m-ico { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.5rem; margin:0 auto 14px; }
+.m-box h3 { text-align:center; font-size:17px; font-weight:900; color:var(--primary); margin-bottom:8px; letter-spacing:-.2px; }
+.m-box p { text-align:center; font-size:14px; color:var(--text-muted); line-height:1.6; margin-bottom:20px; }
+.m-btns { display:flex; gap:10px; }
+.m-btns .btn { flex:1; justify-content:center; padding:11px 14px; font-size:14px; }
+.m-choice {
+    width:100%; display:flex; align-items:center; gap:12px;
+    padding:12px 14px; border:1.5px solid var(--border); border-radius:12px;
+    background:white; cursor:pointer; transition:all .17s;
+    font-family:'Inter',sans-serif; margin-bottom:8px; text-align:left;
+}
 .m-choice:hover { border-color:var(--accent); background:var(--accent-soft); }
 .m-choice.bad { color:#dc2626; }
 .m-choice.bad:hover { border-color:#dc2626; background:#fff5f5; }
-.mc-ico { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
+.mc-ico { width:36px; height:36px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
 .m-choice.good .mc-ico { background:#dcfce7; color:#16a34a; }
 .m-choice.bad .mc-ico  { background:#fee2e2; color:#dc2626; }
-.mc-t { font-weight:700; font-size:13px; }
-.mc-s { font-size:10px; opacity:.6; margin-top:1px; }
+.mc-t { font-weight:800; font-size:14px; }
+.mc-s { font-size:11px; opacity:.65; margin-top:2px; }
 
-/* RESPONSIVE */
+/* ── RESPONSIVE ──────────────────────── */
 @media (max-width:1020px) {
-    .dp-grid { grid-template-columns:1fr; }
-    .dp-sidebar { position:static; }
+    .dp-grid { grid-template-columns:1fr; gap:24px; }
+    .dp-side { position:static; }
     .sim-grid { grid-template-columns:repeat(2,1fr); }
-    .dp-gallery { grid-template-rows:200px 100px; }
+    .dp-summary { grid-template-columns:repeat(2,1fr); }
+    .sm-cell:nth-child(2) { border-right:none; }
+    .sm-cell:nth-child(1), .sm-cell:nth-child(2) { border-bottom:1px solid var(--border); }
 }
 @media (max-width:640px) {
-    .dp-wrap { padding:12px 12px 50px; }
-    .dp-gallery { grid-template-columns:1fr; grid-template-rows:220px; }
-    .gal-main { grid-row:auto; }
-    .gal-sub { display:none; }
-    .dp-meta { flex-direction:column; }
-    .dmi { border-right:none; border-bottom:1px solid var(--border); }
-    .dmi:last-child { border-bottom:none; }
-    .dp-title { font-size:1.15rem; }
-    .sim-grid { grid-template-columns:1fr 1fr; }
+    .dp { padding:12px 14px 60px; }
+    .dp-hero { aspect-ratio:4/3; }
+    .gh-btn span { display:none; }
+    .gh-btn { padding:9px 11px; }
+    .gh-arr { width:38px; height:38px; }
+    .gh-arr.l { left:10px; } .gh-arr.r { right:10px; }
+    .dp-summary { grid-template-columns:1fr; }
+    .sm-cell { border-right:none !important; border-bottom:1px solid var(--border); }
+    .sm-cell:last-child { border-bottom:none; }
+    .dp-title { font-size:1.3rem; }
+    .pc-price { font-size:2rem; }
+    .sim-grid { grid-template-columns:1fr 1fr; gap:10px; }
 }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="dp-wrap">
+<div class="dp">
 
-    <!-- BREADCRUMB -->
+    <!-- Breadcrumb -->
     <div class="dp-crumb">
-        <a href="{% url 'house_list' %}"><i class="fa-solid fa-house" style="margin-right:3px;"></i>Bosh sahifa</a>
-        <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i>
-        <a href="{% url 'house_list' %}?region={{ house.region.id }}">{{ house.region.name }}</a>
-        <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i>
-        <a href="{% url 'house_list' %}?region={{ house.region.id }}">{{ house.district.name }}</a>
-        <i class="fa-solid fa-chevron-right" style="font-size:9px;"></i>
-        <span>{{ house.street }}</span>
+        <a href="{% url 'house_list' %}"><i class="fa-solid fa-house"></i> {% trans "Bosh sahifa" %}</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <a href="{% url 'house_list' %}?region={{ house.region.id }}">{{ house.region.display_name }}</a>
+        <i class="fa-solid fa-chevron-right"></i>
+        <span>{{ house.district.display_name }}</span>
     </div>
 
-    <!-- GALLERY -->
+    <!-- Hero carousel — single image, swipe in place -->
     {% if images %}
-        <div class="dp-gallery">
-            <div class="gal-main" onclick="lbOpen(0)">
-                <img src="{{ images.0.image.url }}" alt="{{ house.full_address }}">
-                <div class="gal-actions">
-                    {% if user.is_authenticated %}
-                        <button class="gal-btn {% if in_wishlist %}saved{% endif %}"
-                                id="galWishBtn"
-                                onclick="event.stopPropagation(); toggleWish({{ house.pk }}, this)"
-                                type="button">
-                            <i class="fa-{% if in_wishlist %}solid{% else %}regular{% endif %} fa-heart"></i>
-                            <span>{% if in_wishlist %}Saqlangan{% else %}Saqlash{% endif %}</span>
-                        </button>
-                    {% endif %}
-                    <button class="gal-btn" onclick="event.stopPropagation();lbOpen(0)" type="button">
-                        <i class="fa-solid fa-images"></i>
-                        <span>{{ images|length }} ta rasm</span>
+        <div class="dp-hero" id="dpHero">
+            {% for img in images %}
+                <div class="gh-slide {% if forloop.first %}active{% endif %}" data-i="{{ forloop.counter0 }}" onclick="lbOpen({{ forloop.counter0 }})">
+                    <img src="{{ img.image.url }}" alt="{{ house.full_address }}" loading="{% if forloop.first %}eager{% else %}lazy{% endif %}">
+                </div>
+            {% endfor %}
+
+            {% if images|length > 1 %}
+                <button class="gh-arr l" type="button" onclick="event.stopPropagation();heroPrev()" aria-label="prev">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <button class="gh-arr r" type="button" onclick="event.stopPropagation();heroNext()" aria-label="next">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+                <div class="gh-counter">
+                    <i class="fa-solid fa-images"></i>
+                    <span id="heroCnt">1 / {{ images|length }}</span>
+                </div>
+                <div class="gh-dots" id="heroDots">
+                    {% for img in images %}
+                        <button class="gh-dot {% if forloop.first %}on{% endif %}" type="button" onclick="event.stopPropagation();heroGo({{ forloop.counter0 }})" aria-label="image {{ forloop.counter }}"></button>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="gh-actions">
+                {% if user.is_authenticated %}
+                    <button class="gh-btn {% if in_wishlist %}saved{% endif %}"
+                            id="galWishBtn" type="button"
+                            onclick="event.stopPropagation();toggleWish({{ house.pk }}, this)">
+                        <i class="fa-{% if in_wishlist %}solid{% else %}regular{% endif %} fa-heart"></i>
+                        <span>{% if in_wishlist %}{% trans "Saqlangan" %}{% else %}{% trans "Saqlash" %}{% endif %}</span>
                     </button>
-                </div>
+                {% endif %}
             </div>
-            {% if images|length >= 2 %}
-                <div class="gal-sub" onclick="lbOpen(1)">
-                    <img src="{{ images.1.image.url }}" alt="">
-                </div>
-            {% endif %}
-            {% if images|length >= 3 %}
-                <div class="gal-sub {% if images|length > 3 %}more{% endif %}" onclick="lbOpen(2)">
-                    <img src="{{ images.2.image.url }}" alt="">
-                    {% if images|length > 3 %}
-                        <div class="gal-more-txt">
-                            +{{ images|length|add:"-3" }}
-                            <span>ta rasm</span>
-                        </div>
-                    {% endif %}
-                </div>
-            {% endif %}
         </div>
     {% else %}
-        <div class="dp-gallery">
-            <div class="gal-nophoto">
-                <i class="fa-solid fa-image" style="font-size:2.5rem;"></i>
-                <span style="font-size:13px;">Rasm yuklanmagan</span>
+        <div class="dp-hero">
+            <div class="gh-empty">
+                <i class="fa-regular fa-image"></i>
+                <span style="font-weight:600;font-size:14px;">{% trans "Rasm yuklanmagan" %}</span>
             </div>
         </div>
     {% endif %}
 
-    <!-- MAIN GRID -->
+    <!-- Title + tags -->
+    <div class="dp-head">
+        <div class="dp-tags">
+            <span class="tag location">
+                <i class="fa-solid fa-location-dot"></i>
+                {{ house.district.display_name }}, {{ house.region.display_name }}
+            </span>
+            <span class="tag {% if house.is_rented %}rented{% else %}active{% endif %}">
+                <i class="fa-solid fa-circle" style="font-size:6px;"></i>
+                {% if house.is_rented %}{% trans "Ijaraga berildi" %}{% else %}{% trans "Faol" %}{% endif %}
+            </span>
+            {% if avg_rating > 0 %}
+                <span class="tag rating">
+                    <i class="fa-solid fa-star"></i> {{ avg_rating }}
+                    <span style="opacity:.7;">({{ house.ratings.count }})</span>
+                </span>
+            {% endif %}
+            <span class="tag muted">
+                <i class="fa-regular fa-clock"></i>
+                {% blocktrans with t=house.created_at|timesince %}{{ t }} oldin{% endblocktrans %}
+            </span>
+            <span class="tag muted">
+                <i class="fa-regular fa-eye"></i>
+                {{ house.view_count }}
+            </span>
+        </div>
+        <h1 class="dp-title">{{ house.full_address }}</h1>
+    </div>
+
+    <!-- 2-column layout -->
     <div class="dp-grid">
 
-        <!-- LEFT -->
-        <div class="dp-left">
+        <!-- LEFT: main content -->
+        <div class="dp-main">
 
-            <!-- Tags + Title -->
-            <div class="dp-tags">
-                <span class="badge badge-primary">
-                    <i class="fa-solid fa-location-dot"></i>
-                    {{ house.district.name }}, {{ house.region.name }}
-                </span>
-                <span class="badge badge-success">
-                    <i class="fa-solid fa-circle" style="font-size:6px;"></i> Faol
-                </span>
-                {% if avg_rating > 0 %}
-                    <span class="badge badge-warning">
-                        <i class="fa-solid fa-star"></i> {{ avg_rating }}
-                    </span>
-                {% endif %}
-                <span style="font-size:11px;color:var(--text-light);">
-                    <i class="fa-regular fa-clock" style="margin-right:2px;"></i>
-                    {{ house.created_at|timesince }} oldin
-                </span>
-            </div>
-            <h1 class="dp-title">{{ house.full_address }}</h1>
-
-            <!-- Meta -->
-            <div class="dp-meta">
-                <div class="dmi">
-                    <div class="dmi-lbl">Oylik narx</div>
-                    <div class="dmi-val" style="color:var(--accent);">${{ house.price_usd }}</div>
+            <!-- Summary strip -->
+            <div class="dp-summary">
+                <div class="sm-cell">
+                    <div class="sm-lbl"><i class="fa-solid fa-dollar-sign"></i> {% trans "Oylik narx" %}</div>
+                    <div class="sm-val accent">${{ house.price_usd }}</div>
                 </div>
-                <div class="dmi">
-                    <div class="dmi-lbl">Viloyat</div>
-                    <div class="dmi-val">{{ house.region.name }}</div>
+                <div class="sm-cell">
+                    <div class="sm-lbl"><i class="fa-solid fa-map-location-dot"></i> {% trans "Viloyat" %}</div>
+                    <div class="sm-val">{{ house.region.display_name }}</div>
                 </div>
-                <div class="dmi">
-                    <div class="dmi-lbl">Tuman</div>
-                    <div class="dmi-val">{{ house.district.name }}</div>
+                <div class="sm-cell">
+                    <div class="sm-lbl"><i class="fa-solid fa-location-dot"></i> {% trans "Tuman" %}</div>
+                    <div class="sm-val">{{ house.district.display_name }}</div>
                 </div>
-                <div class="dmi">
-                    <div class="dmi-lbl">Ko'cha</div>
-                    <div class="dmi-val">{{ house.street }}</div>
+                <div class="sm-cell">
+                    <div class="sm-lbl"><i class="fa-solid fa-road"></i> {% trans "Ko'cha" %}</div>
+                    <div class="sm-val">{{ house.street }}</div>
                 </div>
             </div>
 
-            <!-- Description -->
-            <div class="dp-card">
-                <div class="dp-ch">
-                    <div class="dp-ch-ico"><i class="fa-solid fa-align-left"></i></div>
-                    <h3>Uy haqida</h3>
-                </div>
-                <div class="dp-cb">
-                    <div class="dp-desc">{{ house.description }}</div>
-                </div>
+            <!-- About -->
+            <div class="dp-section">
+                <h2><i class="fa-solid fa-circle-info"></i> {% trans "Uy haqida" %}</h2>
+                <div class="dp-desc">{{ house.description }}</div>
             </div>
 
-            <!-- Map -->
-            <div class="dp-card">
-                <div class="dp-ch">
-                    <div class="dp-ch-ico"><i class="fa-solid fa-map-location-dot"></i></div>
-                    <h3>Joylashuv xaritada</h3>
-                </div>
-                {% if house.latitude and house.longitude %}
-                    <div id="dpMap"></div>
-                    <div class="dp-map-foot">
-                        <i class="fa-solid fa-location-dot"></i>
+            <!-- Location / Map -->
+            {% if house.latitude and house.longitude %}
+                <div class="dp-section no-pad">
+                    <h2 style="margin-bottom:14px;"><i class="fa-solid fa-map-location-dot"></i> {% trans "Joylashuv xaritada" %}</h2>
+                    <div style="padding:0 24px 14px;font-size:13px;color:var(--text-muted);font-weight:600;display:flex;align-items:center;gap:7px;">
+                        <i class="fa-solid fa-location-dot" style="color:var(--accent);"></i>
                         {{ house.full_address }}
                     </div>
-                {% else %}
-                    <div class="dp-cb" style="text-align:center;padding:24px;color:var(--text-light);">
-                        <i class="fa-solid fa-map" style="font-size:1.8rem;opacity:.18;display:block;margin-bottom:6px;"></i>
-                        <span style="font-size:12px;">Koordinatalar kiritilmagan</span>
+                    <div class="dp-map-box">
+                        <div id="dpMap"></div>
                     </div>
-                {% endif %}
-            </div>
-
-            <!-- Rating -->
-            <div class="dp-card">
-                <div class="dp-ch">
-                    <div class="dp-ch-ico" style="background:#fef3c7;color:#f59e0b;"><i class="fa-solid fa-star"></i></div>
-                    <h3>Reyting</h3>
-                    <span style="font-size:11px;color:var(--text-light);margin-left:auto;">{{ house.ratings.count }} ta baho</span>
                 </div>
-                <div class="dp-cb">
-                    <div class="rating-display">
-                        <div class="rd-score">{{ avg_rating|floatformat:1 }}</div>
-                        <div>
-                            <div class="rd-stars">
-                                {% for i in "12345" %}
-                                    <i class="fa-{% if forloop.counter <= avg_rating %}solid{% else %}regular{% endif %} fa-star"></i>
-                                {% endfor %}
-                            </div>
-                            <div class="rd-cnt">{{ house.ratings.count }} ta foydalanuvchi baholagan</div>
-                        </div>
-                    </div>
-                    {% if user.is_authenticated and house.owner != user %}
-                        <form method="post" action="{% url 'add_rating' house.pk %}">
-                            {% csrf_token %}
-                            <div style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:4px;">Bahoyingizni qoldiring:</div>
-                            <div class="star-row">
-                                {% for i in "54321" %}
-                                    <input type="radio" name="score" id="sr{{ i }}" value="{{ i }}"
-                                        {% if user_rating and user_rating.score|stringformat:'s' == i %}checked{% endif %}>
-                                    <label for="sr{{ i }}"><i class="fa-solid fa-star"></i></label>
-                                {% endfor %}
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-sm">
-                                <i class="fa-solid fa-check"></i> Saqlash
-                            </button>
-                        </form>
-                    {% elif not user.is_authenticated %}
-                        <div style="padding:10px;background:var(--accent-pale);border-radius:8px;text-align:center;font-size:12px;color:var(--text-muted);">
-                            Baho berish uchun
-                            <a href="{% url 'login' %}?next={% url 'house_detail' house.pk %}" style="color:var(--accent);font-weight:700;">kiring</a>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <!-- Comments -->
-            <div class="cs-section">
-                <div class="cs-head">
-                    <div class="dp-ch-ico" style="width:28px;height:28px;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;border-radius:7px;font-size:12px;flex-shrink:0;">
-                        <i class="fa-solid fa-comments"></i>
-                    </div>
-                    <h3>
-                        Izohlar
-                        <span class="badge badge-info">{{ comments.count }}</span>
-                    </h3>
-                </div>
-                <div class="cs-body">
-                    {% if user.is_authenticated %}
-                        <div class="ci-wrap">
-                            <div class="ci-av">
-                                {% if user.avatar %}<img src="{{ user.avatar.url }}" alt="">
-                                {% else %}{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}{% endif %}
-                            </div>
-                            <div style="flex:1;">
-                                <form method="post" action="{% url 'add_comment' house.pk %}">
-                                    {% csrf_token %}
-                                    <textarea name="text" class="ci-textarea"
-                                              placeholder="Fikr yoki savolingizni yozing..."
-                                              id="cTxt" maxlength="1000"
-                                              oninput="cCount()"></textarea>
-                                    <div class="ci-foot">
-                                        <span class="ci-count" id="cCnt">0 / 1000</span>
-                                        <button type="submit" class="btn btn-primary btn-sm">
-                                            <i class="fa-solid fa-paper-plane"></i> Yuborish
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    {% else %}
-                        <div style="padding:12px 14px;background:var(--accent-pale);border-radius:9px;margin-bottom:16px;font-size:12px;color:var(--text-muted);border:1px solid var(--border);display:flex;align-items:center;gap:7px;">
-                            <i class="fa-solid fa-lock" style="color:var(--accent);"></i>
-                            Izoh qoldirish uchun
-                            <a href="{% url 'login' %}?next={% url 'house_detail' house.pk %}" style="color:var(--accent);font-weight:700;">kiring</a>
-                        </div>
-                    {% endif %}
-
-                    {% if comments %}
-                        <div>
-                            {% for c in comments %}
-                                <div class="c-item">
-                                    <div class="c-av">
-                                        {% if c.user.avatar %}<img src="{{ c.user.avatar.url }}" alt="">
-                                        {% else %}{{ c.user.first_name|first|upper }}{{ c.user.last_name|first|upper }}{% endif %}
-                                    </div>
-                                    <div style="flex:1;min-width:0;">
-                                        <div>
-                                            <span class="c-name">{{ c.user.get_full_name }}</span>
-                                            <span class="c-date">{{ c.created_at|timesince }} oldin</span>
-                                        </div>
-                                        <div class="c-text">{{ c.text }}</div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <div style="text-align:center;padding:28px 20px;color:var(--text-light);">
-                            <i class="fa-regular fa-comment-dots" style="font-size:2rem;display:block;margin-bottom:8px;opacity:.18;"></i>
-                            <div style="font-size:12px;">Hali izoh yo'q</div>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-
-            <!-- Similar -->
-            {% if similar %}
-                <div class="sim-section">
-                    <div class="sim-head">
-                        <h3>
-                            <i class="fa-solid fa-house-circle-check" style="color:var(--accent);"></i>
-                            {{ house.district.name }} tumanidagi boshqa uylar
-                        </h3>
-                        <a href="{% url 'house_list' %}?region={{ house.region.id }}" class="btn btn-outline btn-sm">Ko'rish</a>
-                    </div>
-                    <div class="sim-grid">
-                        {% for s in similar %}
-                            <a href="{% url 'house_detail' s.pk %}" class="sim-card">
-                                <div class="sim-img">
-                                    {% with img=s.main_image %}
-                                        {% if img %}<img src="{{ img.image.url }}" alt="">
-                                        {% else %}<div class="ni"><i class="fa-solid fa-image"></i></div>{% endif %}
-                                    {% endwith %}
-                                </div>
-                                <div class="sim-info">
-                                    <div class="sim-price">${{ s.price_usd }}/oy</div>
-                                    <div class="sim-loc"><i class="fa-solid fa-location-dot" style="color:var(--accent);font-size:9px;margin-right:2px;"></i>{{ s.district.name }}</div>
-                                    <div class="sim-addr">{{ s.full_address }}</div>
-                                </div>
-                            </a>
-                        {% endfor %}
+            {% else %}
+                <div class="dp-section">
+                    <h2><i class="fa-solid fa-map-location-dot"></i> {% trans "Joylashuv xaritada" %}</h2>
+                    <div class="dp-map-empty">
+                        <i class="fa-regular fa-map"></i>
+                        <span>{% trans "Koordinatalar kiritilmagan" %}</span>
                     </div>
                 </div>
             {% endif %}
 
+            <!-- Rating -->
+            <div class="dp-section">
+                <h2><i class="fa-solid fa-star"></i> {% trans "Reyting" %}<span class="count">{{ house.ratings.count }}</span></h2>
+                <div class="rt-card">
+                    <div class="rt-score">{{ avg_rating|floatformat:1 }}</div>
+                    <div>
+                        <div class="rt-stars">
+                            {% for i in "12345" %}
+                                <i class="fa-solid fa-star {% if forloop.counter > avg_rating %}empty{% endif %}"></i>
+                            {% endfor %}
+                        </div>
+                        <div class="rt-text">
+                            {{ house.ratings.count }} {% trans "ta foydalanuvchi baholagan" %}
+                        </div>
+                    </div>
+                </div>
+                {% if user.is_authenticated and house.owner != user %}
+                    <form method="post" action="{% url 'add_rating' house.pk %}" class="rt-form">
+                        {% csrf_token %}
+                        <div class="rt-form-lbl">{% trans "Bahoyingizni qoldiring:" %}</div>
+                        <div class="star-row">
+                            {% for i in "54321" %}
+                                <input type="radio" name="score" id="sr{{ i }}" value="{{ i }}"
+                                    {% if user_rating and user_rating.score|stringformat:'s' == i %}checked{% endif %}>
+                                <label for="sr{{ i }}"><i class="fa-solid fa-star"></i></label>
+                            {% endfor %}
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa-solid fa-check"></i> {% trans "Saqlash" %}
+                        </button>
+                    </form>
+                {% elif not user.is_authenticated %}
+                    <div class="rt-login">
+                        {% trans "Baho berish uchun" %}
+                        <a href="{% url 'login' %}?next={% url 'house_detail' house.pk %}">{% trans "kiring" %}</a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Comments -->
+            <div class="dp-section">
+                <h2><i class="fa-solid fa-comments"></i> {% trans "Izohlar" %}<span class="count">{{ comments.count }}</span></h2>
+
+                {% if user.is_authenticated %}
+                    <div class="cm-form">
+                        <div class="cm-av">
+                            {% if user.avatar %}<img src="{{ user.avatar.url }}" alt="">
+                            {% else %}{{ user.first_name|first|upper }}{{ user.last_name|first|upper }}{% endif %}
+                        </div>
+                        <div style="flex:1;">
+                            <form method="post" action="{% url 'add_comment' house.pk %}">
+                                {% csrf_token %}
+                                <textarea name="text" class="cm-textarea"
+                                          placeholder="{% trans 'Fikr yoki savolingizni yozing...' %}"
+                                          id="cTxt" maxlength="1000" oninput="cCount()"></textarea>
+                                <div class="cm-foot">
+                                    <span class="cm-counter" id="cCnt">0 / 1000</span>
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        <i class="fa-solid fa-paper-plane"></i> {% trans "Yuborish" %}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="cm-login">
+                        <i class="fa-solid fa-lock"></i>
+                        {% trans "Izoh qoldirish uchun" %}
+                        <a href="{% url 'login' %}?next={% url 'house_detail' house.pk %}">{% trans "kiring" %}</a>
+                    </div>
+                {% endif %}
+
+                {% if comments %}
+                    <div class="cm-list">
+                        {% for c in comments %}
+                            <div class="cm-item">
+                                <div class="cm-c-av">
+                                    {% if c.user.avatar %}<img src="{{ c.user.avatar.url }}" alt="">
+                                    {% else %}{{ c.user.first_name|first|upper }}{{ c.user.last_name|first|upper }}{% endif %}
+                                </div>
+                                <div class="cm-c-body">
+                                    <div class="cm-c-head">
+                                        <span class="cm-c-name">{{ c.user.get_full_name }}</span>
+                                        <span class="cm-c-time">
+                                            {% blocktrans with t=c.created_at|timesince %}{{ t }} oldin{% endblocktrans %}
+                                        </span>
+                                    </div>
+                                    <div class="cm-c-text">{{ c.text }}</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="cm-empty">
+                        <i class="fa-regular fa-comment-dots"></i>
+                        <div style="font-size:14px;font-weight:600;">{% trans "Hali izoh yo'q" %}</div>
+                    </div>
+                {% endif %}
+            </div>
         </div>
 
-        <!-- SIDEBAR -->
-        <div class="dp-sidebar">
-            <div class="price-card">
-                <div class="pc-top">
-                    <div class="pc-lbl">Oylik ijara narxi</div>
+        <!-- RIGHT: sticky sidebar -->
+        <aside class="dp-side">
+            <div class="pcard">
+                <div class="pcard-top">
+                    <div class="pc-lbl">{% trans "Oylik ijara narxi" %}</div>
                     <div class="pc-price">${{ house.price_usd }}</div>
-                    <div class="pc-period">AQSh dollari / oy</div>
+                    <div class="pc-period">{% trans "AQSh dollari / oy" %}</div>
                 </div>
-                <div class="pc-body">
-                    <div class="owner-block">
-                        <div class="ob-av">
+                <div class="pcard-body">
+                    <div class="owner-row">
+                        <div class="ow-av">
                             {% if house.owner.avatar %}<img src="{{ house.owner.avatar.url }}" alt="">
                             {% else %}{{ house.owner.first_name|first|upper }}{{ house.owner.last_name|first|upper }}{% endif %}
                         </div>
                         <div>
-                            <div class="ob-name">{{ house.owner.get_full_name }}</div>
-                            <div class="ob-tag"><i class="fa-solid fa-circle"></i> Uy egasi</div>
+                            <div class="ow-name">{{ house.owner.get_full_name }}</div>
+                            <div class="ow-tag"><i class="fa-solid fa-circle"></i> {% trans "Uy egasi" %}</div>
                         </div>
                     </div>
 
-                    <div class="phone-box" id="phoneBox">
-                        <div class="ph-lbl"><i class="fa-solid fa-phone"></i> Telefon raqam</div>
-                        <div class="ph-num" id="phoneNum">—</div>
+                    <div class="phone-show" id="phoneBox">
+                        <div class="ph-lbl"><i class="fa-solid fa-phone"></i> {% trans "Telefon raqam" %}</div>
+                        <div class="ph-num"><a href="#" id="phoneNum">—</a></div>
                     </div>
 
                     {% if house.owner != user %}
-                        <button class="call-btn" id="callBtn" type="button" onclick="doCall()">
+                        <button class="btn-call" id="callBtn" type="button" onclick="doCall()">
                             <i class="fa-solid fa-phone"></i>
-                            <span id="callTxt">Telefon raqamni ko'rish</span>
+                            <span id="callTxt">{% trans "Telefon raqamni ko'rish" %}</span>
                         </button>
                     {% endif %}
 
-                    <div class="sb-actions">
+                    <div class="side-actions">
                         {% if user.is_authenticated %}
                             <button class="btn {% if in_wishlist %}btn-danger{% else %}btn-outline{% endif %}"
                                     id="sideWishBtn"
                                     onclick="toggleWish({{ house.pk }}, this)">
                                 <i class="fa-{% if in_wishlist %}solid{% else %}regular{% endif %} fa-heart"></i>
-                                <span>{% if in_wishlist %}Saqlangan{% else %}Saqlash{% endif %}</span>
+                                <span>{% if in_wishlist %}{% trans "Saqlangan" %}{% else %}{% trans "Saqlash" %}{% endif %}</span>
                             </button>
                         {% else %}
                             <a href="{% url 'login' %}?next={% url 'house_detail' house.pk %}" class="btn btn-outline">
-                                <i class="fa-regular fa-heart"></i> Saqlash
+                                <i class="fa-regular fa-heart"></i> {% trans "Saqlash" %}
                             </a>
                         {% endif %}
                         {% if user.is_authenticated and house.owner != user %}
-                            <button class="btn btn-outline" id="reportBtn" style="display:none;" onclick="mOpen('reportM')" title="Shikoyat">
+                            <button class="btn btn-outline" id="reportBtn" style="display:none;" onclick="mOpen('reportM')" title="{% trans 'Shikoyat' %}">
                                 <i class="fa-solid fa-flag"></i>
                             </button>
                         {% endif %}
                     </div>
 
                     {% if user.is_authenticated and house.owner == user %}
-                        <div class="owner-edit">
-                            <a href="{% url 'house_edit' house.pk %}" class="btn btn-secondary btn-sm">
-                                <i class="fa-solid fa-pen"></i> Tahrirlash
+                        <div class="side-divider"></div>
+                        <div class="owner-actions">
+                            <a href="{% url 'house_edit' house.pk %}" class="btn btn-secondary">
+                                <i class="fa-solid fa-pen"></i> {% trans "Tahrirlash" %}
                             </a>
-                            <a href="{% url 'house_delete' house.pk %}" class="btn btn-danger btn-sm">
-                                <i class="fa-solid fa-trash"></i> O'chirish
+                            <a href="{% url 'house_delete' house.pk %}" class="btn btn-danger">
+                                <i class="fa-solid fa-trash"></i>
                             </a>
                         </div>
                     {% endif %}
                 </div>
             </div>
 
-            <div class="stats-card">
-                <div class="sc-row">
-                    <span class="sc-lbl"><i class="fa-solid fa-calendar"></i> Sana</span>
-                    <span class="sc-val">{{ house.created_at|date:"d.m.Y" }}</span>
+            <div class="stcard">
+                <div class="st-row">
+                    <span class="st-lbl"><i class="fa-regular fa-calendar"></i> {% trans "Sana" %}</span>
+                    <span class="st-val">{{ house.created_at|date:"d.m.Y" }}</span>
                 </div>
-                <div class="sc-row">
-                    <span class="sc-lbl"><i class="fa-solid fa-comments"></i> Izohlar</span>
-                    <span class="sc-val">{{ comments.count }}</span>
+                <div class="st-row">
+                    <span class="st-lbl"><i class="fa-regular fa-eye"></i> {% trans "Ko'rishlar" %}</span>
+                    <span class="st-val">{{ house.view_count }}</span>
                 </div>
-                <div class="sc-row">
-                    <span class="sc-lbl"><i class="fa-solid fa-star" style="color:#f59e0b;"></i> Reyting</span>
-                    <span class="sc-val">{{ avg_rating }}/5</span>
+                <div class="st-row">
+                    <span class="st-lbl"><i class="fa-solid fa-comments"></i> {% trans "Izohlar" %}</span>
+                    <span class="st-val">{{ comments.count }}</span>
                 </div>
-                <div class="sc-row">
-                    <span class="sc-lbl"><i class="fa-solid fa-images"></i> Rasmlar</span>
-                    <span class="sc-val">{{ images|length }} ta</span>
+                <div class="st-row">
+                    <span class="st-lbl"><i class="fa-solid fa-star" style="color:#f59e0b;"></i> {% trans "Reyting" %}</span>
+                    <span class="st-val">{{ avg_rating }}/5</span>
+                </div>
+                <div class="st-row">
+                    <span class="st-lbl"><i class="fa-solid fa-images"></i> {% trans "Rasmlar" %}</span>
+                    <span class="st-val">{{ images|length }} {% trans "ta" %}</span>
                 </div>
             </div>
-        </div>
-
+        </aside>
     </div>
+
+    <!-- Similar houses -->
+    {% if similar %}
+        <div class="sim">
+            <div class="sim-head">
+                <h2><i class="fa-solid fa-house-circle-check"></i>
+                    {% blocktrans with d=house.district.name %}{{ d }} tumanidagi boshqa uylar{% endblocktrans %}
+                </h2>
+                <a href="{% url 'house_list' %}?region={{ house.region.id }}" class="btn btn-outline btn-sm">
+                    {% trans "Hammasini ko'rish" %} <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="sim-grid">
+                {% for s in similar %}
+                    <a href="{% url 'house_detail' s.pk %}" class="sim-card">
+                        <div class="sim-img">
+                            {% with img=s.main_image %}
+                                {% if img %}<img src="{{ img.image.url }}" alt="">
+                                {% else %}<div class="ni"><i class="fa-regular fa-image"></i></div>{% endif %}
+                            {% endwith %}
+                        </div>
+                        <div class="sim-info">
+                            <div class="sim-price">${{ s.price_usd }}<span style="font-size:11px;color:var(--text-light);font-weight:500;">/{% trans "oy" %}</span></div>
+                            <div class="sim-loc"><i class="fa-solid fa-location-dot" style="color:var(--accent);"></i> {{ s.district.display_name }}</div>
+                            <div class="sim-addr">{{ s.full_address }}</div>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
 </div>
 
-<!-- LIGHTBOX -->
+<!-- Lightbox -->
 <div class="lightbox" id="lb">
     <button class="lb-close" onclick="lbClose()"><i class="fa-solid fa-xmark"></i></button>
-    <div class="lb-wrap" style="position:relative;">
+    <div class="lb-wrap">
         <img src="" alt="" id="lbImg">
         {% if images|length > 1 %}
             <button class="lb-arr l" onclick="lbChange(-1)"><i class="fa-solid fa-chevron-left"></i></button>
@@ -598,16 +851,16 @@
     {% endif %}
 </div>
 
-<!-- MODALS -->
+<!-- Modals -->
 <div class="m-overlay" id="loginM">
     <div class="m-box">
         <div class="m-ico" style="background:#eff6ff;"><i class="fa-solid fa-right-to-bracket" style="color:#3b82f6;"></i></div>
-        <h3>Tizimga kiring</h3>
-        <p>Uy egasining telefon raqamini ko'rish uchun avval kiring.</p>
+        <h3>{% trans "Tizimga kiring" %}</h3>
+        <p>{% trans "Uy egasining telefon raqamini ko'rish uchun avval kiring." %}</p>
         <div class="m-btns">
-            <button class="btn btn-outline" onclick="mClose('loginM')">Bekor</button>
+            <button class="btn btn-outline" onclick="mClose('loginM')">{% trans "Bekor" %}</button>
             <a href="{% url 'login' %}?next={% url 'house_detail' house.pk %}" class="btn btn-primary">
-                <i class="fa-solid fa-right-to-bracket"></i> Kirish
+                <i class="fa-solid fa-right-to-bracket"></i> {% trans "Kirish" %}
             </a>
         </div>
     </div>
@@ -615,43 +868,41 @@
 <div class="m-overlay" id="noSubM">
     <div class="m-box">
         <div class="m-ico" style="background:#fff7ed;"><i class="fa-solid fa-crown" style="color:#f97316;"></i></div>
-        <h3>Premium tarif kerak</h3>
-        <p>Uy egasining telefon raqamini ko'rish uchun tarif sotib oling.<br><br>
-           <strong style="color:var(--accent);">3 kunlik — 30 000 so'm</strong><br>
-           <strong style="color:var(--accent);">7 kunlik — 50 000 so'm</strong></p>
+        <h3>{% trans "Premium tarif kerak" %}</h3>
+        <p>{% trans "Uy egasining telefon raqamini ko'rish uchun tarif sotib oling." %}</p>
         <div class="m-btns">
-            <button class="btn btn-outline" onclick="mClose('noSubM')">Bekor</button>
-            <a href="{% url 'tariff_list' %}" class="btn btn-primary"><i class="fa-solid fa-crown"></i> Tariflar</a>
+            <button class="btn btn-outline" onclick="mClose('noSubM')">{% trans "Bekor" %}</button>
+            <a href="{% url 'tariff_list' %}" class="btn btn-primary"><i class="fa-solid fa-crown"></i> {% trans "Tariflar" %}</a>
         </div>
     </div>
 </div>
 <div class="m-overlay" id="afterCallM">
     <div class="m-box">
         <div class="m-ico" style="background:#f0fdf4;"><i class="fa-solid fa-phone-volume" style="color:#22c55e;"></i></div>
-        <h3>Qo'ng'iroq qildingizmi?</h3>
-        <p>Uy egasi haqida fikringizni bildiring.</p>
+        <h3>{% trans "Qo'ng'iroq qildingizmi?" %}</h3>
+        <p>{% trans "Uy egasi haqida fikringizni bildiring." %}</p>
         <button class="m-choice good" onclick="mClose('afterCallM')">
             <div class="mc-ico"><i class="fa-solid fa-user-check"></i></div>
-            <div><div class="mc-t">Makler emas — hammasi yaxshi</div><div class="mc-s">To'g'ridan-to'g'ri uy egasi</div></div>
+            <div><div class="mc-t">{% trans "Makler emas — hammasi yaxshi" %}</div><div class="mc-s">{% trans "To'g'ridan-to'g'ri uy egasi" %}</div></div>
         </button>
         <button class="m-choice bad" onclick="callToReport()">
             <div class="mc-ico"><i class="fa-solid fa-user-slash"></i></div>
-            <div><div class="mc-t">Bu makler — shikoyat yuborish</div><div class="mc-s">Boshqalarni ogohlantiring</div></div>
+            <div><div class="mc-t">{% trans "Bu makler — shikoyat yuborish" %}</div><div class="mc-s">{% trans "Boshqalarni ogohlantiring" %}</div></div>
         </button>
-        <button class="btn btn-outline btn-sm btn-block" style="margin-top:6px;" onclick="mClose('afterCallM')">Keyinroq</button>
+        <button class="btn btn-outline btn-block" style="margin-top:8px;" onclick="mClose('afterCallM')">{% trans "Keyinroq" %}</button>
     </div>
 </div>
 <div class="m-overlay" id="reportM">
     <div class="m-box">
         <div class="m-ico" style="background:#fef2f2;"><i class="fa-solid fa-flag" style="color:#ef4444;"></i></div>
-        <h3>Shikoyat yuborish</h3>
-        <p>Uy egasini <strong>makler</strong> sifatida belgilaysiz. 5 ta shikoyat to'plansa, u <strong>bloklanadi</strong>.</p>
+        <h3>{% trans "Shikoyat yuborish" %}</h3>
+        <p>{% trans "Uy egasini makler sifatida belgilaysiz. 5 ta shikoyat to'plansa, u bloklanadi." %}</p>
         <div class="m-btns">
-            <button class="btn btn-outline" onclick="mClose('reportM')">Bekor</button>
+            <button class="btn btn-outline" onclick="mClose('reportM')">{% trans "Bekor" %}</button>
             <form method="post" action="{% url 'report' house.pk %}" style="flex:1;">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger btn-block">
-                    <i class="fa-solid fa-flag"></i> Ha, makler
+                    <i class="fa-solid fa-flag"></i> {% trans "Ha, makler" %}
                 </button>
             </form>
         </div>
@@ -662,13 +913,64 @@
 
 {% block extra_js %}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+{% trans "Saqlangan" as t_saved %}
+{% trans "Saqlash" as t_save %}
+{% trans "Yuklanmoqda..." as t_loading %}
+{% trans "Telefon raqamni ko'rish" as t_show_phone %}
 <script>
 const IS_AUTH  = {{ user.is_authenticated|yesno:"true,false" }};
 const HAS_SUB  = {{ has_sub|yesno:"true,false" }};
 const CALL_URL = "{% url 'call' house.pk %}";
 const ALL_IMGS = [{% for img in images %}"{{ img.image.url }}"{% if not forloop.last %},{% endif %}{% endfor %}];
+const I18N = {
+    saved: "{{ t_saved|escapejs }}",
+    save: "{{ t_save|escapejs }}",
+    loading: "{{ t_loading|escapejs }}",
+    showPhone: "{{ t_show_phone|escapejs }}",
+};
 
-/* LIGHTBOX */
+/* Hero carousel */
+let heroIdx = 0;
+function heroGo(i) {
+    if (!ALL_IMGS.length) return;
+    heroIdx = ((i % ALL_IMGS.length) + ALL_IMGS.length) % ALL_IMGS.length;
+    document.querySelectorAll('.gh-slide').forEach((el, n) => el.classList.toggle('active', n === heroIdx));
+    document.querySelectorAll('.gh-dot').forEach((el, n) => el.classList.toggle('on', n === heroIdx));
+    const cnt = document.getElementById('heroCnt');
+    if (cnt) cnt.textContent = (heroIdx + 1) + ' / ' + ALL_IMGS.length;
+}
+function heroNext() { heroGo(heroIdx + 1); }
+function heroPrev() { heroGo(heroIdx - 1); }
+
+/* Touch swipe on hero */
+(function() {
+    const hero = document.getElementById('dpHero');
+    if (!hero || ALL_IMGS.length < 2) return;
+    let startX = 0, startY = 0, moved = false;
+    hero.addEventListener('touchstart', e => {
+        startX = e.touches[0].clientX; startY = e.touches[0].clientY; moved = false;
+    }, {passive:true});
+    hero.addEventListener('touchmove', e => {
+        const dx = e.touches[0].clientX - startX;
+        const dy = e.touches[0].clientY - startY;
+        if (Math.abs(dx) > 24 && Math.abs(dx) > Math.abs(dy)) moved = true;
+    }, {passive:true});
+    hero.addEventListener('touchend', e => {
+        if (!moved) return;
+        const dx = e.changedTouches[0].clientX - startX;
+        if (dx > 0) heroPrev(); else heroNext();
+    });
+})();
+
+/* Keyboard arrows for hero (when lightbox not open) */
+document.addEventListener('keydown', e => {
+    if (document.getElementById('lb')?.classList.contains('open')) return;
+    if (ALL_IMGS.length < 2) return;
+    if (e.key === 'ArrowLeft')  heroPrev();
+    if (e.key === 'ArrowRight') heroNext();
+});
+
+/* Lightbox */
 let lbIdx = 0;
 function lbOpen(i) {
     lbIdx = i;
@@ -691,24 +993,32 @@ document.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight') lbChange(1);
 });
 
-/* MAP */
+/* Map */
 {% if house.latitude and house.longitude %}
-document.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('load', function () {
+    const mapEl = document.getElementById('dpMap');
+    if (!mapEl) return;
     const lat = parseFloat("{{ house.latitude }}");
     const lng = parseFloat("{{ house.longitude }}");
     const map = L.map('dpMap', { scrollWheelZoom:false }).setView([lat, lng], 15);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'© OpenStreetMap', maxZoom:19 }).addTo(map);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution:'© OpenStreetMap',
+        maxZoom:19,
+    }).addTo(map);
     const icon = L.divIcon({
-        html: `<div style="width:30px;height:30px;background:var(--accent);border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid white;box-shadow:0 3px 10px rgba(0,0,0,.25);"></div>`,
-        iconSize:[30,30], iconAnchor:[15,30], className:''
+        html: `<div style="width:34px;height:34px;background:#7c3aed;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid white;box-shadow:0 4px 12px rgba(0,0,0,.3);"></div>`,
+        iconSize:[34,34], iconAnchor:[17,34], className:''
     });
     L.marker([lat, lng], {icon}).addTo(map)
-     .bindPopup(`<b style="font-size:12px;">{{ house.full_address }}</b><br><span style="color:var(--accent);font-weight:700;">${{ house.price_usd }}$/oy</span>`)
+     .bindPopup(`<b style="font-size:13px;">{{ house.full_address }}</b><br><span style="color:#7c3aed;font-weight:800;font-size:14px;">${{ house.price_usd }}/{% trans "oy" %}</span>`)
      .openPopup();
+    /* Force tiles to redraw once layout settles */
+    setTimeout(() => map.invalidateSize(), 100);
+    setTimeout(() => map.invalidateSize(), 400);
 });
 {% endif %}
 
-/* WISHLIST AJAX */
+/* Wishlist AJAX */
 function toggleWish(houseId, btn) {
     if (!IS_AUTH) { mOpen('loginM'); return; }
     fetch('/houses/' + houseId + '/wishlist/', {
@@ -721,14 +1031,13 @@ function toggleWish(houseId, btn) {
         const isSaved = icon.classList.contains('fa-solid');
         if (isSaved) {
             icon.className = 'fa-regular fa-heart';
-            if (txt) txt.textContent = 'Saqlash';
+            if (txt) txt.textContent = I18N.save;
             btn.classList.remove('saved','btn-danger'); btn.classList.add('btn-outline');
         } else {
             icon.className = 'fa-solid fa-heart';
-            if (txt) txt.textContent = 'Saqlangan';
+            if (txt) txt.textContent = I18N.saved;
             btn.classList.add('saved','btn-danger'); btn.classList.remove('btn-outline','btn-secondary');
         }
-        /* Ikkinchi tugmani ham yangilash */
         ['galWishBtn','sideWishBtn'].forEach(id => {
             const other = document.getElementById(id);
             if (other && other !== btn) {
@@ -736,11 +1045,11 @@ function toggleWish(houseId, btn) {
                 const ot = other.querySelector('span');
                 if (isSaved) {
                     oi.className = 'fa-regular fa-heart';
-                    if (ot) ot.textContent = 'Saqlash';
+                    if (ot) ot.textContent = I18N.save;
                     other.classList.remove('saved','btn-danger'); other.classList.add('btn-outline');
                 } else {
                     oi.className = 'fa-solid fa-heart';
-                    if (ot) ot.textContent = 'Saqlangan';
+                    if (ot) ot.textContent = I18N.saved;
                     other.classList.add('saved','btn-danger'); other.classList.remove('btn-outline');
                 }
             }
@@ -748,35 +1057,38 @@ function toggleWish(houseId, btn) {
     });
 }
 
-/* CALL */
+/* Call */
 function doCall() {
     if (!IS_AUTH) { mOpen('loginM'); return; }
     if (!HAS_SUB) { mOpen('noSubM'); return; }
     const btn = document.getElementById('callBtn');
     btn.disabled = true;
-    btn.innerHTML = '<div class="spinner"></div><span> Yuklanmoqda...</span>';
+    btn.innerHTML = '<div class="spinner"></div><span> ' + I18N.loading + '</span>';
     fetch(CALL_URL).then(r => r.json()).then(data => {
         if (data.success) {
-            document.getElementById('phoneNum').textContent = data.phone;
+            const phoneEl = document.getElementById('phoneNum');
+            phoneEl.href = 'tel:' + data.phone;
+            phoneEl.textContent = data.phone;
             document.getElementById('phoneBox').style.display = 'block';
-            btn.className = 'call-btn green';
+            btn.className = 'btn-call green';
             btn.innerHTML = `<i class="fa-solid fa-phone-volume"></i><span>${data.phone}</span>`;
-            btn.disabled = false; btn.onclick = null;
+            btn.disabled = false;
+            btn.onclick = function() { window.location.href = 'tel:' + data.phone; };
             const rb = document.getElementById('reportBtn');
             if (rb) rb.style.display = 'flex';
             setTimeout(() => mOpen('afterCallM'), 5000);
         } else {
             btn.disabled = false;
-            btn.innerHTML = '<i class="fa-solid fa-phone"></i><span>Telefon raqamni ko\'rish</span>';
+            btn.innerHTML = '<i class="fa-solid fa-phone"></i><span>' + I18N.showPhone + '</span>';
             mOpen('noSubM');
         }
     }).catch(() => {
         btn.disabled = false;
-        btn.innerHTML = '<i class="fa-solid fa-phone"></i><span>Telefon raqamni ko\'rish</span>';
+        btn.innerHTML = '<i class="fa-solid fa-phone"></i><span>' + I18N.showPhone + '</span>';
     });
 }
 
-/* MODALS */
+/* Modals */
 function mOpen(id)  { document.getElementById(id).classList.add('open'); }
 function mClose(id) { document.getElementById(id).classList.remove('open'); }
 function callToReport() { mClose('afterCallM'); mOpen('reportM'); }
@@ -787,7 +1099,7 @@ document.addEventListener('keydown', e => {
     if (e.key === 'Escape') document.querySelectorAll('.m-overlay.open').forEach(m => m.classList.remove('open'));
 });
 
-/* COMMENT */
+/* Comment counter */
 function cCount() {
     const n = document.getElementById('cTxt')?.value.length || 0;
     const el = document.getElementById('cCnt');

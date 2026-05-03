@@ -1,52 +1,114 @@
 {% extends 'admin_custom/base_admin.html' %}
+{% load humanize i18n %}
+
+{% block title %}{% trans "Foydalanuvchilar" %}{% endblock %}
+{% block page_title %}{% trans "Foydalanuvchilar" %}{% endblock %}
+{% block page_subtitle %}{{ users.count }} {% trans "foydalanuvchi" %}{% endblock %}
+
+{% block extra_css %}
+.tbl-wrap { overflow-x: auto; }
+.tbl-search { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; gap: 10px; align-items: center; }
+.tbl-search input { flex: 1; padding: 9px 13px; border: 1px solid var(--border); border-radius: 9px; font-size: 13px; outline: none; font-family: 'Inter', sans-serif; }
+.tbl-search input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,58,237,.1); }
+.action-row { display: flex; gap: 6px; justify-content: flex-end; }
+{% endblock %}
 
 {% block admin_content %}
-<h4 class="fw-bold mb-4">Foydalanuvchilar boshqaruvi</h4>
-<div class="card table-card">
-    <div class="card-body p-0">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="bg-light text-muted small uppercase">
+<div class="ap-card">
+    <div class="ap-card-head">
+        <div class="ap-card-title">
+            <i class="fa-solid fa-users"></i>
+            {% trans "Foydalanuvchilar ro'yxati" %}
+            <span class="ap-pill info" style="margin-left:6px;">{{ users.count }}</span>
+        </div>
+    </div>
+    <div class="tbl-search">
+        <i class="fa-solid fa-magnifying-glass" style="color:var(--text-light);"></i>
+        <input type="text" id="tblSearch" placeholder="{% trans 'Ism yoki telefon bo\'yicha qidirish...' %}">
+    </div>
+    {% if users %}
+    <div class="tbl-wrap">
+        <table class="ap-table" id="usersTbl">
+            <thead>
                 <tr>
-                    <th class="ps-4 py-3">Foydalanuvchi</th>
-                    <th>Telefon</th>
-                    <th>Balans</th>
-                    <th>Shikoyatlar</th>
-                    <th>Holat</th>
-                    <th class="text-end pe-4">Amallar</th>
+                    <th>{% trans "Foydalanuvchi" %}</th>
+                    <th>{% trans "Telefon" %}</th>
+                    <th>{% trans "Balans" %}</th>
+                    <th>{% trans "E'lonlari" %}</th>
+                    <th>{% trans "Shikoyatlar" %}</th>
+                    <th>{% trans "Holat" %}</th>
+                    <th>{% trans "Qo'shilgan" %}</th>
+                    <th style="text-align:right;">{% trans "Amallar" %}</th>
                 </tr>
             </thead>
             <tbody>
                 {% for u in users %}
                 <tr>
-                    <td class="ps-4">
-                        <div class="fw-bold text-dark">{{ u.get_full_name }}</div>
-                        <div class="small text-muted">ID: #{{ u.id }}</div>
-                    </td>
-                    <td>{{ u.phone }}</td>
-                    <td class="fw-bold">{{ u.balance }} so'm</td>
                     <td>
-                        {% if u.reports_count_attr >= 5 %}
-                            <span class="badge bg-danger">❗ {{ u.reports_count_attr }} ta</span>
+                        <div class="ap-user-cell">
+                            <div class="ap-avatar">
+                                {% if u.avatar %}<img src="{{ u.avatar.url }}">
+                                {% else %}{{ u.first_name|first|upper }}{{ u.last_name|first|upper }}{% endif %}
+                            </div>
+                            <div>
+                                <div class="name">{{ u.get_full_name }}</div>
+                                <div class="sub">ID: {{ u.id }} {% if u.is_staff %}• <span style="color:var(--accent);">Staff</span>{% endif %}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="font-family:monospace;font-size:12px;font-weight:600;">{{ u.phone }}</td>
+                    <td style="font-weight:800;">{{ u.balance|floatformat:0|intcomma }} <span style="color:var(--text-light);font-size:10px;font-weight:600;">{% trans "so'm" %}</span></td>
+                    <td>{{ u.houses.count }}</td>
+                    <td>
+                        {% if u.reports_count_attr > 0 %}
+                            <span class="ap-pill danger"><i class="fa-solid fa-flag" style="margin-right:3px;"></i>{{ u.reports_count_attr }}</span>
                         {% else %}
-                            <span class="badge bg-light text-dark">{{ u.reports_count_attr }} ta</span>
+                            <span style="color:var(--text-light);font-size:12px;">—</span>
                         {% endif %}
                     </td>
                     <td>
                         {% if u.is_blocked %}
-                            <span class="badge bg-soft-danger text-danger border border-danger">Bloklangan</span>
+                            <span class="ap-pill danger">{% trans "Bloklangan" %}</span>
                         {% else %}
-                            <span class="badge bg-soft-success text-success border border-success">Faol</span>
+                            <span class="ap-pill success">{% trans "Faol" %}</span>
                         {% endif %}
                     </td>
-                    <td class="text-end pe-4">
-                        <a href="{% url 'admin_user_toggle_block' u.pk %}" class="btn btn-sm {% if u.is_blocked %}btn-success{% else %}btn-danger{% endif %} shadow-sm">
-                            {% if u.is_blocked %}<i class="fas fa-unlock me-1"></i> Ochish{% else %}<i class="fas fa-user-slash me-1"></i> Bloklash{% endif %}
-                        </a>
+                    <td style="font-size:11px;color:var(--text-muted);">{{ u.date_joined|date:"d.m.Y" }}</td>
+                    <td>
+                        <div class="action-row">
+                            <form method="post" action="{% url 'admin_user_toggle_block' u.pk %}" style="display:inline;"
+                                  onsubmit="return confirm('{% if u.is_blocked %}{% trans "Blokdan chiqarish?" %}{% else %}{% trans "Bloklash?" %}{% endif %}')">
+                                {% csrf_token %}
+                                {% if u.is_blocked %}
+                                    <button class="ap-btn ap-btn-success ap-btn-sm" title="{% trans 'Blokdan chiqarish' %}"><i class="fa-solid fa-unlock"></i></button>
+                                {% else %}
+                                    <button class="ap-btn ap-btn-danger ap-btn-sm" title="{% trans 'Bloklash' %}"><i class="fa-solid fa-ban"></i></button>
+                                {% endif %}
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+    {% else %}
+        <div class="ap-empty"><i class="fa-regular fa-user"></i><span>{% trans "Foydalanuvchilar yo'q" %}</span></div>
+    {% endif %}
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const search = document.getElementById('tblSearch');
+const tbl = document.getElementById('usersTbl');
+if (search && tbl) {
+    search.addEventListener('input', () => {
+        const q = search.value.toLowerCase();
+        tbl.querySelectorAll('tbody tr').forEach(tr => {
+            tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
+        });
+    });
+}
+</script>
 {% endblock %}

@@ -1,159 +1,132 @@
 {% extends 'admin_custom/base_admin.html' %}
-{% load humanize %}
+{% load humanize i18n %}
+
+{% block title %}{% trans "Uylar" %}{% endblock %}
+{% block page_title %}{% trans "Uylar" %}{% endblock %}
+{% block page_subtitle %}{{ houses.count }} {% trans "ta e'lon" %}{% endblock %}
 
 {% block extra_css %}
-<style>
-    .house-thumb {
-        width: 60px;
-        height: 45px;
-        object-fit: cover;
-        border-radius: 6px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .table-card {
-        border: none;
-        border-radius: 15px;
-        overflow: hidden;
-        background: #fff;
-    }
-    .search-bar {
-        border-radius: 10px;
-        border: 1px solid #e2e8f0;
-        padding: 0.6rem 1rem;
-        transition: 0.3s;
-    }
-    .search-bar:focus {
-        border-color: #38bdf8;
-        box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
-        outline: none;
-    }
-    .btn-action {
-        width: 32px;
-        height: 32px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 8px;
-        transition: 0.2s;
-    }
-    .status-badge {
-        font-size: 11px;
-        font-weight: 700;
-        padding: 4px 8px;
-        border-radius: 6px;
-        text-transform: uppercase;
-    }
-</style>
+.tbl-wrap { overflow-x: auto; }
+.house-thumb { width: 56px; height: 42px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
+.house-thumb-empty { width: 56px; height: 42px; border-radius: 8px; background: var(--bg); display: flex; align-items: center; justify-content: center; color: var(--text-light); flex-shrink: 0; }
+.house-cell { display: flex; align-items: center; gap: 12px; min-width: 220px; }
+.house-cell .info { min-width: 0; }
+.house-cell .name { font-weight: 700; font-size: 13px; color: var(--primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 240px; }
+.house-cell .sub  { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+.tbl-search { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.tbl-search input { flex: 1; min-width: 200px; padding: 9px 13px; border: 1px solid var(--border); border-radius: 9px; font-size: 13px; outline: none; transition: border-color .15s; font-family: 'Inter', sans-serif; }
+.tbl-search input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,58,237,.1); }
+.action-row { display: flex; gap: 6px; }
 {% endblock %}
 
 {% block admin_content %}
-<div class="container-fluid p-0">
-
-    <div class="row align-items-center mb-4">
-        <div class="col-md-6">
-            <h4 class="fw-bold text-dark mb-1">E'lonlar monitoringi</h4>
-            <p class="text-muted small">Tizimdagi barcha uy-joy e'lonlarini boshqarish</p>
-        </div>
-        <div class="col-md-6 text-md-end">
-            <div class="d-flex justify-content-md-end gap-2">
-                <form method="GET" class="d-flex gap-2">
-                    <input type="text" name="q" class="search-bar form-control-sm" placeholder="Manzil yoki ID bo'yicha qidirish...">
-                    <button class="btn btn-dark rounded-3 px-3">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </form>
-            </div>
+<div class="ap-card">
+    <div class="ap-card-head">
+        <div class="ap-card-title">
+            <i class="fa-solid fa-house"></i>
+            {% trans "Barcha e'lonlar" %}
+            <span class="ap-pill info" style="margin-left:6px;">{{ houses.count }}</span>
         </div>
     </div>
-
-    <div class="card table-card shadow-sm">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                    <thead class="bg-light text-muted small">
-                        <tr>
-                            <th class="ps-4 py-3 border-0">Rasmi & ID</th>
-                            <th class="border-0">Uy egasi</th>
-                            <th class="border-0">Manzil</th>
-                            <th class="border-0">Narxi</th>
-                            <th class="border-0">Holati</th>
-                            <th class="border-0">Sana</th>
-                            <th class="text-end pe-4 border-0">Amallar</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for h in houses %}
-                        <tr>
-                            <td class="ps-4">
-                                <div class="d-flex align-items-center">
-                                    {% if h.main_image %}
-                                        <img src="{{ h.main_image.image.url }}" class="house-thumb me-3">
-                                    {% else %}
-                                        <div class="house-thumb bg-secondary me-3 d-flex align-items-center justify-content-center">
-                                            <i class="fas fa-image text-white-50"></i>
-                                        </div>
-                                    {% endif %}
-                                    <div>
-                                        <span class="text-muted small">#{{ h.id }}</span>
-                                    </div>
-                                </div>
-                            </td>
-
-                            <td>
-                                <div class="fw-bold text-dark">{{ h.owner.get_full_name }}</div>
-                                <div class="text-muted small"><i class="fas fa-phone-alt me-1" style="font-size: 10px;"></i>{{ h.owner.phone }}</div>
-                            </td>
-
-                            <td>
-                                <div class="small fw-bold text-dark">{{ h.region.name }}</div>
-                                <div class="text-muted small text-truncate" style="max-width: 180px;">{{ h.district.name }}, {{ h.street }}</div>
-                            </td>
-
-                            <td>
-                                <div class="fw-bold text-primary">${{ h.price_usd|intcomma }}</div>
-                            </td>
-
-                            <td>
-                                {% if h.is_active %}
-                                    <span class="status-badge bg-light text-success border border-success">Faol</span>
-                                {% else %}
-                                    <span class="status-badge bg-light text-danger border border-danger">Nofaol</span>
-                                {% endif %}
-                            </td>
-
-                            <td class="text-muted small">
-                                {{ h.created_at|date:"d M, Y" }}
-                            </td>
-
-                            <td class="text-end pe-4">
-                                <div class="d-flex justify-content-end gap-2">
-                                    <a href="{% url 'admin_house_detail' h.pk %}" class="btn-action btn btn-outline-info" target="_blank" title="Saytda ko'rish">
-                                        <i class="fas fa-eye fa-sm"></i>
-                                    </a>
-                                    <form action="{% url 'admin_house_delete' h.pk %}" method="POST" onsubmit="return confirm('Haqiqatan ham ushbu e\'lonni butunlay o\'chirmoqchimisiz?');">
-                                        {% csrf_token %}
-                                        <button type="submit" class="btn-action btn btn-outline-danger" title="O'chirish">
-                                            <i class="fas fa-trash-alt fa-sm"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="7" class="text-center py-5 text-muted">
-                                <i class="fas fa-folder-open fa-3x mb-3 d-block opacity-25"></i>
-                                Hozircha hech qanday e'lon mavjud emas.
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <div class="tbl-search">
+        <i class="fa-solid fa-magnifying-glass" style="color:var(--text-light);"></i>
+        <input type="text" id="tblSearch" placeholder="{% trans 'Manzil yoki egasi bo\'yicha qidirish...' %}">
     </div>
-
-    <div class="mt-4 d-flex justify-content-center">
+    {% if houses %}
+    <div class="tbl-wrap">
+        <table class="ap-table" id="housesTbl">
+            <thead>
+                <tr>
+                    <th>{% trans "Uy" %}</th>
+                    <th>{% trans "Joylashuv" %}</th>
+                    <th>{% trans "Egasi" %}</th>
+                    <th>{% trans "Narx" %}</th>
+                    <th>{% trans "Holat" %}</th>
+                    <th>{% trans "Sana" %}</th>
+                    <th style="text-align:right;">{% trans "Amallar" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for h in houses %}
+                <tr>
+                    <td>
+                        <div class="house-cell">
+                            {% with img=h.main_image %}
+                                {% if img %}<img src="{{ img.image.url }}" class="house-thumb" alt="">
+                                {% else %}<div class="house-thumb-empty"><i class="fa-regular fa-image"></i></div>{% endif %}
+                            {% endwith %}
+                            <div class="info">
+                                <div class="name">{{ h.full_address }}</div>
+                                <div class="sub">ID: {{ h.id }} • {{ h.images.count }} {% trans "rasm" %}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="font-size:12px;">
+                        <div style="font-weight:700;">{{ h.region.display_name }}</div>
+                        <div style="color:var(--text-light);font-size:11px;margin-top:2px;">{{ h.district.display_name }}</div>
+                    </td>
+                    <td>
+                        <div class="ap-user-cell">
+                            <div class="ap-avatar">
+                                {% if h.owner.avatar %}<img src="{{ h.owner.avatar.url }}">
+                                {% else %}{{ h.owner.first_name|first|upper }}{% endif %}
+                            </div>
+                            <div>
+                                <div class="name">{{ h.owner.get_full_name }}</div>
+                                <div class="sub">{{ h.owner.phone }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="font-weight:800;color:var(--accent);">${{ h.price_usd }}</td>
+                    <td>
+                        {% if h.is_active and not h.is_rented %}
+                            <span class="ap-pill success">{% trans "Faol" %}</span>
+                        {% elif h.is_rented %}
+                            <span class="ap-pill warning">{% trans "Ijaraga berildi" %}</span>
+                        {% else %}
+                            <span class="ap-pill muted">{% trans "Nofaol" %}</span>
+                        {% endif %}
+                    </td>
+                    <td style="font-size:11px;color:var(--text-muted);">{{ h.created_at|date:"d.m.Y" }}</td>
+                    <td style="text-align:right;">
+                        <div class="action-row" style="justify-content:flex-end;">
+                            <a href="{% url 'admin_house_detail' h.pk %}" class="ap-btn ap-btn-outline ap-btn-sm" title="{% trans 'Ko\'rish' %}">
+                                <i class="fa-solid fa-eye"></i>
+                            </a>
+                            <form method="post" action="{% url 'admin_house_delete' h.pk %}" style="display:inline;"
+                                  onsubmit="return confirm('{% trans "E\'lonni o\'chirishni tasdiqlaysizmi?" %}')">
+                                {% csrf_token %}
+                                <button type="submit" class="ap-btn ap-btn-danger ap-btn-sm" title="{% trans "O'chirish" %}">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <div class="ap-empty">
+            <i class="fa-regular fa-image"></i>
+            <span>{% trans "E'lonlar yo'q" %}</span>
         </div>
+    {% endif %}
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const search = document.getElementById('tblSearch');
+const tbl = document.getElementById('housesTbl');
+if (search && tbl) {
+    search.addEventListener('input', () => {
+        const q = search.value.toLowerCase();
+        tbl.querySelectorAll('tbody tr').forEach(tr => {
+            tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
+        });
+    });
+}
+</script>
 {% endblock %}

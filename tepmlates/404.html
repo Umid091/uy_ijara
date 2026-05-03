@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}404 — UyIjara{% endblock %}
+
+{% block content %}
+<div style="max-width:520px;margin:80px auto;padding:0 24px;text-align:center;">
+    <div style="font-size:8rem;font-weight:900;color:var(--accent);line-height:1;letter-spacing:-4px;margin-bottom:16px;">404</div>
+    <h1 style="font-size:1.6rem;font-weight:800;color:var(--primary);margin-bottom:8px;">
+        {% trans "Sahifa topilmadi" %}
+    </h1>
+    <p style="font-size:0.95rem;color:var(--text-muted);margin-bottom:24px;line-height:1.6;">
+        {% trans "Siz qidirayotgan sahifa mavjud emas yoki ko'chirilgan bo'lishi mumkin." %}
+    </p>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+        <a href="{% url 'house_list' %}" class="btn btn-primary btn-lg">
+            <i class="fa-solid fa-house"></i> {% trans "Bosh sahifaga" %}
+        </a>
+        <button onclick="history.back()" class="btn btn-outline btn-lg">
+            <i class="fa-solid fa-arrow-left"></i> {% trans "Orqaga" %}
+        </button>
+    </div>
+</div>
+{% endblock %}

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-{% block title %}Profilim — UyIjara{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Profilim" %} — UyIjara{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -286,7 +287,7 @@
 
 {% block content %}
 <div class="prof-page">
-    <div class="prof-page-title">Mening profilim</div>
+    <div class="prof-page-title">{% trans "Mening profilim" %}</div>
 
     <!-- User info -->
     <div class="user-info-card">
@@ -310,11 +311,11 @@
             </div>
             <div class="uic-actions">
                 <a href="{% url 'profile_edit' %}" class="btn btn-outline btn-sm">
-                    <i class="fa-solid fa-pen"></i> Tahrirlash
+                    <i class="fa-solid fa-pen"></i> {% trans "Tahrirlash" %}
                 </a>
                 <a href="{% url 'logout' %}" class="btn btn-sm"
                    style="background:#fff5f5;color:#e53e3e;border:1px solid #fecaca;">
-                    <i class="fa-solid fa-right-from-bracket"></i> Chiqish
+                    <i class="fa-solid fa-right-from-bracket"></i> {% trans "Chiqish" %}
                 </a>
             </div>
         </div>
@@ -324,22 +325,22 @@
             <div class="stat-item">
                 <a href="{% url 'my_houses' %}">
                     <div class="sn">{{ houses.count }}</div>
-                    <div class="sl">E'lonlarim</div>
+                    <div class="sl">{% trans "E'lonlarim" %}</div>
                 </a>
             </div>
             <div class="stat-item">
                 <a href="{% url 'wishlist' %}">
                     <div class="sn">{{ user.wishlist.count }}</div>
-                    <div class="sl">Saqlangan</div>
+                    <div class="sl">{% trans "Saqlangan" %}</div>
                 </a>
             </div>
             <div class="stat-item">
                 <div class="sn">{{ payments.count }}</div>
-                <div class="sl">To'lovlar</div>
+                <div class="sl">{% trans "To'lovlar" %}</div>
             </div>
             <div class="stat-item">
                 <div class="sn">{{ user.balance|floatformat:0 }}</div>
-                <div class="sl">so'm balans</div>
+                <div class="sl">{% trans "so'm balans" %}</div>
             </div>
         </div>
     </div>
@@ -350,15 +351,15 @@
             <div class="sub-left">
                 <div class="sub-ico"><i class="fa-solid fa-crown"></i></div>
                 <div>
-                    <div class="sub-title">{{ subscription.tariff.name }} — Faol</div>
+                    <div class="sub-title">{{ subscription.tariff.name }} — {% trans "Faol" %}</div>
                     <div class="sub-sub">
-                        {{ subscription.days_left }} kun qoldi &bull;
-                        {{ subscription.end_date|date:"d.m.Y" }} gacha
+                        {% blocktrans with d=subscription.days_left %}{{ d }} kun qoldi{% endblocktrans %} &bull;
+                        {{ subscription.end_date|date:"d.m.Y" }} {% trans "gacha" %}
                     </div>
                 </div>
             </div>
             <a href="{% url 'tariff_list' %}" class="btn btn-outline btn-sm">
-                Uzaytirish
+                {% trans "Uzaytirish" %}
             </a>
         </div>
     {% else %}
@@ -366,12 +367,12 @@
             <div class="sub-left">
                 <div class="sub-ico"><i class="fa-solid fa-lock"></i></div>
                 <div>
-                    <div class="sub-title">Tarif yo'q</div>
-                    <div class="sub-sub">Uy e'lon qilish va raqam ko'rish uchun tarif oling</div>
+                    <div class="sub-title">{% trans "Tarif yo'q" %}</div>
+                    <div class="sub-sub">{% trans "Uy e'lon qilish va raqam ko'rish uchun tarif oling" %}</div>
                 </div>
             </div>
             <a href="{% url 'tariff_list' %}" class="btn btn-primary btn-sm">
-                <i class="fa-solid fa-crown"></i> Tarif olish
+                <i class="fa-solid fa-crown"></i> {% trans "Tarif olish" %}
             </a>
         </div>
     {% endif %}
@@ -381,42 +382,42 @@
         <a href="{% url 'my_houses' %}" class="ql-item">
             <div class="ql-ico"><i class="fa-solid fa-house"></i></div>
             <div>
-                <div class="ql-t">Mening uylarim</div>
-                <div class="ql-s">{{ houses.count }} ta e'lon</div>
+                <div class="ql-t">{% trans "Mening uylarim" %}</div>
+                <div class="ql-s">{{ houses.count }} {% trans "ta e'lon" %}</div>
             </div>
         </a>
         <a href="{% url 'wishlist' %}" class="ql-item">
             <div class="ql-ico"><i class="fa-solid fa-heart"></i></div>
             <div>
-                <div class="ql-t">Saqlangan uylar</div>
-                <div class="ql-s">{{ user.wishlist.count }} ta saqlangan</div>
+                <div class="ql-t">{% trans "Saqlangan uylar" %}</div>
+                <div class="ql-s">{{ user.wishlist.count }} {% trans "ta saqlangan" %}</div>
             </div>
         </a>
         <a href="{% url 'tariff_list' %}" class="ql-item">
             <div class="ql-ico"><i class="fa-solid fa-crown"></i></div>
             <div>
-                <div class="ql-t">Tariflar</div>
-                <div class="ql-s">3 va 7 kunlik</div>
+                <div class="ql-t">{% trans "Tariflar" %}</div>
+                <div class="ql-s">{% trans "Premium imkoniyatlar" %}</div>
             </div>
         </a>
         <a href="{% url 'house_add' %}" class="ql-item">
             <div class="ql-ico"><i class="fa-solid fa-plus"></i></div>
             <div>
-                <div class="ql-t">Uy qo'shish</div>
-                <div class="ql-s">Yangi e'lon berish</div>
+                <div class="ql-t">{% trans "Uy qo'shish" %}</div>
+                <div class="ql-s">{% trans "Yangi e'lon berish" %}</div>
             </div>
         </a>
     </div>
 
     <!-- Balans -->
     <div class="bal-card">
-        <div class="bl-lbl">Joriy balans</div>
-        <div class="bl-amt">{{ user.balance|floatformat:0 }}<small>so'm</small></div>
+        <div class="bl-lbl">{% trans "Joriy balans" %}</div>
+        <div class="bl-amt">{{ user.balance|floatformat:0 }}<small>{% trans "so'm" %}</small></div>
         <form method="post" action="{% url 'top_up_balance' %}">
             {% csrf_token %}
             <div class="topup-row">
-                <input type="number" name="amount" placeholder="Qancha so'm qo'shish?" min="1000" step="1000">
-                <button type="submit"><i class="fa-solid fa-plus"></i> To'ldirish</button>
+                <input type="number" name="amount" placeholder="{% trans 'Qancha so\'m qo\'shish?' %}" min="1000" step="1000">
+                <button type="submit"><i class="fa-solid fa-plus"></i> {% trans "To'ldirish" %}</button>
             </div>
         </form>
     </div>
@@ -445,15 +446,15 @@
             </div>
             <div class="sc-bottom">
                 <div class="sc-f">
-                    <div class="sc-l">Karta egasi</div>
+                    <div class="sc-l">{% trans "Karta egasi" %}</div>
                     <div class="sc-v">{{ user.card_holder|default:"—" }}</div>
                 </div>
                 <div class="sc-f">
-                    <div class="sc-l">Muddat</div>
+                    <div class="sc-l">{% trans "Muddat" %}</div>
                     <div class="sc-v">{{ user.card_expiry|default:"—" }}</div>
                 </div>
                 <a href="{% url 'profile_edit' %}" class="sc-edit">
-                    <i class="fa-solid fa-pen"></i> O'zgartirish
+                    <i class="fa-solid fa-pen"></i> {% trans "O'zgartirish" %}
                 </a>
             </div>
         </div>
@@ -462,8 +463,8 @@
         <a href="{% url 'profile_edit' %}" class="no-card">
             <div class="nc-ico"><i class="fa-solid fa-credit-card"></i></div>
             <div>
-                <div class="nc-t">Karta qo'shish</div>
-                <div class="nc-s">Tarif to'lovi uchun karta kiriting</div>
+                <div class="nc-t">{% trans "Karta qo'shish" %}</div>
+                <div class="nc-s">{% trans "Tarif to'lovi uchun karta kiriting" %}</div>
             </div>
             <i class="fa-solid fa-chevron-right" style="margin-left:auto;font-size:0.75rem;opacity:0.3;flex-shrink:0;"></i>
         </a>
@@ -472,21 +473,21 @@
     <!-- To'lovlar -->
     <div class="sec-block">
         <div class="sec-block-head">
-            <span class="sbh-title"><i class="fa-solid fa-receipt"></i> To'lovlar tarixi</span>
+            <span class="sbh-title"><i class="fa-solid fa-receipt"></i> {% trans "To'lovlar tarixi" %}</span>
         </div>
         {% if payments %}
             <div style="overflow-x:auto;">
                 <table class="pay-t">
                     <thead>
                         <tr>
-                            <th>Tarif</th><th>Summa</th><th>Karta</th><th>Holat</th><th>Sana</th>
+                            <th>{% trans "Tarif" %}</th><th>{% trans "Summa" %}</th><th>{% trans "Karta" %}</th><th>{% trans "Holat" %}</th><th>{% trans "Sana" %}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for p in payments %}
                             <tr>
                                 <td><strong>{{ p.tariff.name }}</strong></td>
-                                <td style="color:var(--accent);font-weight:700;">{{ p.amount|floatformat:0 }} so'm</td>
+                                <td style="color:var(--accent);font-weight:700;">{{ p.amount|floatformat:0 }} {% trans "so'm" %}</td>
                                 <td style="font-family:monospace;font-size:0.78rem;color:var(--text-muted);">{{ p.card_number_masked }}</td>
                                 <td>
                                     <span class="badge {% if p.status == 'success' %}badge-success{% elif p.status == 'failed' %}badge-danger{% else %}badge-warning{% endif %}">
@@ -503,19 +504,19 @@
             <div class="sec-block-body">
                 <div class="empty-s">
                     <i class="fa-solid fa-receipt"></i>
-                    <p>Hali hech qanday to'lov amalga oshirilmagan</p>
+                    <p>{% trans "Hali hech qanday to'lov amalga oshirilmagan" %}</p>
                 </div>
             </div>
         {% endif %}
     </div>
 
     <!-- Bildirishnomalar -->
-    <div class="sec-block">
+    <div class="sec-block" id="notifications">
         <div class="sec-block-head">
-            <span class="sbh-title"><i class="fa-solid fa-bell"></i> Bildirishnomalar</span>
+            <span class="sbh-title"><i class="fa-solid fa-bell"></i> {% trans "Bildirishnomalar" %}</span>
             {% if notifications %}
                 <a href="{% url 'notifications_read' %}" class="btn btn-outline btn-sm">
-                    <i class="fa-solid fa-check-double"></i> O'qildi
+                    <i class="fa-solid fa-check-double"></i> {% trans "O'qildi" %}
                 </a>
             {% endif %}
         </div>
@@ -538,7 +539,7 @@
                             <div>
                                 <div class="ni-title">{{ n.title }}</div>
                                 <div class="ni-msg">{{ n.message }}</div>
-                                <div class="ni-date">{{ n.created_at|timesince }} oldin</div>
+                                <div class="ni-date">{% blocktrans with t=n.created_at|timesince %}{{ t }} oldin{% endblocktrans %}</div>
                             </div>
                         </div>
                     {% endfor %}
@@ -546,7 +547,7 @@
             {% else %}
                 <div class="empty-s">
                     <i class="fa-regular fa-bell"></i>
-                    <p>Hamma bildirishnomalar o'qilgan</p>
+                    <p>{% trans "Hamma bildirishnomalar o'qilgan" %}</p>
                 </div>
             {% endif %}
         </div>

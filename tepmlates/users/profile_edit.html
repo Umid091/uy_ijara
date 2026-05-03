@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-{% block title %}Profilni tahrirlash — UyIjara{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Profilni tahrirlash" %} — UyIjara{% endblock %}
 
 {% block extra_css %}
 <style>
@@ -271,7 +272,7 @@
         <a href="{% url 'profile' %}" class="btn btn-outline btn-sm">
             <i class="fa-solid fa-arrow-left"></i>
         </a>
-        <h1>Profilni tahrirlash</h1>
+        <h1>{% trans "Profilni tahrirlash" %}</h1>
     </div>
 
     <form method="post" enctype="multipart/form-data" id="editForm">
@@ -287,10 +288,10 @@
                 {% endif %}
             </div>
             <div class="av-info">
-                <h4>Profil rasmi</h4>
-                <p>JPG, PNG • Maksimal 5 MB</p>
+                <h4>{% trans "Profil rasmi" %}</h4>
+                <p>JPG, PNG • {% trans "Maksimal 5 MB" %}</p>
                 <label class="btn btn-outline btn-sm" style="cursor:pointer;display:inline-flex;">
-                    <i class="fa-solid fa-camera"></i> Rasm tanlash
+                    <i class="fa-solid fa-camera"></i> {% trans "Rasm tanlash" %}
                     <input type="file" name="avatar" accept="image/*"
                            style="display:none;" onchange="previewAvatar(this)">
                 </label>
@@ -301,12 +302,12 @@
         <div class="edit-section">
             <div class="es-head">
                 <div class="es-ico"><i class="fa-solid fa-user"></i></div>
-                <h3>Shaxsiy ma'lumotlar</h3>
+                <h3>{% trans "Shaxsiy ma'lumotlar" %}</h3>
             </div>
             <div class="es-body">
                 <div class="form-row2">
                     <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label">Ism <span>*</span></label>
+                        <label class="form-label">{% trans "Ism" %} <span>*</span></label>
                         <div class="form-control-icon">
                             <input type="text" name="first_name" class="form-control"
                                    value="{{ user.first_name }}" required>
@@ -314,7 +315,7 @@
                         </div>
                     </div>
                     <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label">Familiya <span>*</span></label>
+                        <label class="form-label">{% trans "Familiya" %} <span>*</span></label>
                         <div class="form-control-icon">
                             <input type="text" name="last_name" class="form-control"
                                    value="{{ user.last_name }}" required>
@@ -329,7 +330,7 @@
         <div class="edit-section">
             <div class="es-head">
                 <div class="es-ico"><i class="fa-solid fa-credit-card"></i></div>
-                <h3>Karta ma'lumotlari
+                <h3>{% trans "Karta ma'lumotlari" %}
                     <span class="card-type-pill" id="typePill" style="display:none;"></span>
                 </h3>
             </div>
@@ -346,11 +347,11 @@
                     <div class="cv-num" id="cvNum">•••• &nbsp;•••• &nbsp;•••• &nbsp;••••</div>
                     <div class="cv-bottom">
                         <div class="cv-field">
-                            <div class="cv-lbl">Karta egasi</div>
-                            <div class="cv-val" id="cvHolder">ISMINGIZ FAMILIYANGIZ</div>
+                            <div class="cv-lbl">{% trans "Karta egasi" %}</div>
+                            <div class="cv-val" id="cvHolder">{% trans "ISMINGIZ FAMILIYANGIZ" %}</div>
                         </div>
                         <div class="cv-field">
-                            <div class="cv-lbl">Muddat</div>
+                            <div class="cv-lbl">{% trans "Muddat" %}</div>
                             <div class="cv-val" id="cvExpiry">MM/YY</div>
                         </div>
                     </div>
@@ -360,7 +361,7 @@
                 <div class="card-visual cv-visa" id="cardBack" style="display:none;">
                     <div style="position:relative;z-index:2;">
                         <div class="cv-lbl" style="color:rgba(255,255,255,0.5);margin-bottom:8px;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.1em;">
-                            Kartaning orqa tomoni
+                            {% trans "Kartaning orqa tomoni" %}
                         </div>
                     </div>
                     <div class="cvb-stripe"></div>
@@ -372,7 +373,7 @@
 
                 <!-- Karta raqami -->
                 <div class="form-group">
-                    <label class="form-label">Karta raqami</label>
+                    <label class="form-label">{% trans "Karta raqami" %}</label>
                     <div class="form-control-icon">
                         <input type="text"
                                name="card_number"
@@ -387,13 +388,13 @@
                     </div>
                     <div style="font-size:0.73rem;color:var(--text-muted);margin-top:5px;">
                         <i class="fa-solid fa-info-circle" style="color:var(--accent);"></i>
-                        Birinchi 4 raqamdan karta turi aniqlanadi
+                        {% trans "Birinchi 4 raqamdan karta turi aniqlanadi" %}
                     </div>
                 </div>
 
                 <!-- Karta egasi -->
                 <div class="form-group">
-                    <label class="form-label">Karta egasi (lotin harfida)</label>
+                    <label class="form-label">{% trans "Karta egasi (lotin harfida)" %}</label>
                     <div class="form-control-icon">
                         <input type="text"
                                name="card_holder"
@@ -412,7 +413,7 @@
                 <!-- Muddat + CVV -->
                 <div class="expiry-cvv" id="expiryCvvRow">
                     <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label">Amal qilish muddati</label>
+                        <label class="form-label">{% trans "Amal qilish muddati" %}</label>
                         <div class="form-control-icon">
                             <input type="text"
                                    name="card_expiry"
@@ -431,7 +432,7 @@
                         <label class="form-label">
                             CVV
                             <span style="font-size:0.7rem;color:var(--text-muted);font-weight:400;">
-                                (kartaning orqa tomoni)
+                                ({% trans "kartaning orqa tomoni" %})
                             </span>
                         </label>
                         <div class="form-control-icon">
@@ -456,7 +457,7 @@
                             border:1px solid var(--border);">
                     <span style="font-size:0.72rem;color:var(--text-muted);width:100%;margin-bottom:4px;font-weight:600;">
                         <i class="fa-solid fa-circle-info" style="color:var(--accent);"></i>
-                        Qo'llab-quvvatlanadigan kartalar:
+                        {% trans "Qo'llab-quvvatlanadigan kartalar:" %}
                     </span>
                     <span style="font-size:0.72rem;background:#f3e8ff;color:#7c3aed;padding:3px 10px;border-radius:20px;font-weight:700;">
                         HUMO (9860)
@@ -478,10 +479,10 @@
         <!-- Actions -->
         <div class="edit-actions">
             <a href="{% url 'profile' %}" class="btn btn-outline btn-lg">
-                <i class="fa-solid fa-xmark"></i> Bekor
+                <i class="fa-solid fa-xmark"></i> {% trans "Bekor" %}
             </a>
             <button type="submit" class="btn btn-primary btn-lg" style="flex:2;">
-                <i class="fa-solid fa-floppy-disk"></i> Saqlash
+                <i class="fa-solid fa-floppy-disk"></i> {% trans "Saqlash" %}
             </button>
         </div>
 
@@ -575,9 +576,13 @@ function onCardNum(el) {
     if (type !== currentType) applyType(type);
 }
 
+const I18N_PE = {
+    placeholderHolder: "{% trans 'ISMINGIZ FAMILIYANGIZ' %}",
+};
+
 function onHolder(el) {
     el.value = el.value.toUpperCase().replace(/[^A-Z\s]/g, '');
-    const val = el.value.trim() || 'ISMINGIZ FAMILIYANGIZ';
+    const val = el.value.trim() || I18N_PE.placeholderHolder;
     document.getElementById('cvHolder').textContent = val;
 }
 

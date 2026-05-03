@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-{% block title %}Uyni tahrirlash — UyIjara{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Uyni tahrirlash" %} — UyIjara{% endblock %}
 
 {% block extra_css %}
 .edit-wrapper {
@@ -133,7 +134,7 @@
             <a href="{% url 'house_detail' house.pk %}" class="btn btn-outline btn-sm">
                 <i class="fa-solid fa-arrow-left"></i>
             </a>
-            <h1 class="page-title" style="margin-bottom:0;">Uyni tahrirlash</h1>
+            <h1 class="page-title" style="margin-bottom:0;">{% trans "Uyni tahrirlash" %}</h1>
         </div>
         <p class="page-subtitle">{{ house.full_address }}</p>
     </div>
@@ -145,29 +146,29 @@
         <div class="form-section">
             <div class="form-section-header">
                 <div class="icon"><i class="fa-solid fa-location-dot"></i></div>
-                <h3>Manzil ma'lumotlari</h3>
+                <h3>{% trans "Manzil ma'lumotlari" %}</h3>
             </div>
             <div class="form-section-body">
                 <div class="form-row" style="margin-bottom:16px;">
                     <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label">Viloyat <span>*</span></label>
+                        <label class="form-label">{% trans "Viloyat" %} <span>*</span></label>
                         <select name="region" class="form-control" id="regionSel"
                                 onchange="loadDistricts(this.value, {{ house.district.id }})" required>
                             {% for r in regions %}
                                 <option value="{{ r.id }}"
                                     {% if r == house.region %}selected{% endif %}>
-                                    {{ r.name }}
+                                    {{ r.display_name }}
                                 </option>
                             {% endfor %}
                         </select>
                     </div>
                     <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label">Tuman <span>*</span></label>
+                        <label class="form-label">{% trans "Tuman" %} <span>*</span></label>
                         <select name="district" class="form-control" id="districtSel" required>
                             {% for d in districts %}
                                 <option value="{{ d.id }}"
                                     {% if d == house.district %}selected{% endif %}>
-                                    {{ d.name }}
+                                    {{ d.display_name }}
                                 </option>
                             {% endfor %}
                         </select>
@@ -175,7 +176,7 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label">Ko'cha <span>*</span></label>
+                        <label class="form-label">{% trans "Ko'cha" %} <span>*</span></label>
                         <div class="form-control-icon">
                             <input type="text" name="street" class="form-control"
                                    value="{{ house.street }}" required>
@@ -183,7 +184,7 @@
                         </div>
                     </div>
                     <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label">To'liq manzil <span>*</span></label>
+                        <label class="form-label">{% trans "To'liq manzil" %} <span>*</span></label>
                         <div class="form-control-icon">
                             <input type="text" name="full_address" class="form-control"
                                    value="{{ house.full_address }}" required>
@@ -198,11 +199,11 @@
         <div class="form-section">
             <div class="form-section-header">
                 <div class="icon"><i class="fa-solid fa-house"></i></div>
-                <h3>Uy ma'lumotlari</h3>
+                <h3>{% trans "Uy ma'lumotlari" %}</h3>
             </div>
             <div class="form-section-body">
                 <div class="form-group">
-                    <label class="form-label">Narx (dollar) <span>*</span></label>
+                    <label class="form-label">{% trans "Narx (dollar)" %} <span>*</span></label>
                     <div class="form-control-icon">
                         <input type="number" name="price_usd" class="form-control"
                                value="{{ house.price_usd }}" min="1" step="0.01" required>
@@ -210,9 +211,19 @@
                     </div>
                 </div>
                 <div class="form-group" style="margin-bottom:0;">
-                    <label class="form-label">Tavsif <span>*</span></label>
+                    <label class="form-label">{% trans "Tavsif" %} <span>*</span></label>
                     <textarea name="description" class="form-control"
                               rows="5" required>{{ house.description }}</textarea>
+                </div>
+
+                <div class="form-group" style="margin-top:16px;margin-bottom:0;">
+                    <label style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--accent-pale);border:1.5px solid var(--accent-border);border-radius:10px;cursor:pointer;">
+                        <input type="checkbox" name="is_rented" {% if house.is_rented %}checked{% endif %} style="width:18px;height:18px;accent-color:var(--accent);">
+                        <div>
+                            <div style="font-weight:700;color:var(--primary);font-size:0.92rem;">{% trans "Bu uy ijaraga berilgan" %}</div>
+                            <div style="font-size:0.78rem;color:var(--text-muted);margin-top:2px;">{% trans "Belgilasangiz, e'londa 'Ijaraga berildi' yorlig'i ko'rinadi" %}</div>
+                        </div>
+                    </label>
                 </div>
             </div>
         </div>
@@ -221,7 +232,7 @@
         <div class="form-section">
             <div class="form-section-header">
                 <div class="icon"><i class="fa-solid fa-images"></i></div>
-                <h3>Rasmlar
+                <h3>{% trans "Rasmlar" %}
                     <span style="color:var(--text-muted);font-weight:400;font-size:0.82rem;margin-left:6px;">
                         ({{ house.images.count }}/10)
                     </span>
@@ -231,18 +242,18 @@
                 <!-- Existing -->
                 {% if house.images.all %}
                     <div style="font-size:0.85rem;font-weight:600;color:var(--text-muted);margin-bottom:10px;">
-                        Mavjud rasmlar:
+                        {% trans "Mavjud rasmlar:" %}
                     </div>
                     <div class="existing-images">
                         {% for img in house.images.all %}
                             <div class="existing-img">
                                 <img src="{{ img.image.url }}" alt="">
                                 {% if img.is_main %}
-                                    <div class="main-badge">Asosiy</div>
+                                    <div class="main-badge">{% trans "Asosiy" %}</div>
                                 {% endif %}
                                 <a href="{% url 'delete_image' img.pk %}"
                                    class="del-btn"
-                                   onclick="return confirm('Rasmni o\'chirishni tasdiqlaysizmi?')">
+                                   onclick="return confirm('{% trans "Rasmni o\'chirishni tasdiqlaysizmi?" %}')">
                                     <i class="fa-solid fa-xmark"></i>
                                 </a>
                             </div>
@@ -256,18 +267,17 @@
                                onchange="previewNew(this)">
                         <i class="fa-solid fa-plus" style="font-size:1.5rem;color:var(--accent);margin-bottom:8px;"></i>
                         <div style="font-weight:600;color:var(--primary);font-size:0.9rem;">
-                            Yangi rasmlar qo'shish
+                            {% trans "Yangi rasmlar qo'shish" %}
                         </div>
                         <div style="font-size:0.78rem;color:var(--text-muted);margin-top:4px;">
-                            Yana {{ 10|add:house.images.count|add:"-10"|add:"10" }}
-                            tagacha rasm qo'shishingiz mumkin
+                            {% trans "Yana rasm qo'shishingiz mumkin (max 10 ta)" %}
                         </div>
                     </div>
                     <div class="existing-images" id="newPreviews" style="margin-top:12px;"></div>
                 {% else %}
                     <div style="padding:12px;background:#fef3c7;border-radius:10px;font-size:0.85rem;color:#92400e;">
                         <i class="fa-solid fa-triangle-exclamation"></i>
-                        Maksimal rasm soni (10) to'ldi. Yangi rasm qo'shish uchun avval birini o'chiring.
+                        {% trans "Maksimal rasm soni (10) to'ldi. Yangi rasm qo'shish uchun avval birini o'chiring." %}
                     </div>
                 {% endif %}
             </div>
@@ -277,21 +287,21 @@
         <div class="form-section">
             <div class="form-section-header">
                 <div class="icon"><i class="fa-solid fa-map"></i></div>
-                <h3>Joylashuv koordinatalari</h3>
+                <h3>{% trans "Joylashuv koordinatalari" %}</h3>
             </div>
             <div class="form-section-body">
                 <div class="form-row">
                     <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label">Kenglik (Latitude)</label>
+                        <label class="form-label">{% trans "Kenglik (Latitude)" %}</label>
                         <input type="text" name="latitude" class="form-control"
                                value="{{ house.latitude|default:'' }}"
-                               placeholder="Masalan: 41.2995">
+                               placeholder="{% trans 'Masalan' %}: 41.2995">
                     </div>
                     <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label">Uzunlik (Longitude)</label>
+                        <label class="form-label">{% trans "Uzunlik (Longitude)" %}</label>
                         <input type="text" name="longitude" class="form-control"
                                value="{{ house.longitude|default:'' }}"
-                               placeholder="Masalan: 69.2401">
+                               placeholder="{% trans 'Masalan' %}: 69.2401">
                     </div>
                 </div>
             </div>
@@ -300,10 +310,10 @@
         <!-- Actions -->
         <div class="form-footer-actions">
             <a href="{% url 'house_detail' house.pk %}" class="btn btn-outline">
-                <i class="fa-solid fa-xmark"></i> Bekor qilish
+                <i class="fa-solid fa-xmark"></i> {% trans "Bekor qilish" %}
             </a>
             <button type="submit" class="btn btn-primary btn-lg" id="saveBtn">
-                <i class="fa-solid fa-floppy-disk"></i> O'zgarishlarni saqlash
+                <i class="fa-solid fa-floppy-disk"></i> {% trans "O'zgarishlarni saqlash" %}
             </button>
         </div>
     </form>
@@ -312,13 +322,19 @@
 
 {% block extra_js %}
 <script>
+    const I18N = {
+        pickDistrict: "{% trans 'Tumanni tanlang' %}",
+        new: "{% trans 'Yangi' %}",
+        saving: "{% trans 'Saqlanmoqda...' %}",
+    };
+
     function loadDistricts(regionId, selectedId) {
         const sel = document.getElementById('districtSel');
         if (!regionId) return;
         fetch(`/districts/?region_id=${regionId}`)
             .then(r => r.json())
             .then(data => {
-                sel.innerHTML = '<option value="">Tumanni tanlang</option>';
+                sel.innerHTML = '<option value="">' + I18N.pickDistrict + '</option>';
                 data.districts.forEach(d => {
                     sel.innerHTML += `<option value="${d.id}"
                         ${d.id == selectedId ? 'selected' : ''}>${d.name}</option>`;
@@ -335,7 +351,7 @@
                 prev.innerHTML += `
                     <div class="existing-img">
                         <img src="${e.target.result}" alt="">
-                        ${i === 0 ? '<div class="main-badge">Yangi</div>' : ''}
+                        ${i === 0 ? '<div class="main-badge">' + I18N.new + '</div>' : ''}
                     </div>`;
             };
             reader.readAsDataURL(file);
@@ -344,7 +360,7 @@
 
     document.getElementById('editForm').addEventListener('submit', function() {
         const btn = document.getElementById('saveBtn');
-        btn.innerHTML = '<div class="spinner"></div> Saqlanmoqda...';
+        btn.innerHTML = '<div class="spinner"></div> ' + I18N.saving;
         btn.disabled = true;
     });
 </script>

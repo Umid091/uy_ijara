@@ -1,0 +1,994 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: UyIjara 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2025-01-01 00:00+0500\n"
+"Last-Translator: UyIjara\n"
+"Language-Team: ru\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Shahar, tuman yoki ko'cha..."
+msgstr "Город, район или улица..."
+
+msgid "Topish"
+msgstr "Найти"
+
+msgid "E'lonlar"
+msgstr "Объявления"
+
+msgid "Tariflar"
+msgstr "Тарифы"
+
+msgid "Uylarim"
+msgstr "Мои дома"
+
+msgid "Til"
+msgstr "Язык"
+
+msgid "Rejim"
+msgstr "Режим"
+
+msgid "Saqlangan"
+msgstr "Сохранённые"
+
+msgid "Bildirishnomalar"
+msgstr "Уведомления"
+
+msgid "Profilim"
+msgstr "Мой профиль"
+
+msgid "Mening uylarim"
+msgstr "Мои дома"
+
+msgid "Tahrirlash"
+msgstr "Редактировать"
+
+msgid "Admin panel"
+msgstr "Админ панель"
+
+msgid "Chiqish"
+msgstr "Выйти"
+
+msgid "Kirish"
+msgstr "Войти"
+
+msgid "Ro'yxat"
+msgstr "Регистрация"
+
+msgid "E'lon"
+msgstr "Объявление"
+
+msgid "Maklersiz uy ijara platformasi"
+msgstr "Платформа аренды жилья без посредников"
+
+msgid "Profil"
+msgstr "Профиль"
+
+msgid "Maklersiz uy ijara platformasi. Eng yaxshi e'lonlarni toping."
+msgstr "Платформа аренды жилья без посредников. Найдите лучшие предложения."
+
+msgid "Uylar"
+msgstr "Дома"
+
+msgid "Joylashuv"
+msgstr "Расположение"
+
+msgid "Min narx"
+msgstr "Мин. цена"
+
+msgid "Max narx"
+msgstr "Макс. цена"
+
+msgid "Qidirish"
+msgstr "Поиск"
+
+msgid "Barcha viloyatlar"
+msgstr "Все области"
+
+msgid "Hammasi"
+msgstr "Все"
+
+msgid "Top"
+msgstr "Топ"
+
+msgid "Arzon"
+msgstr "Дешевле"
+
+msgid "Tozalash"
+msgstr "Очистить"
+
+msgid "Barcha e'lonlar"
+msgstr "Все объявления"
+
+msgid "Narx"
+msgstr "Цена"
+
+msgid "Rasm yo'q"
+msgstr "Нет фото"
+
+msgid "oy"
+msgstr "мес"
+
+msgid "Saqlash"
+msgstr "Сохранить"
+
+msgid "Ijaraga berildi"
+msgstr "Сдан"
+
+msgid "E'lonlar topilmadi"
+msgstr "Объявлений не найдено"
+
+msgid "Qidiruv shartlarini o'zgartirib ko'ring"
+msgstr "Попробуйте изменить условия поиска"
+
+msgid "Hammasini ko'rish"
+msgstr "Показать все"
+
+msgid "Viloyat"
+msgstr "Область"
+
+msgid "Makler"
+msgstr "Маклеры"
+
+msgid "Bepul"
+msgstr "Бесплатно"
+
+msgid "Hisobingizga kiring"
+msgstr "Войдите в свой аккаунт"
+
+msgid "Telefon raqam"
+msgstr "Номер телефона"
+
+msgid "Parol"
+msgstr "Пароль"
+
+msgid "Hisobingiz yo'qmi?"
+msgstr "Нет аккаунта?"
+
+msgid "Ro'yxatdan o'ting"
+msgstr "Зарегистрируйтесь"
+
+msgid "Ro'yxatdan o'tish"
+msgstr "Регистрация"
+
+msgid "Yangi hisob yarating"
+msgstr "Создайте новый аккаунт"
+
+msgid "Ism"
+msgstr "Имя"
+
+msgid "Familiya"
+msgstr "Фамилия"
+
+msgid "Kamida 8 ta belgi"
+msgstr "Минимум 8 символов"
+
+msgid "Parolni tasdiqlang"
+msgstr "Подтвердите пароль"
+
+msgid "Parolni qayta kiriting"
+msgstr "Введите пароль ещё раз"
+
+msgid "Hisobingiz bormi?"
+msgstr "Уже есть аккаунт?"
+
+msgid "Kiring"
+msgstr "Войдите"
+
+msgid "Kirilmoqda..."
+msgstr "Вход..."
+
+msgid "Yaratilmoqda..."
+msgstr "Создание..."
+
+msgid "Juda zaif"
+msgstr "Очень слабый"
+
+msgid "O'rtacha"
+msgstr "Средний"
+
+msgid "Yaxshi"
+msgstr "Хороший"
+
+msgid "Kuchli"
+msgstr "Сильный"
+
+msgid "Parollar mos"
+msgstr "Пароли совпадают"
+
+msgid "Parollar mos emas"
+msgstr "Пароли не совпадают"
+
+msgid "Mening profilim"
+msgstr "Мой профиль"
+
+msgid "E'lonlarim"
+msgstr "Мои объявления"
+
+msgid "To'lovlar"
+msgstr "Платежи"
+
+msgid "so'm balans"
+msgstr "сум баланс"
+
+msgid "Faol"
+msgstr "Активен"
+
+msgid "gacha"
+msgstr "до"
+
+msgid "Uzaytirish"
+msgstr "Продлить"
+
+msgid "Tarif yo'q"
+msgstr "Нет тарифа"
+
+msgid "Uy e'lon qilish va raqam ko'rish uchun tarif oling"
+msgstr "Оформите тариф, чтобы публиковать объявления и видеть номера"
+
+msgid "Tarif olish"
+msgstr "Купить тариф"
+
+msgid "Saqlangan uylar"
+msgstr "Сохранённые дома"
+
+msgid "ta e'lon"
+msgstr "объявлений"
+
+msgid "ta saqlangan"
+msgstr "сохранено"
+
+msgid "Premium imkoniyatlar"
+msgstr "Премиум-возможности"
+
+msgid "Uy qo'shish"
+msgstr "Добавить дом"
+
+msgid "Yangi e'lon berish"
+msgstr "Опубликовать новое объявление"
+
+msgid "Joriy balans"
+msgstr "Текущий баланс"
+
+msgid "so'm"
+msgstr "сум"
+
+msgid "Qancha so'm qo'shish?"
+msgstr "Сколько добавить?"
+
+msgid "To'ldirish"
+msgstr "Пополнить"
+
+msgid "Karta egasi"
+msgstr "Владелец карты"
+
+msgid "Muddat"
+msgstr "Срок"
+
+msgid "O'zgartirish"
+msgstr "Изменить"
+
+msgid "Karta qo'shish"
+msgstr "Добавить карту"
+
+msgid "Tarif to'lovi uchun karta kiriting"
+msgstr "Введите карту для оплаты тарифа"
+
+msgid "To'lovlar tarixi"
+msgstr "История платежей"
+
+msgid "Tarif"
+msgstr "Тариф"
+
+msgid "Summa"
+msgstr "Сумма"
+
+msgid "Karta"
+msgstr "Карта"
+
+msgid "Holat"
+msgstr "Статус"
+
+msgid "Sana"
+msgstr "Дата"
+
+msgid "Hali hech qanday to'lov amalga oshirilmagan"
+msgstr "Платежей пока нет"
+
+msgid "O'qildi"
+msgstr "Прочитано"
+
+msgid "Hamma bildirishnomalar o'qilgan"
+msgstr "Все уведомления прочитаны"
+
+msgid "Uyni o'chirish"
+msgstr "Удалить дом"
+
+msgid "Uyni o'chirishni tasdiqlang"
+msgstr "Подтвердите удаление дома"
+
+msgid "e'lonini o'chirishga tayyormisiz?"
+msgstr "вы уверены, что хотите удалить?"
+
+msgid "Bu amal qaytarilmaydi."
+msgstr "Это действие необратимо."
+
+msgid "Bekor qilish"
+msgstr "Отмена"
+
+msgid "Bekor"
+msgstr "Отмена"
+
+msgid "Ha, o'chirish"
+msgstr "Да, удалить"
+
+msgid "Shikoyat yuborish"
+msgstr "Отправить жалобу"
+
+msgid ""
+"Bu e'lon haqida shikoyatingiz tasdiqlanadi. Foydalanuvchi 5+ shikoyat "
+"olgach, hisobingiz bloklanadi."
+msgstr "Жалоба будет учтена. После 5+ жалоб аккаунт пользователя блокируется."
+
+msgid "Yuborish"
+msgstr "Отправить"
+
+msgid "Ko'proq uylar"
+msgstr "Ещё дома"
+
+msgid "Ko'rish"
+msgstr "Смотреть"
+
+msgid "Ko'rishlar"
+msgstr "Просмотры"
+
+msgid "ko'rishlar"
+msgstr "просмотров"
+
+msgid "Saqlangan ro'yxatdan o'chirish"
+msgstr "Удалить из сохранённых"
+
+msgid "Saqlangan uylar yo'q"
+msgstr "Нет сохранённых домов"
+
+msgid "Yoqqan uylarni saqlang va keyinroq qarang"
+msgstr "Сохраняйте понравившиеся дома, чтобы посмотреть позже"
+
+msgid "Uylarni ko'rish"
+msgstr "Смотреть дома"
+
+msgid "Yangi e'lon"
+msgstr "Новое объявление"
+
+msgid "Tarif yo'q — uy qo'sha olmaysiz"
+msgstr "Без тарифа нельзя добавлять дома"
+
+msgid "Uy e'lon qilish uchun avval premium tarif sotib oling"
+msgstr "Купите премиум-тариф, чтобы публиковать объявления"
+
+msgid "Hali e'lon yo'q"
+msgstr "Объявлений ещё нет"
+
+msgid "Birinchi uyingizni e'lon qiling va ijarachilar toping"
+msgstr "Опубликуйте первое объявление и найдите арендаторов"
+
+msgid "Uy e'lon qilish uchun avval tarif sotib oling"
+msgstr "Сначала купите тариф"
+
+msgid "rasm"
+msgstr "фото"
+
+msgid "oldin"
+msgstr "назад"
+
+msgid "Bosh sahifa"
+msgstr "Главная"
+
+msgid "ta rasm"
+msgstr "фото"
+
+msgid "Rasm yuklanmagan"
+msgstr "Нет загруженных фото"
+
+msgid "Oylik narx"
+msgstr "Цена в месяц"
+
+msgid "Tuman"
+msgstr "Район"
+
+msgid "Ko'cha"
+msgstr "Улица"
+
+msgid "Uy haqida"
+msgstr "О доме"
+
+msgid "Joylashuv xaritada"
+msgstr "Расположение на карте"
+
+msgid "Koordinatalar kiritilmagan"
+msgstr "Координаты не указаны"
+
+msgid "Reyting"
+msgstr "Рейтинг"
+
+msgid "ta baho"
+msgstr "оценок"
+
+msgid "ta foydalanuvchi baholagan"
+msgstr "пользователей оценили"
+
+msgid "Bahoyingizni qoldiring:"
+msgstr "Оставьте свою оценку:"
+
+msgid "Baho berish uchun"
+msgstr "Чтобы оценить"
+
+msgid "kiring"
+msgstr "войдите"
+
+msgid "Izohlar"
+msgstr "Комментарии"
+
+msgid "Fikr yoki savolingizni yozing..."
+msgstr "Напишите ваш отзыв или вопрос..."
+
+msgid "Izoh qoldirish uchun"
+msgstr "Чтобы оставить комментарий"
+
+msgid "Hali izoh yo'q"
+msgstr "Комментариев пока нет"
+
+msgid "Oylik ijara narxi"
+msgstr "Месячная аренда"
+
+msgid "AQSh dollari / oy"
+msgstr "Доллар США / мес"
+
+msgid "Uy egasi"
+msgstr "Владелец дома"
+
+msgid "Telefon raqamni ko'rish"
+msgstr "Показать номер телефона"
+
+msgid "Yuklanmoqda..."
+msgstr "Загрузка..."
+
+msgid "Shikoyat"
+msgstr "Жалоба"
+
+msgid "O'chirish"
+msgstr "Удалить"
+
+msgid "Rasmlar"
+msgstr "Фото"
+
+msgid "ta"
+msgstr "шт."
+
+msgid "Tizimga kiring"
+msgstr "Войдите в систему"
+
+msgid "Uy egasining telefon raqamini ko'rish uchun avval kiring."
+msgstr "Чтобы увидеть номер владельца, сначала войдите."
+
+msgid "Premium tarif kerak"
+msgstr "Нужен премиум-тариф"
+
+msgid "Uy egasining telefon raqamini ko'rish uchun tarif sotib oling."
+msgstr "Купите тариф, чтобы видеть номер владельца."
+
+msgid "Qo'ng'iroq qildingizmi?"
+msgstr "Вы позвонили?"
+
+msgid "Uy egasi haqida fikringizni bildiring."
+msgstr "Поделитесь мнением о владельце."
+
+msgid "Makler emas — hammasi yaxshi"
+msgstr "Не маклер — всё хорошо"
+
+msgid "To'g'ridan-to'g'ri uy egasi"
+msgstr "Прямой владелец дома"
+
+msgid "Bu makler — shikoyat yuborish"
+msgstr "Это маклер — отправить жалобу"
+
+msgid "Boshqalarni ogohlantiring"
+msgstr "Предупредите других"
+
+msgid "Keyinroq"
+msgstr "Позже"
+
+msgid ""
+"Uy egasini makler sifatida belgilaysiz. 5 ta shikoyat to'plansa, u "
+"bloklanadi."
+msgstr ""
+"Вы помечаете владельца как маклера. После 5 жалоб он будет заблокирован."
+
+msgid "Ha, makler"
+msgstr "Да, маклер"
+
+msgid "Manzil ma'lumotlari"
+msgstr "Адрес"
+
+msgid "Viloyatni tanlang"
+msgstr "Выберите область"
+
+msgid "Avval viloyat tanlang"
+msgstr "Сначала выберите область"
+
+msgid "Tumanni tanlang"
+msgstr "Выберите район"
+
+msgid "Tumanlar topilmadi"
+msgstr "Районы не найдены"
+
+msgid "Xato yuz berdi"
+msgstr "Произошла ошибка"
+
+msgid "Masalan: Amir Temur ko'chasi"
+msgstr "Например: ул. Амира Темура"
+
+msgid "To'liq manzil"
+msgstr "Полный адрес"
+
+msgid "Ko'cha, uy raqami, qavat"
+msgstr "Улица, номер дома, этаж"
+
+msgid "Uy ma'lumotlari"
+msgstr "Информация о доме"
+
+msgid "Narx (dollar, oyiga)"
+msgstr "Цена (доллар, в месяц)"
+
+msgid "Narx (dollar)"
+msgstr "Цена (доллар)"
+
+msgid "Masalan: 350"
+msgstr "Например: 350"
+
+msgid "Masalan"
+msgstr "Например"
+
+msgid "Tavsif"
+msgstr "Описание"
+
+msgid "Uy haqida batafsil: xona soni, qavat, jihozlar, sharoitlar..."
+msgstr "Подробно о доме: кол-во комнат, этаж, мебель, условия..."
+
+msgid "1 dan 10 tagacha"
+msgstr "от 1 до 10"
+
+msgid "Rasmlarni tanlash yoki sudrab olib keling"
+msgstr "Выберите фото или перетащите сюда"
+
+msgid "Birinchi rasm asosiy bo'ladi"
+msgstr "Первое фото будет главным"
+
+msgid "ixtiyoriy"
+msgstr "необязательно"
+
+msgid ""
+"Xaritada uyning joylashgan joyini bosing — koordinatalar avtomatik "
+"to'ldiriladi"
+msgstr "Кликните по карте — координаты заполнятся автоматически"
+
+msgid "Kenglik (Latitude)"
+msgstr "Широта (Latitude)"
+
+msgid "Uzunlik (Longitude)"
+msgstr "Долгота (Longitude)"
+
+msgid "Xaritada bosing"
+msgstr "Кликните по карте"
+
+msgid "E'lon qo'shish"
+msgstr "Опубликовать"
+
+msgid "Asosiy"
+msgstr "Главное"
+
+msgid "Yangi"
+msgstr "Новое"
+
+msgid "Saqlanmoqda..."
+msgstr "Сохранение..."
+
+msgid "Ko'pi bilan 10 ta rasm yuklash mumkin!"
+msgstr "Можно загрузить максимум 10 фото!"
+
+msgid "Kamida 1 ta rasm yuklang!"
+msgstr "Загрузите хотя бы 1 фото!"
+
+msgid "Uyni tahrirlash"
+msgstr "Редактировать дом"
+
+msgid "Bu uy ijaraga berilgan"
+msgstr "Этот дом сдан в аренду"
+
+msgid "Belgilasangiz, e'londa 'Ijaraga berildi' yorlig'i ko'rinadi"
+msgstr "Если отметите, появится метка «Сдан»"
+
+msgid "Mavjud rasmlar:"
+msgstr "Существующие фото:"
+
+msgid "Rasmni o'chirishni tasdiqlaysizmi?"
+msgstr "Удалить фото?"
+
+msgid "Yangi rasmlar qo'shish"
+msgstr "Добавить новые фото"
+
+msgid "Yana rasm qo'shishingiz mumkin (max 10 ta)"
+msgstr "Можно добавить ещё фото (максимум 10)"
+
+msgid ""
+"Maksimal rasm soni (10) to'ldi. Yangi rasm qo'shish uchun avval birini "
+"o'chiring."
+msgstr "Лимит фото (10) исчерпан. Удалите одно, чтобы добавить новое."
+
+msgid "Joylashuv koordinatalari"
+msgstr "Координаты местоположения"
+
+msgid "O'zgarishlarni saqlash"
+msgstr "Сохранить изменения"
+
+msgid "Tariflarni tanlang"
+msgstr "Выберите тариф"
+
+msgid "Uy egasining raqamini ko'ring, o'z uyingizni e'lon qiling"
+msgstr "Видите номер владельца, публикуйте свои объявления"
+
+msgid "gacha amal qiladi"
+msgstr "действует до"
+
+msgid "Mashhur"
+msgstr "Популярный"
+
+msgid "Uy egasining raqamini ko'rish"
+msgstr "Видеть номер владельца"
+
+msgid "Uy e'lon qilish"
+msgstr "Публикация объявлений"
+
+msgid "Cheksiz uy ko'rish"
+msgstr "Безлимитный просмотр"
+
+msgid "Faol tarif"
+msgstr "Активный тариф"
+
+msgid "Sotib olish"
+msgstr "Купить"
+
+msgid "Nima kiritilgan"
+msgstr "Что включено"
+
+msgid "Uy egasining telefon raqami"
+msgstr "Номер владельца"
+
+msgid "Makler himoyasi"
+msgstr "Защита от маклеров"
+
+msgid "Ha"
+msgstr "Да"
+
+msgid "Tarif nomi"
+msgstr "Название тарифа"
+
+msgid "kun"
+msgstr "дней"
+
+msgid "Sizning balansingiz"
+msgstr "Ваш баланс"
+
+msgid "To'lov miqdori"
+msgstr "Сумма платежа"
+
+msgid "Balans yetarli"
+msgstr "Баланс достаточен"
+
+msgid "Balans yetarli emas."
+msgstr "Недостаточно средств."
+
+msgid "Karta ma'lumotlari yo'q."
+msgstr "Нет данных карты."
+
+msgid "Profildan"
+msgstr "В профиле"
+
+msgid "kartani qo'shing."
+msgstr "добавьте карту."
+
+msgid "Balansni to'ldirish"
+msgstr "Пополнить баланс"
+
+msgid "Orqaga"
+msgstr "Назад"
+
+msgid "To'lanmoqda..."
+msgstr "Оплата..."
+
+msgid "Profilni tahrirlash"
+msgstr "Редактирование профиля"
+
+msgid "Profil rasmi"
+msgstr "Фото профиля"
+
+msgid "Maksimal 5 MB"
+msgstr "Максимум 5 МБ"
+
+msgid "Rasm tanlash"
+msgstr "Выбрать фото"
+
+msgid "Shaxsiy ma'lumotlar"
+msgstr "Личные данные"
+
+msgid "Karta ma'lumotlari"
+msgstr "Данные карты"
+
+msgid "ISMINGIZ FAMILIYANGIZ"
+msgstr "ВАШЕ ИМЯ ФАМИЛИЯ"
+
+msgid "Kartaning orqa tomoni"
+msgstr "Обратная сторона карты"
+
+msgid "Karta raqami"
+msgstr "Номер карты"
+
+msgid "Birinchi 4 raqamdan karta turi aniqlanadi"
+msgstr "Тип карты определяется по первым 4 цифрам"
+
+msgid "Karta egasi (lotin harfida)"
+msgstr "Владелец (латиницей)"
+
+msgid "Amal qilish muddati"
+msgstr "Срок действия"
+
+msgid "kartaning orqa tomoni"
+msgstr "обратная сторона"
+
+msgid "Qo'llab-quvvatlanadigan kartalar:"
+msgstr "Поддерживаемые карты:"
+
+msgid "Uy qo'shish uchun avval tarif sotib oling."
+msgstr "Сначала купите тариф, чтобы добавить дом."
+
+msgid "Barcha majburiy maydonlarni to'ldiring."
+msgstr "Заполните все обязательные поля."
+
+msgid "Barcha majburiy maydonlarni to'ldiring"
+msgstr "Заполните все обязательные поля"
+
+msgid "Kamida 1 ta rasm yuklang."
+msgstr "Загрузите хотя бы 1 фото."
+
+msgid "Ko'pi bilan 10 ta rasm yuklash mumkin."
+msgstr "Можно загрузить максимум 10 фото."
+
+msgid "Narxni to'g'ri kiriting."
+msgstr "Введите корректную цену."
+
+msgid "Uy muvaffaqiyatli qo'shildi!"
+msgstr "Дом успешно добавлен!"
+
+msgid "Siz bu uyni tahrirlash huquqiga ega emassiz."
+msgstr "У вас нет прав редактировать этот дом."
+
+msgid "Uy tahrirlash uchun aktiv tarif kerak."
+msgstr "Для редактирования нужен активный тариф."
+
+msgid "Rasmlar soni 10 tadan oshib ketadi."
+msgstr "Количество фото превысит 10."
+
+msgid "Uy ma'lumotlari yangilandi."
+msgstr "Данные дома обновлены."
+
+msgid "Siz bu uyni o'chirish huquqiga ega emassiz."
+msgstr "У вас нет прав удалять этот дом."
+
+msgid "Uy o'chirildi."
+msgstr "Дом удалён."
+
+msgid "Telefon raqamni ko'rish uchun premium tarif sotib oling."
+msgstr "Купите премиум-тариф, чтобы видеть номер."
+
+msgid "O'z uyingizni report qila olmaysiz."
+msgstr "Нельзя жаловаться на собственный дом."
+
+msgid "Siz bu uy uchun allaqachon shikoyat yuborgansiz."
+msgstr "Вы уже жаловались на этот дом."
+
+msgid "Shikoyatingiz qabul qilindi. Rahmat!"
+msgstr "Жалоба принята. Спасибо!"
+
+msgid "Uy saqlanganlardan olib tashlandi."
+msgstr "Дом удалён из сохранённых."
+
+msgid "Uy saqlanganlar ro'yxatiga qo'shildi."
+msgstr "Дом добавлен в сохранённые."
+
+msgid "Izoh matni bo'sh bo'lishi mumkin emas."
+msgstr "Текст комментария не может быть пустым."
+
+msgid "Izoh 1000 ta belgidan oshmasligi kerak."
+msgstr "Комментарий не должен превышать 1000 символов."
+
+msgid "Izohingiz qo'shildi."
+msgstr "Ваш комментарий добавлен."
+
+msgid "O'z uyingizga baho bera olmaysiz."
+msgstr "Нельзя оценивать собственный дом."
+
+msgid "Baho 1 dan 5 gacha bo'lishi kerak."
+msgstr "Оценка должна быть от 1 до 5."
+
+msgid "Bahoyingiz qabul qilindi."
+msgstr "Ваша оценка принята."
+
+msgid "Ruxsat yo'q."
+msgstr "Нет доступа."
+
+msgid "Rasm o'chirildi."
+msgstr "Фото удалено."
+
+msgid "Barcha maydonlarni to'ldiring."
+msgstr "Заполните все поля."
+
+msgid "Parollar mos kelmadi."
+msgstr "Пароли не совпадают."
+
+msgid "Parol kamida 8 ta belgidan iborat bo'lishi kerak."
+msgstr "Пароль должен быть не менее 8 символов."
+
+msgid "Bu telefon raqam allaqachon ro'yxatdan o'tgan."
+msgstr "Этот номер уже зарегистрирован."
+
+msgid "Ro'yxatdan muvaffaqiyatli o'tdingiz!"
+msgstr "Вы успешно зарегистрировались!"
+
+msgid "Telefon va parolni kiriting."
+msgstr "Введите телефон и пароль."
+
+msgid "Sizning hisobingiz ko'p sonli shikoyatlar tufayli bloklangan."
+msgstr "Ваш аккаунт заблокирован из-за множества жалоб."
+
+msgid "Xush kelibsiz, %(name)s!"
+msgstr "Добро пожаловать, %(name)s!"
+
+msgid "Telefon raqam yoki parol noto'g'ri."
+msgstr "Неверный номер или пароль."
+
+msgid "Tizimdan chiqdingiz."
+msgstr "Вы вышли из системы."
+
+msgid "Ism va familiyani kiriting."
+msgstr "Введите имя и фамилию."
+
+msgid "Ma'lumotlar muvaffaqiyatli yangilandi."
+msgstr "Данные успешно обновлены."
+
+msgid "Noto'g'ri summa kiritildi."
+msgstr "Введена неверная сумма."
+
+msgid "Balansga %(amount)s so'm qo'shildi."
+msgstr "На баланс добавлено %(amount)s сум."
+
+msgid ""
+"Balansda mablag' yetarli emas. Kerakli summa: %(need)s so'm. Sizning "
+"balansingiz: %(have)s so'm."
+msgstr "Недостаточно средств. Нужно: %(need)s сум. Ваш баланс: %(have)s сум."
+
+msgid "Tarif faollashtirildi"
+msgstr "Тариф активирован"
+
+msgid ""
+"%(name)s tarifi muvaffaqiyatli faollashtirildi. Muddati: %(date)s gacha."
+msgstr "Тариф %(name)s успешно активирован. Действителен до %(date)s."
+
+msgid "%(name)s muvaffaqiyatli sotib olindi! Muddati: %(date)s gacha."
+msgstr "%(name)s успешно куплен! Действителен до %(date)s."
+
+msgid "Siz o'zingizni bloklay olmaysiz!"
+msgstr "Нельзя заблокировать самого себя!"
+
+msgid "%(name)s holati o'zgartirildi."
+msgstr "Статус %(name)s изменён."
+
+msgid "Uy muvaffaqiyatli o'chirildi."
+msgstr "Дом успешно удалён."
+
+msgid "%(name)s bloklandi va uning %(count)s ta e'loni o'chirib tashlandi."
+msgstr "%(name)s заблокирован, удалено %(count)s объявлений."
+
+msgid "%(name)s blokdan chiqarildi."
+msgstr "%(name)s разблокирован."
+
+msgid "O'zbekcha"
+msgstr "Узбекский"
+
+msgid "Русский"
+msgstr "Русский"
+
+msgid "English"
+msgstr "Английский"
+
+msgid "ta faol e'lon — eng yangi birinchi"
+msgstr "активных объявлений — самые новые сверху"
+
+msgid "ta uy saqlangan"
+msgstr "сохранённых домов"
+
+msgid "kun qoldi"
+msgstr "дней осталось"
+
+msgid "%(t)s oldin"
+msgstr "%(t)s назад"
+
+msgid "%(c)s ta"
+msgstr "%(c)s шт."
+
+msgid "%(counter)s ta faol e'lon — eng yangi birinchi"
+msgstr "%(counter)s активных объявлений — самые новые сверху"
+
+msgid "%(c)s ta uy saqlangan"
+msgstr "%(c)s сохранённых домов"
+
+msgid "%(d)s kun qoldi"
+msgstr "%(d)s дней осталось"
+
+msgid "%(d)s tumanidagi boshqa uylar"
+msgstr "Другие дома в районе %(d)s"
+
+msgid "%(n)s sotib olish"
+msgstr "Купить %(n)s"
+
+msgid "%(d)s kunlik premium obuna"
+msgstr "%(d)s-дневная премиум-подписка"
+
+msgid "%(d)s kunlik obuna"
+msgstr "%(d)s-дневная подписка"
+
+msgid "%(d)s kun davomida faol"
+msgstr "Действует %(d)s дней"
+
+msgid "%(p)s so'm to'lash"
+msgstr "Оплатить %(p)s сум"
+
+msgid "Bosh"
+msgstr "Главная"
+
+msgid "Qo'shish"
+msgstr "Добавить"
+
+msgid "Xabar"
+msgstr "Сообщ."
+
+msgid "yangi"
+msgstr "новых"
+
+msgid "Hammasini o'qildi"
+msgstr "Прочитать всё"
+
+msgid "Bildirishnomalar yo'q"
+msgstr "Уведомлений нет"
+
+msgid "Tarif, hisob va e'lonlar haqidagi yangiliklar shu yerda ko'rinadi"
+msgstr "Здесь появятся новости о тарифах, аккаунте и объявлениях"
+
+msgid "Sahifa topilmadi"
+msgstr "Страница не найдена"
+
+msgid "Siz qidirayotgan sahifa mavjud emas yoki ko'chirilgan bo'lishi mumkin."
+msgstr "Запрашиваемая страница не существует или была перемещена."
+
+msgid "Bosh sahifaga"
+msgstr "На главную"
+
+msgid "Server xatosi"
+msgstr "Ошибка сервера"
+
+msgid "Kechirasiz, kutilmagan xato yuz berdi. Texnik jamoa xabardor qilindi."
+msgstr "Произошла непредвиденная ошибка. Команда уведомлена."

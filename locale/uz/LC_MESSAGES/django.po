@@ -1,0 +1,1005 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: UyIjara 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2025-01-01 00:00+0500\n"
+"Last-Translator: UyIjara\n"
+"Language-Team: uz\n"
+"Language: uz\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Shahar, tuman yoki ko'cha..."
+msgstr "Shahar, tuman yoki ko'cha..."
+
+msgid "Topish"
+msgstr "Topish"
+
+msgid "E'lonlar"
+msgstr "E'lonlar"
+
+msgid "Tariflar"
+msgstr "Tariflar"
+
+msgid "Uylarim"
+msgstr "Uylarim"
+
+msgid "Til"
+msgstr "Til"
+
+msgid "Rejim"
+msgstr "Rejim"
+
+msgid "Saqlangan"
+msgstr "Saqlangan"
+
+msgid "Bildirishnomalar"
+msgstr "Bildirishnomalar"
+
+msgid "Profilim"
+msgstr "Profilim"
+
+msgid "Mening uylarim"
+msgstr "Mening uylarim"
+
+msgid "Tahrirlash"
+msgstr "Tahrirlash"
+
+msgid "Admin panel"
+msgstr "Admin panel"
+
+msgid "Chiqish"
+msgstr "Chiqish"
+
+msgid "Kirish"
+msgstr "Kirish"
+
+msgid "Ro'yxat"
+msgstr "Ro'yxat"
+
+msgid "E'lon"
+msgstr "E'lon"
+
+msgid "Maklersiz uy ijara platformasi"
+msgstr "Maklersiz uy ijara platformasi"
+
+msgid "Profil"
+msgstr "Profil"
+
+msgid "Maklersiz uy ijara platformasi. Eng yaxshi e'lonlarni toping."
+msgstr "Maklersiz uy ijara platformasi. Eng yaxshi e'lonlarni toping."
+
+msgid "Uylar"
+msgstr "Uylar"
+
+msgid "Joylashuv"
+msgstr "Joylashuv"
+
+msgid "Min narx"
+msgstr "Min narx"
+
+msgid "Max narx"
+msgstr "Max narx"
+
+msgid "Qidirish"
+msgstr "Qidirish"
+
+msgid "Barcha viloyatlar"
+msgstr "Barcha viloyatlar"
+
+msgid "Hammasi"
+msgstr "Hammasi"
+
+msgid "Top"
+msgstr "Top"
+
+msgid "Arzon"
+msgstr "Arzon"
+
+msgid "Tozalash"
+msgstr "Tozalash"
+
+msgid "Barcha e'lonlar"
+msgstr "Barcha e'lonlar"
+
+msgid "Narx"
+msgstr "Narx"
+
+msgid "Rasm yo'q"
+msgstr "Rasm yo'q"
+
+msgid "oy"
+msgstr "oy"
+
+msgid "Saqlash"
+msgstr "Saqlash"
+
+msgid "Ijaraga berildi"
+msgstr "Ijaraga berildi"
+
+msgid "E'lonlar topilmadi"
+msgstr "E'lonlar topilmadi"
+
+msgid "Qidiruv shartlarini o'zgartirib ko'ring"
+msgstr "Qidiruv shartlarini o'zgartirib ko'ring"
+
+msgid "Hammasini ko'rish"
+msgstr "Hammasini ko'rish"
+
+msgid "Viloyat"
+msgstr "Viloyat"
+
+msgid "Makler"
+msgstr "Makler"
+
+msgid "Bepul"
+msgstr "Bepul"
+
+msgid "Hisobingizga kiring"
+msgstr "Hisobingizga kiring"
+
+msgid "Telefon raqam"
+msgstr "Telefon raqam"
+
+msgid "Parol"
+msgstr "Parol"
+
+msgid "Hisobingiz yo'qmi?"
+msgstr "Hisobingiz yo'qmi?"
+
+msgid "Ro'yxatdan o'ting"
+msgstr "Ro'yxatdan o'ting"
+
+msgid "Ro'yxatdan o'tish"
+msgstr "Ro'yxatdan o'tish"
+
+msgid "Yangi hisob yarating"
+msgstr "Yangi hisob yarating"
+
+msgid "Ism"
+msgstr "Ism"
+
+msgid "Familiya"
+msgstr "Familiya"
+
+msgid "Kamida 8 ta belgi"
+msgstr "Kamida 8 ta belgi"
+
+msgid "Parolni tasdiqlang"
+msgstr "Parolni tasdiqlang"
+
+msgid "Parolni qayta kiriting"
+msgstr "Parolni qayta kiriting"
+
+msgid "Hisobingiz bormi?"
+msgstr "Hisobingiz bormi?"
+
+msgid "Kiring"
+msgstr "Kiring"
+
+msgid "Kirilmoqda..."
+msgstr "Kirilmoqda..."
+
+msgid "Yaratilmoqda..."
+msgstr "Yaratilmoqda..."
+
+msgid "Juda zaif"
+msgstr "Juda zaif"
+
+msgid "O'rtacha"
+msgstr "O'rtacha"
+
+msgid "Yaxshi"
+msgstr "Yaxshi"
+
+msgid "Kuchli"
+msgstr "Kuchli"
+
+msgid "Parollar mos"
+msgstr "Parollar mos"
+
+msgid "Parollar mos emas"
+msgstr "Parollar mos emas"
+
+msgid "Mening profilim"
+msgstr "Mening profilim"
+
+msgid "E'lonlarim"
+msgstr "E'lonlarim"
+
+msgid "To'lovlar"
+msgstr "To'lovlar"
+
+msgid "so'm balans"
+msgstr "so'm балланс"
+
+msgid "Faol"
+msgstr "Faol"
+
+msgid "gacha"
+msgstr "gacha"
+
+msgid "Uzaytirish"
+msgstr "Uzaytirish"
+
+msgid "Tarif yo'q"
+msgstr "Tarif yo'q"
+
+msgid "Uy e'lon qilish va raqam ko'rish uchun tarif oling"
+msgstr "Uy e'lon qilish va raqam ko'rish uchun tarif oling"
+
+msgid "Tarif olish"
+msgstr "Tarif olish"
+
+msgid "Saqlangan uylar"
+msgstr "Saqlangan uylar"
+
+msgid "ta e'lon"
+msgstr "ta e'lon"
+
+msgid "ta saqlangan"
+msgstr "ta saqlangan"
+
+msgid "Premium imkoniyatlar"
+msgstr "Premium imkoniyatlar"
+
+msgid "Uy qo'shish"
+msgstr "Uy qo'shish"
+
+msgid "Yangi e'lon berish"
+msgstr "Yangi e'lon berish"
+
+msgid "Joriy balans"
+msgstr "Joriy balans"
+
+msgid "so'm"
+msgstr "so'm"
+
+msgid "Qancha so'm qo'shish?"
+msgstr "Qancha so'm qo'shish?"
+
+msgid "To'ldirish"
+msgstr "To'ldirish"
+
+msgid "Karta egasi"
+msgstr "Karta egasi"
+
+msgid "Muddat"
+msgstr "Muddat"
+
+msgid "O'zgartirish"
+msgstr "O'zgartirish"
+
+msgid "Karta qo'shish"
+msgstr "Karta qo'shish"
+
+msgid "Tarif to'lovi uchun karta kiriting"
+msgstr "Tarif to'lovi uchun karta kiriting"
+
+msgid "To'lovlar tarixi"
+msgstr "To'lovlar tarixi"
+
+msgid "Tarif"
+msgstr "Tarif"
+
+msgid "Summa"
+msgstr "Summa"
+
+msgid "Karta"
+msgstr "Karta"
+
+msgid "Holat"
+msgstr "Holat"
+
+msgid "Sana"
+msgstr "Sana"
+
+msgid "Hali hech qanday to'lov amalga oshirilmagan"
+msgstr "Hali hech qanday to'lov amalga oshirilmagan"
+
+msgid "O'qildi"
+msgstr "O'qildi"
+
+msgid "Hamma bildirishnomalar o'qilgan"
+msgstr "Hamma bildirishnomalar o'qilgan"
+
+msgid "Uyni o'chirish"
+msgstr "Uyni o'chirish"
+
+msgid "Uyni o'chirishni tasdiqlang"
+msgstr "Uyni o'chirishni tasdiqlang"
+
+msgid "e'lonini o'chirishga tayyormisiz?"
+msgstr "e'lonini o'chirishga tayyormisiz?"
+
+msgid "Bu amal qaytarilmaydi."
+msgstr "Bu amal qaytarilmaydi."
+
+msgid "Bekor qilish"
+msgstr "Bekor qilish"
+
+msgid "Bekor"
+msgstr "Bekor"
+
+msgid "Ha, o'chirish"
+msgstr "Ha, o'chirish"
+
+msgid "Shikoyat yuborish"
+msgstr "Shikoyat yuborish"
+
+msgid ""
+"Bu e'lon haqida shikoyatingiz tasdiqlanadi. Foydalanuvchi 5+ shikoyat "
+"olgach, hisobingiz bloklanadi."
+msgstr ""
+"Bu e'lon haqida shikoyatingiz tasdiqlanadi. Foydalanuvchi 5+ shikoyat "
+"olgach, hisobingiz bloklanadi."
+
+msgid "Yuborish"
+msgstr "Yuborish"
+
+msgid "Ko'proq uylar"
+msgstr "Ko'proq uylar"
+
+msgid "Ko'rish"
+msgstr "Ko'rish"
+
+msgid "Ko'rishlar"
+msgstr "Ko'rishlar"
+
+msgid "ko'rishlar"
+msgstr "ko'rishlar"
+
+msgid "Saqlangan ro'yxatdan o'chirish"
+msgstr "Saqlangan ro'yxatdan o'chirish"
+
+msgid "Saqlangan uylar yo'q"
+msgstr "Saqlangan uylar yo'q"
+
+msgid "Yoqqan uylarni saqlang va keyinroq qarang"
+msgstr "Yoqqan uylarni saqlang va keyinroq qarang"
+
+msgid "Uylarni ko'rish"
+msgstr "Uylarni ko'rish"
+
+msgid "Yangi e'lon"
+msgstr "Yangi e'lon"
+
+msgid "Tarif yo'q — uy qo'sha olmaysiz"
+msgstr "Tarif yo'q — uy qo'sha olmaysiz"
+
+msgid "Uy e'lon qilish uchun avval premium tarif sotib oling"
+msgstr "Uy e'lon qilish uchun avval premium tarif sotib oling"
+
+msgid "Hali e'lon yo'q"
+msgstr "Hali e'lon yo'q"
+
+msgid "Birinchi uyingizni e'lon qiling va ijarachilar toping"
+msgstr "Birinchi uyingizni e'lon qiling va ijarachilar toping"
+
+msgid "Uy e'lon qilish uchun avval tarif sotib oling"
+msgstr "Uy e'lon qilish uchun avval tarif sotib oling"
+
+msgid "rasm"
+msgstr "rasm"
+
+msgid "oldin"
+msgstr "oldin"
+
+msgid "Bosh sahifa"
+msgstr "Bosh sahifa"
+
+msgid "ta rasm"
+msgstr "ta rasm"
+
+msgid "Rasm yuklanmagan"
+msgstr "Rasm yuklanmagan"
+
+msgid "Oylik narx"
+msgstr "Oylik narx"
+
+msgid "Tuman"
+msgstr "Tuman"
+
+msgid "Ko'cha"
+msgstr "Ko'cha"
+
+msgid "Uy haqida"
+msgstr "Uy haqida"
+
+msgid "Joylashuv xaritada"
+msgstr "Joylashuv xaritada"
+
+msgid "Koordinatalar kiritilmagan"
+msgstr "Koordinatalar kiritilmagan"
+
+msgid "Reyting"
+msgstr "Reyting"
+
+msgid "ta baho"
+msgstr "ta baho"
+
+msgid "ta foydalanuvchi baholagan"
+msgstr "ta foydalanuvchi baholagan"
+
+msgid "Bahoyingizni qoldiring:"
+msgstr "Bahoyingizni qoldiring:"
+
+msgid "Baho berish uchun"
+msgstr "Baho berish uchun"
+
+msgid "kiring"
+msgstr "kiring"
+
+msgid "Izohlar"
+msgstr "Izohlar"
+
+msgid "Fikr yoki savolingizni yozing..."
+msgstr "Fikr yoki savolingizni yozing..."
+
+msgid "Izoh qoldirish uchun"
+msgstr "Izoh qoldirish uchun"
+
+msgid "Hali izoh yo'q"
+msgstr "Hali izoh yo'q"
+
+msgid "Oylik ijara narxi"
+msgstr "Oylik ijara narxi"
+
+msgid "AQSh dollari / oy"
+msgstr "AQSh dollari / oy"
+
+msgid "Uy egasi"
+msgstr "Uy egasi"
+
+msgid "Telefon raqamni ko'rish"
+msgstr "Telefon raqamni ko'rish"
+
+msgid "Yuklanmoqda..."
+msgstr "Yuklanmoqda..."
+
+msgid "Shikoyat"
+msgstr "Shikoyat"
+
+msgid "O'chirish"
+msgstr "O'chirish"
+
+msgid "Rasmlar"
+msgstr "Rasmlar"
+
+msgid "ta"
+msgstr "ta"
+
+msgid "Tizimga kiring"
+msgstr "Tizimga kiring"
+
+msgid "Uy egasining telefon raqamini ko'rish uchun avval kiring."
+msgstr "Uy egasining telefon raqamini ko'rish uchun avval kiring."
+
+msgid "Premium tarif kerak"
+msgstr "Premium tarif kerak"
+
+msgid "Uy egasining telefon raqamini ko'rish uchun tarif sotib oling."
+msgstr "Uy egasining telefon raqamini ko'rish uchun tarif sotib oling."
+
+msgid "Qo'ng'iroq qildingizmi?"
+msgstr "Qo'ng'iroq qildingizmi?"
+
+msgid "Uy egasi haqida fikringizni bildiring."
+msgstr "Uy egasi haqida fikringizni bildiring."
+
+msgid "Makler emas — hammasi yaxshi"
+msgstr "Makler emas — hammasi yaxshi"
+
+msgid "To'g'ridan-to'g'ri uy egasi"
+msgstr "To'g'ridan-to'g'ri uy egasi"
+
+msgid "Bu makler — shikoyat yuborish"
+msgstr "Bu makler — shikoyat yuborish"
+
+msgid "Boshqalarni ogohlantiring"
+msgstr "Boshqalarni ogohlantiring"
+
+msgid "Keyinroq"
+msgstr "Keyinroq"
+
+msgid ""
+"Uy egasini makler sifatida belgilaysiz. 5 ta shikoyat to'plansa, u "
+"bloklanadi."
+msgstr ""
+"Uy egasini makler sifatida belgilaysiz. 5 ta shikoyat to'plansa, u "
+"bloklanadi."
+
+msgid "Ha, makler"
+msgstr "Ha, makler"
+
+msgid "Manzil ma'lumotlari"
+msgstr "Manzil ma'lumotlari"
+
+msgid "Viloyatni tanlang"
+msgstr "Viloyatni tanlang"
+
+msgid "Avval viloyat tanlang"
+msgstr "Avval viloyat tanlang"
+
+msgid "Tumanni tanlang"
+msgstr "Tumanni tanlang"
+
+msgid "Tumanlar topilmadi"
+msgstr "Tumanlar topilmadi"
+
+msgid "Xato yuz berdi"
+msgstr "Xato yuz berdi"
+
+msgid "Masalan: Amir Temur ko'chasi"
+msgstr "Masalan: Amir Temur ko'chasi"
+
+msgid "To'liq manzil"
+msgstr "To'liq manzil"
+
+msgid "Ko'cha, uy raqami, qavat"
+msgstr "Ko'cha, uy raqami, qavat"
+
+msgid "Uy ma'lumotlari"
+msgstr "Uy ma'lumotlari"
+
+msgid "Narx (dollar, oyiga)"
+msgstr "Narx (dollar, oyiga)"
+
+msgid "Narx (dollar)"
+msgstr "Narx (dollar)"
+
+msgid "Masalan: 350"
+msgstr "Masalan: 350"
+
+msgid "Masalan"
+msgstr "Masalan"
+
+msgid "Tavsif"
+msgstr "Tavsif"
+
+msgid "Uy haqida batafsil: xona soni, qavat, jihozlar, sharoitlar..."
+msgstr "Uy haqida batafsil: xona soni, qavat, jihozlar, sharoitlar..."
+
+msgid "1 dan 10 tagacha"
+msgstr "1 dan 10 tagacha"
+
+msgid "Rasmlarni tanlash yoki sudrab olib keling"
+msgstr "Rasmlarni tanlash yoki sudrab olib keling"
+
+msgid "Birinchi rasm asosiy bo'ladi"
+msgstr "Birinchi rasm asosiy bo'ladi"
+
+msgid "ixtiyoriy"
+msgstr "ixtiyoriy"
+
+msgid ""
+"Xaritada uyning joylashgan joyini bosing — koordinatalar avtomatik "
+"to'ldiriladi"
+msgstr ""
+"Xaritada uyning joylashgan joyini bosing — koordinatalar avtomatik "
+"to'ldiriladi"
+
+msgid "Kenglik (Latitude)"
+msgstr "Kenglik (Latitude)"
+
+msgid "Uzunlik (Longitude)"
+msgstr "Uzunlik (Longitude)"
+
+msgid "Xaritada bosing"
+msgstr "Xaritada bosing"
+
+msgid "E'lon qo'shish"
+msgstr "E'lon qo'shish"
+
+msgid "Asosiy"
+msgstr "Asosiy"
+
+msgid "Yangi"
+msgstr "Yangi"
+
+msgid "Saqlanmoqda..."
+msgstr "Saqlanmoqda..."
+
+msgid "Ko'pi bilan 10 ta rasm yuklash mumkin!"
+msgstr "Ko'pi bilan 10 ta rasm yuklash mumkin!"
+
+msgid "Kamida 1 ta rasm yuklang!"
+msgstr "Kamida 1 ta rasm yuklang!"
+
+msgid "Uyni tahrirlash"
+msgstr "Uyni tahrirlash"
+
+msgid "Bu uy ijaraga berilgan"
+msgstr "Bu uy ijaraga berilgan"
+
+msgid "Belgilasangiz, e'londa 'Ijaraga berildi' yorlig'i ko'rinadi"
+msgstr "Belgilasangiz, e'londa 'Ijaraga berildi' yorlig'i ko'rinadi"
+
+msgid "Mavjud rasmlar:"
+msgstr "Mavjud rasmlar:"
+
+msgid "Rasmni o'chirishni tasdiqlaysizmi?"
+msgstr "Rasmni o'chirishni tasdiqlaysizmi?"
+
+msgid "Yangi rasmlar qo'shish"
+msgstr "Yangi rasmlar qo'shish"
+
+msgid "Yana rasm qo'shishingiz mumkin (max 10 ta)"
+msgstr "Yana rasm qo'shishingiz mumkin (max 10 ta)"
+
+msgid ""
+"Maksimal rasm soni (10) to'ldi. Yangi rasm qo'shish uchun avval birini "
+"o'chiring."
+msgstr ""
+"Maksimal rasm soni (10) to'ldi. Yangi rasm qo'shish uchun avval birini "
+"o'chiring."
+
+msgid "Joylashuv koordinatalari"
+msgstr "Joylashuv koordinatalari"
+
+msgid "O'zgarishlarni saqlash"
+msgstr "O'zgarishlarni saqlash"
+
+msgid "Tariflarni tanlang"
+msgstr "Tariflarni tanlang"
+
+msgid "Uy egasining raqamini ko'ring, o'z uyingizni e'lon qiling"
+msgstr "Uy egasining raqamini ko'ring, o'z uyingizni e'lon qiling"
+
+msgid "gacha amal qiladi"
+msgstr "gacha amal qiladi"
+
+msgid "Mashhur"
+msgstr "Mashhur"
+
+msgid "Uy egasining raqamini ko'rish"
+msgstr "Uy egasining raqamini ko'rish"
+
+msgid "Uy e'lon qilish"
+msgstr "Uy e'lon qilish"
+
+msgid "Cheksiz uy ko'rish"
+msgstr "Cheksiz uy ko'rish"
+
+msgid "Faol tarif"
+msgstr "Faol tarif"
+
+msgid "Sotib olish"
+msgstr "Sotib olish"
+
+msgid "Nima kiritilgan"
+msgstr "Nima kiritilgan"
+
+msgid "Uy egasining telefon raqami"
+msgstr "Uy egasining telefon raqami"
+
+msgid "Makler himoyasi"
+msgstr "Makler himoyasi"
+
+msgid "Ha"
+msgstr "Ha"
+
+msgid "Tarif nomi"
+msgstr "Tarif nomi"
+
+msgid "kun"
+msgstr "kun"
+
+msgid "Sizning balansingiz"
+msgstr "Sizning balansingiz"
+
+msgid "To'lov miqdori"
+msgstr "To'lov miqdori"
+
+msgid "Balans yetarli"
+msgstr "Balans yetarli"
+
+msgid "Balans yetarli emas."
+msgstr "Balans yetarli emas."
+
+msgid "Karta ma'lumotlari yo'q."
+msgstr "Karta ma'lumotlari yo'q."
+
+msgid "Profildan"
+msgstr "Profildan"
+
+msgid "kartani qo'shing."
+msgstr "kartani qo'shing."
+
+msgid "Balansni to'ldirish"
+msgstr "Balansni to'ldirish"
+
+msgid "Orqaga"
+msgstr "Orqaga"
+
+msgid "To'lanmoqda..."
+msgstr "To'lanmoqda..."
+
+msgid "Profilni tahrirlash"
+msgstr "Profilni tahrirlash"
+
+msgid "Profil rasmi"
+msgstr "Profil rasmi"
+
+msgid "Maksimal 5 MB"
+msgstr "Maksimal 5 MB"
+
+msgid "Rasm tanlash"
+msgstr "Rasm tanlash"
+
+msgid "Shaxsiy ma'lumotlar"
+msgstr "Shaxsiy ma'lumotlar"
+
+msgid "Karta ma'lumotlari"
+msgstr "Karta ma'lumotlari"
+
+msgid "ISMINGIZ FAMILIYANGIZ"
+msgstr "ISMINGIZ FAMILIYANGIZ"
+
+msgid "Kartaning orqa tomoni"
+msgstr "Kartaning orqa tomoni"
+
+msgid "Karta raqami"
+msgstr "Karta raqami"
+
+msgid "Birinchi 4 raqamdan karta turi aniqlanadi"
+msgstr "Birinchi 4 raqamdan karta turi aniqlanadi"
+
+msgid "Karta egasi (lotin harfida)"
+msgstr "Karta egasi (lotin harfida)"
+
+msgid "Amal qilish muddati"
+msgstr "Amal qilish muddati"
+
+msgid "kartaning orqa tomoni"
+msgstr "kartaning orqa tomoni"
+
+msgid "Qo'llab-quvvatlanadigan kartalar:"
+msgstr "Qo'llab-quvvatlanadigan kartalar:"
+
+msgid "Uy qo'shish uchun avval tarif sotib oling."
+msgstr "Uy qo'shish uchun avval tarif sotib oling."
+
+msgid "Barcha majburiy maydonlarni to'ldiring."
+msgstr "Barcha majburiy maydonlarni to'ldiring."
+
+msgid "Barcha majburiy maydonlarni to'ldiring"
+msgstr "Barcha majburiy maydonlarni to'ldiring"
+
+msgid "Kamida 1 ta rasm yuklang."
+msgstr "Kamida 1 ta rasm yuklang."
+
+msgid "Ko'pi bilan 10 ta rasm yuklash mumkin."
+msgstr "Ko'pi bilan 10 ta rasm yuklash mumkin."
+
+msgid "Narxni to'g'ri kiriting."
+msgstr "Narxni to'g'ri kiriting."
+
+msgid "Uy muvaffaqiyatli qo'shildi!"
+msgstr "Uy muvaffaqiyatli qo'shildi!"
+
+msgid "Siz bu uyni tahrirlash huquqiga ega emassiz."
+msgstr "Siz bu uyni tahrirlash huquqiga ega emassiz."
+
+msgid "Uy tahrirlash uchun aktiv tarif kerak."
+msgstr "Uy tahrirlash uchun aktiv tarif kerak."
+
+msgid "Rasmlar soni 10 tadan oshib ketadi."
+msgstr "Rasmlar soni 10 tadan oshib ketadi."
+
+msgid "Uy ma'lumotlari yangilandi."
+msgstr "Uy ma'lumotlari yangilandi."
+
+msgid "Siz bu uyni o'chirish huquqiga ega emassiz."
+msgstr "Siz bu uyni o'chirish huquqiga ega emassiz."
+
+msgid "Uy o'chirildi."
+msgstr "Uy o'chirildi."
+
+msgid "Telefon raqamni ko'rish uchun premium tarif sotib oling."
+msgstr "Telefon raqamni ko'rish uchun premium tarif sotib oling."
+
+msgid "O'z uyingizni report qila olmaysiz."
+msgstr "O'z uyingizni report qila olmaysiz."
+
+msgid "Siz bu uy uchun allaqachon shikoyat yuborgansiz."
+msgstr "Siz bu uy uchun allaqachon shikoyat yuborgansiz."
+
+msgid "Shikoyatingiz qabul qilindi. Rahmat!"
+msgstr "Shikoyatingiz qabul qilindi. Rahmat!"
+
+msgid "Uy saqlanganlardan olib tashlandi."
+msgstr "Uy saqlanganlardan olib tashlandi."
+
+msgid "Uy saqlanganlar ro'yxatiga qo'shildi."
+msgstr "Uy saqlanganlar ro'yxatiga qo'shildi."
+
+msgid "Izoh matni bo'sh bo'lishi mumkin emas."
+msgstr "Izoh matni bo'sh bo'lishi mumkin emas."
+
+msgid "Izoh 1000 ta belgidan oshmasligi kerak."
+msgstr "Izoh 1000 ta belgidan oshmasligi kerak."
+
+msgid "Izohingiz qo'shildi."
+msgstr "Izohingiz qo'shildi."
+
+msgid "O'z uyingizga baho bera olmaysiz."
+msgstr "O'z uyingizga baho bera olmaysiz."
+
+msgid "Baho 1 dan 5 gacha bo'lishi kerak."
+msgstr "Baho 1 dan 5 gacha bo'lishi kerak."
+
+msgid "Bahoyingiz qabul qilindi."
+msgstr "Bahoyingiz qabul qilindi."
+
+msgid "Ruxsat yo'q."
+msgstr "Ruxsat yo'q."
+
+msgid "Rasm o'chirildi."
+msgstr "Rasm o'chirildi."
+
+msgid "Barcha maydonlarni to'ldiring."
+msgstr "Barcha maydonlarni to'ldiring."
+
+msgid "Parollar mos kelmadi."
+msgstr "Parollar mos kelmadi."
+
+msgid "Parol kamida 8 ta belgidan iborat bo'lishi kerak."
+msgstr "Parol kamida 8 ta belgidan iborat bo'lishi kerak."
+
+msgid "Bu telefon raqam allaqachon ro'yxatdan o'tgan."
+msgstr "Bu telefon raqam allaqachon ro'yxatdan o'tgan."
+
+msgid "Ro'yxatdan muvaffaqiyatli o'tdingiz!"
+msgstr "Ro'yxatdan muvaffaqiyatli o'tdingiz!"
+
+msgid "Telefon va parolni kiriting."
+msgstr "Telefon va parolni kiriting."
+
+msgid "Sizning hisobingiz ko'p sonli shikoyatlar tufayli bloklangan."
+msgstr "Sizning hisobingiz ko'p sonli shikoyatlar tufayli bloklangan."
+
+msgid "Xush kelibsiz, %(name)s!"
+msgstr "Xush kelibsiz, %(name)s!"
+
+msgid "Telefon raqam yoki parol noto'g'ri."
+msgstr "Telefon raqam yoki parol noto'g'ri."
+
+msgid "Tizimdan chiqdingiz."
+msgstr "Tizimdan chiqdingiz."
+
+msgid "Ism va familiyani kiriting."
+msgstr "Ism va familiyani kiriting."
+
+msgid "Ma'lumotlar muvaffaqiyatli yangilandi."
+msgstr "Ma'lumotlar muvaffaqiyatli yangilandi."
+
+msgid "Noto'g'ri summa kiritildi."
+msgstr "Noto'g'ri summa kiritildi."
+
+msgid "Balansga %(amount)s so'm qo'shildi."
+msgstr "Balansga %(amount)s so'm qo'shildi."
+
+msgid ""
+"Balansda mablag' yetarli emas. Kerakli summa: %(need)s so'm. Sizning "
+"balansingiz: %(have)s so'm."
+msgstr ""
+"Balansda mablag' yetarli emas. Kerakli summa: %(need)s so'm. Sizning "
+"balansingiz: %(have)s so'm."
+
+msgid "Tarif faollashtirildi"
+msgstr "Tarif faollashtirildi"
+
+msgid ""
+"%(name)s tarifi muvaffaqiyatli faollashtirildi. Muddati: %(date)s gacha."
+msgstr ""
+"%(name)s tarifi muvaffaqiyatli faollashtirildi. Muddati: %(date)s gacha."
+
+msgid "%(name)s muvaffaqiyatli sotib olindi! Muddati: %(date)s gacha."
+msgstr "%(name)s muvaffaqiyatli sotib olindi! Muddati: %(date)s gacha."
+
+msgid "Siz o'zingizni bloklay olmaysiz!"
+msgstr "Siz o'zingizni bloklay olmaysiz!"
+
+msgid "%(name)s holati o'zgartirildi."
+msgstr "%(name)s holati o'zgartirildi."
+
+msgid "Uy muvaffaqiyatli o'chirildi."
+msgstr "Uy muvaffaqiyatli o'chirildi."
+
+msgid "%(name)s bloklandi va uning %(count)s ta e'loni o'chirib tashlandi."
+msgstr "%(name)s bloklandi va uning %(count)s ta e'loni o'chirib tashlandi."
+
+msgid "%(name)s blokdan chiqarildi."
+msgstr "%(name)s blokdan chiqarildi."
+
+msgid "O'zbekcha"
+msgstr "O'zbekcha"
+
+msgid "Русский"
+msgstr "Русский"
+
+msgid "English"
+msgstr "English"
+
+msgid "ta faol e'lon — eng yangi birinchi"
+msgstr "ta faol e'lon — eng yangi birinchi"
+
+msgid "ta uy saqlangan"
+msgstr "ta uy saqlangan"
+
+msgid "kun qoldi"
+msgstr "kun qoldi"
+
+msgid "%(t)s oldin"
+msgstr "%(t)s oldin"
+
+msgid "%(c)s ta"
+msgstr "%(c)s ta"
+
+msgid "%(counter)s ta faol e'lon — eng yangi birinchi"
+msgstr "%(counter)s ta faol e'lon — eng yangi birinchi"
+
+msgid "%(c)s ta uy saqlangan"
+msgstr "%(c)s ta uy saqlangan"
+
+msgid "%(d)s kun qoldi"
+msgstr "%(d)s kun qoldi"
+
+msgid "%(d)s tumanidagi boshqa uylar"
+msgstr "%(d)s tumanidagi boshqa uylar"
+
+msgid "%(n)s sotib olish"
+msgstr "%(n)s sotib olish"
+
+msgid "%(d)s kunlik premium obuna"
+msgstr "%(d)s kunlik premium obuna"
+
+msgid "%(d)s kunlik obuna"
+msgstr "%(d)s kunlik obuna"
+
+msgid "%(d)s kun davomida faol"
+msgstr "%(d)s kun davomida faol"
+
+msgid "%(p)s so'm to'lash"
+msgstr "%(p)s so'm to'lash"
+
+msgid "Bosh"
+msgstr "Bosh"
+
+msgid "Qo'shish"
+msgstr "Qo'shish"
+
+msgid "Xabar"
+msgstr "Xabar"
+
+msgid "yangi"
+msgstr "yangi"
+
+msgid "Hammasini o'qildi"
+msgstr "Hammasini o'qildi"
+
+msgid "Bildirishnomalar yo'q"
+msgstr "Bildirishnomalar yo'q"
+
+msgid "Tarif, hisob va e'lonlar haqidagi yangiliklar shu yerda ko'rinadi"
+msgstr "Tarif, hisob va e'lonlar haqidagi yangiliklar shu yerda ko'rinadi"
+
+msgid "Sahifa topilmadi"
+msgstr "Sahifa topilmadi"
+
+msgid "Siz qidirayotgan sahifa mavjud emas yoki ko'chirilgan bo'lishi mumkin."
+msgstr ""
+"Siz qidirayotgan sahifa mavjud emas yoki ko'chirilgan bo'lishi mumkin."
+
+msgid "Bosh sahifaga"
+msgstr "Bosh sahifaga"
+
+msgid "Server xatosi"
+msgstr "Server xatosi"
+
+msgid "Kechirasiz, kutilmagan xato yuz berdi. Texnik jamoa xabardor qilindi."
+msgstr "Kechirasiz, kutilmagan xato yuz berdi. Texnik jamoa xabardor qilindi."

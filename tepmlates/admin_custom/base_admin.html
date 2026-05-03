@@ -1,95 +1,417 @@
+{% load i18n %}
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control Panel | Maklersiz Uy</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <title>{% block title %}Admin Panel{% endblock %} — UyIjara</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        :root {
-            --sidebar-bg: #1e293b;
-            --sidebar-active: #38bdf8;
-            --body-bg: #f1f5f9;
+    :root {
+        /* Sidebar */
+        --side-bg          : #0f172a;
+        --side-bg-2        : #1e293b;
+        --side-text        : #94a3b8;
+        --side-text-active : #ffffff;
+        --side-active-bg   : rgba(124,58,237,.15);
+        --side-active-bd   : #7c3aed;
+        --side-divider     : rgba(255,255,255,.06);
+
+        /* Body / cards */
+        --bg               : #f1f5f9;
+        --surface          : #ffffff;
+        --border           : #e2e8f0;
+        --text             : #0f172a;
+        --text-muted       : #64748b;
+        --text-light       : #94a3b8;
+        --primary          : #0f172a;
+
+        /* Accents */
+        --accent           : #7c3aed;
+        --accent-light     : #ede9fe;
+        --success          : #10b981;
+        --success-light    : #d1fae5;
+        --warning          : #f59e0b;
+        --warning-light    : #fef3c7;
+        --danger           : #ef4444;
+        --danger-light     : #fee2e2;
+        --info             : #3b82f6;
+        --info-light       : #dbeafe;
+        --pink             : #ec4899;
+        --pink-light       : #fce7f3;
+
+        --radius           : 14px;
+        --radius-sm        : 10px;
+        --shadow-sm        : 0 1px 3px rgba(15,23,42,.06), 0 1px 2px rgba(15,23,42,.04);
+        --shadow-md        : 0 4px 14px rgba(15,23,42,.06), 0 2px 4px rgba(15,23,42,.04);
+        --shadow-lg        : 0 14px 40px rgba(15,23,42,.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: 'Inter', system-ui, sans-serif;
+        background: var(--bg); color: var(--text);
+        font-size: 14px; line-height: 1.5;
+        min-height: 100vh;
+    }
+    a { text-decoration: none; color: inherit; }
+    button { font-family: inherit; cursor: pointer; }
+    img { max-width: 100%; display: block; }
+
+    /* ════════════ LAYOUT ═══════════ */
+    .ap-layout { display: flex; min-height: 100vh; }
+
+    /* ════════════ SIDEBAR ═══════════ */
+    .ap-side {
+        width: 248px; flex-shrink: 0;
+        background: linear-gradient(180deg, var(--side-bg) 0%, var(--side-bg-2) 100%);
+        position: sticky; top: 0; height: 100vh;
+        display: flex; flex-direction: column;
+    }
+    .ap-brand {
+        padding: 22px 22px 20px;
+        display: flex; align-items: center; gap: 12px;
+        border-bottom: 1px solid var(--side-divider);
+    }
+    .ap-brand-logo {
+        width: 38px; height: 38px;
+        background: linear-gradient(135deg, var(--accent) 0%, #a855f7 100%);
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        color: white; font-size: 16px;
+        box-shadow: 0 4px 12px rgba(124,58,237,.4);
+    }
+    .ap-brand-text { color: white; font-weight: 900; font-size: 16px; letter-spacing: -.3px; }
+    .ap-brand-text small { display: block; color: var(--side-text); font-size: 10px; font-weight: 500; margin-top: 1px; }
+
+    .ap-nav { flex: 1; padding: 14px 12px; overflow-y: auto; }
+    .ap-nav::-webkit-scrollbar { width: 4px; }
+    .ap-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 2px; }
+    .ap-nav-label {
+        font-size: 10px; font-weight: 800;
+        color: var(--side-text); opacity: .55;
+        text-transform: uppercase; letter-spacing: .08em;
+        padding: 16px 14px 8px;
+    }
+    .ap-nav a {
+        display: flex; align-items: center; gap: 12px;
+        padding: 10px 14px; margin: 1px 0;
+        border-radius: 10px;
+        color: var(--side-text); font-size: 13px; font-weight: 600;
+        transition: all .15s ease;
+        position: relative;
+    }
+    .ap-nav a:hover { color: var(--side-text-active); background: rgba(255,255,255,.04); }
+    .ap-nav a.active {
+        background: var(--side-active-bg);
+        color: var(--side-text-active);
+    }
+    .ap-nav a.active::before {
+        content: ''; position: absolute;
+        left: -12px; top: 8px; bottom: 8px;
+        width: 3px; border-radius: 0 3px 3px 0;
+        background: var(--side-active-bd);
+    }
+    .ap-nav a i { width: 18px; text-align: center; font-size: 14px; }
+    .ap-nav a .ap-badge {
+        margin-left: auto;
+        background: var(--danger); color: white;
+        font-size: 10px; font-weight: 800;
+        padding: 2px 7px; border-radius: 12px;
+    }
+    .ap-nav a.danger { color: #f87171; }
+    .ap-nav a.danger:hover { background: rgba(239,68,68,.1); color: #fecaca; }
+    .ap-nav a.warn { color: #fbbf24; }
+    .ap-nav a.warn:hover { background: rgba(251,191,36,.1); }
+
+    .ap-side-foot {
+        padding: 14px 16px;
+        border-top: 1px solid var(--side-divider);
+        display: flex; align-items: center; gap: 10px;
+    }
+    .ap-side-foot-av {
+        width: 36px; height: 36px; border-radius: 50%;
+        background: var(--accent); color: white;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 800; font-size: 12px; flex-shrink: 0;
+        overflow: hidden;
+    }
+    .ap-side-foot-av img { width: 100%; height: 100%; object-fit: cover; }
+    .ap-side-foot-info { flex: 1; min-width: 0; }
+    .ap-side-foot-name { color: white; font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ap-side-foot-role { color: var(--side-text); font-size: 10px; font-weight: 600; }
+
+    /* ════════════ MAIN AREA ═══════════ */
+    .ap-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+    .ap-topbar {
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        height: 64px;
+        padding: 0 28px;
+        display: flex; align-items: center; justify-content: space-between;
+        position: sticky; top: 0; z-index: 100;
+    }
+    .ap-topbar-left { display: flex; align-items: center; gap: 14px; }
+    .ap-topbar-title { font-size: 17px; font-weight: 800; color: var(--primary); letter-spacing: -.2px; }
+    .ap-topbar-sub { font-size: 11px; color: var(--text-light); margin-top: 2px; font-weight: 500; }
+    .ap-topbar-right { display: flex; align-items: center; gap: 14px; }
+    .ap-topbar-date {
+        font-size: 12px; color: var(--text-muted); font-weight: 600;
+        padding: 7px 12px;
+        background: var(--bg);
+        border-radius: 8px;
+        display: flex; align-items: center; gap: 6px;
+    }
+    .ap-topbar-date i { color: var(--accent); }
+
+    .ap-content { padding: 24px 28px 60px; flex: 1; }
+
+    /* ════════════ ALERTS ═══════════ */
+    .ap-alerts { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+    .ap-alert {
+        padding: 12px 16px; border-radius: 10px;
+        display: flex; align-items: center; gap: 10px;
+        font-size: 13px; font-weight: 600;
+        border-left: 3px solid;
+    }
+    .ap-alert.success { background: var(--success-light); color: #065f46; border-color: var(--success); }
+    .ap-alert.error   { background: var(--danger-light);  color: #991b1b; border-color: var(--danger); }
+    .ap-alert.warning { background: var(--warning-light); color: #92400e; border-color: var(--warning); }
+    .ap-alert.info    { background: var(--info-light);    color: #1e3a8a; border-color: var(--info); }
+
+    /* ════════════ CARDS / TABLES ═══════════ */
+    .ap-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-sm);
+        overflow: hidden;
+    }
+    .ap-card-head {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 12px;
+    }
+    .ap-card-title { font-size: 14px; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 9px; }
+    .ap-card-title i { color: var(--accent); font-size: 13px; }
+    .ap-card-body { padding: 18px 20px; }
+
+    .ap-table { width: 100%; border-collapse: collapse; }
+    .ap-table th {
+        text-align: left;
+        padding: 12px 18px;
+        background: var(--bg);
+        font-size: 10px; font-weight: 800;
+        color: var(--text-muted); text-transform: uppercase;
+        letter-spacing: .07em;
+        border-bottom: 1px solid var(--border);
+    }
+    .ap-table td {
+        padding: 14px 18px;
+        font-size: 13px;
+        border-bottom: 1px solid var(--border);
+        color: var(--text);
+    }
+    .ap-table tbody tr { transition: background .15s; }
+    .ap-table tbody tr:hover { background: var(--bg); }
+    .ap-table tr:last-child td { border-bottom: none; }
+    .ap-table th:first-child, .ap-table td:first-child { padding-left: 22px; }
+    .ap-table th:last-child, .ap-table td:last-child { padding-right: 22px; }
+
+    /* ════════════ BUTTONS ═══════════ */
+    .ap-btn {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 8px 14px; border-radius: 9px;
+        font-size: 12px; font-weight: 700;
+        border: 1px solid transparent;
+        cursor: pointer; transition: all .15s;
+        font-family: 'Inter', sans-serif;
+    }
+    .ap-btn:hover { transform: translateY(-1px); }
+    .ap-btn-primary { background: var(--accent); color: white; }
+    .ap-btn-primary:hover { filter: brightness(1.1); box-shadow: 0 4px 12px rgba(124,58,237,.3); }
+    .ap-btn-outline { background: var(--surface); color: var(--text); border-color: var(--border); }
+    .ap-btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+    .ap-btn-danger  { background: var(--danger-light); color: var(--danger); }
+    .ap-btn-danger:hover { background: var(--danger); color: white; }
+    .ap-btn-success { background: var(--success-light); color: #065f46; }
+    .ap-btn-warning { background: var(--warning-light); color: #92400e; }
+    .ap-btn-sm { padding: 6px 11px; font-size: 11px; }
+
+    /* ════════════ BADGES ═══════════ */
+    .ap-pill {
+        display: inline-flex; align-items: center; gap: 4px;
+        padding: 3px 9px; border-radius: 999px;
+        font-size: 10px; font-weight: 800; letter-spacing: .02em;
+        text-transform: uppercase;
+    }
+    .ap-pill.success { background: var(--success-light); color: #065f46; }
+    .ap-pill.warning { background: var(--warning-light); color: #92400e; }
+    .ap-pill.danger  { background: var(--danger-light);  color: #991b1b; }
+    .ap-pill.info    { background: var(--info-light);    color: #1e3a8a; }
+    .ap-pill.muted   { background: var(--bg); color: var(--text-muted); }
+
+    /* ════════════ AVATAR ═══════════ */
+    .ap-avatar {
+        width: 32px; height: 32px;
+        border-radius: 50%;
+        background: var(--accent-light); color: var(--accent);
+        display: inline-flex; align-items: center; justify-content: center;
+        font-weight: 800; font-size: 11px;
+        overflow: hidden; flex-shrink: 0;
+    }
+    .ap-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .ap-user-cell { display: flex; align-items: center; gap: 10px; }
+    .ap-user-cell .name { font-weight: 700; font-size: 13px; color: var(--primary); }
+    .ap-user-cell .sub  { font-size: 11px; color: var(--text-light); margin-top: 1px; }
+
+    /* ════════════ EMPTY STATE ═══════════ */
+    .ap-empty {
+        text-align: center;
+        padding: 48px 24px;
+        color: var(--text-muted);
+    }
+    .ap-empty i { font-size: 2.4rem; opacity: .25; display: block; margin-bottom: 10px; }
+    .ap-empty span { font-size: 13px; font-weight: 600; }
+
+    /* ════════════ RESPONSIVE ═══════════ */
+    @media (max-width: 900px) {
+        .ap-side {
+            position: fixed; left: -260px; z-index: 999;
+            transition: left .25s ease;
         }
-        body { font-family: 'Inter', sans-serif; background: var(--body-bg); }
+        .ap-side.open { left: 0; }
+        .ap-main { width: 100%; }
+        .ap-content { padding: 16px 16px 60px; }
+        .ap-topbar { padding: 0 14px; }
+    }
 
-        #sidebar-wrapper {
-            width: 260px; min-height: 100vh; background: var(--sidebar-bg);
-            position: fixed; transition: all 0.3s;
-        }
-        .sidebar-heading { padding: 2rem 1.5rem; color: #fff; font-weight: 700; font-size: 1.3rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .ap-burger {
+        display: none;
+        width: 38px; height: 38px;
+        border: 1px solid var(--border); background: var(--surface);
+        border-radius: 9px;
+        align-items: center; justify-content: center;
+        font-size: 15px; color: var(--text);
+    }
+    @media (max-width: 900px) { .ap-burger { display: inline-flex; } }
 
-        .nav-link {
-            color: #94a3b8 !important; padding: 0.8rem 1.5rem !important;
-            margin: 0.2rem 1rem; border-radius: 8px; transition: 0.3s;
-        }
-        .nav-link:hover, .nav-link.active { color: #fff !important; background: rgba(255,255,255,0.05); }
-        .nav-link.active { color: var(--sidebar-active) !important; background: rgba(56, 189, 248, 0.1); }
-        .nav-link i { margin-right: 12px; }
-
-        #page-content-wrapper { width: 100%; padding-left: 260px; }
-        .topbar { background: #fff; height: 70px; padding: 0 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-
-        .table-card { border: none; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .badge-block { cursor: pointer; }
-    </style>
     {% block extra_css %}{% endblock %}
+    </style>
 </head>
 <body>
 
-<div class="d-flex" id="wrapper">
-    <div id="sidebar-wrapper">
-        <div class="sidebar-heading"><i class="fas fa-cube me-2 text-info"></i> ADMIN PANEL</div>
-        <div class="nav flex-column mt-3">
-            <a href="{% url 'admin_dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
-                <i class="fas fa-th-large"></i> Dashboard
-            </a>
-            <div class="small text-muted px-4 py-3 text-uppercase" style="font-size: 0.65rem;">Boshqaruv</div>
-            <a href="{% url 'admin_houses' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_houses' %}active{% endif %}">
-                <i class="fas fa-home"></i> Uylar
-            </a>
-            <a href="{% url 'admin_users' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_users' %}active{% endif %}">
-                <i class="fas fa-users"></i> Mijozlar
-            </a>
-            <a href="{% url 'admin_payments' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_payments' %}active{% endif %}">
-                <i class="fas fa-credit-card"></i> To'lovlar
-            </a>
-            <a href="{% url 'admin_reports' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_reports' %}active{% endif %}">
-                <i class="fas fa-flag"></i> Shikoyatlar
-            </a>
-            <hr class="mx-3 border-secondary opacity-10">
-            <a href="{% url 'house_list' %}" class="nav-link text-warning"><i class="fas fa-external-link-alt"></i> Saytga o'tish</a>
-            <a href="{% url 'logout' %}" class="nav-link text-danger"><i class="fas fa-power-off"></i> Chiqish</a>
-        </div>
-    </div>
+<div class="ap-layout">
 
-    <div id="page-content-wrapper">
-        <nav class="topbar d-flex align-items-center justify-content-between">
-            <div class="text-muted small fw-bold">Xush kelibsiz, {{ request.user.first_name }}!</div>
-            <div class="d-flex align-items-center">
-                <span class="me-3 small text-muted">{% now "d-M, Y" %}</span>
-                <img src="https://ui-avatars.com/api/?name={{ request.user.first_name }}&background=0ea5e9&color=fff" class="rounded-circle" width="35">
+    <aside class="ap-side" id="apSide">
+        <div class="ap-brand">
+            <div class="ap-brand-logo"><i class="fa-solid fa-cube"></i></div>
+            <div class="ap-brand-text">
+                UyIjara
+                <small>Admin panel</small>
             </div>
+        </div>
+
+        <nav class="ap-nav">
+            <div class="ap-nav-label">{% trans "Asosiy" %}</div>
+            <a href="{% url 'admin_dashboard' %}" class="{% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}">
+                <i class="fa-solid fa-chart-pie"></i> {% trans "Dashboard" %}
+            </a>
+
+            <div class="ap-nav-label">{% trans "Boshqaruv" %}</div>
+            <a href="{% url 'admin_houses' %}" class="{% if request.resolver_match.url_name == 'admin_houses' %}active{% endif %}">
+                <i class="fa-solid fa-house"></i> {% trans "Uylar" %}
+            </a>
+            <a href="{% url 'admin_users' %}" class="{% if request.resolver_match.url_name == 'admin_users' %}active{% endif %}">
+                <i class="fa-solid fa-users"></i> {% trans "Foydalanuvchilar" %}
+            </a>
+            <a href="{% url 'admin_payments' %}" class="{% if request.resolver_match.url_name == 'admin_payments' %}active{% endif %}">
+                <i class="fa-solid fa-credit-card"></i> {% trans "To'lovlar" %}
+            </a>
+            <a href="{% url 'admin_reports' %}" class="{% if request.resolver_match.url_name == 'admin_reports' %}active{% endif %}">
+                <i class="fa-solid fa-flag"></i> {% trans "Shikoyatlar" %}
+            </a>
+
+            <div class="ap-nav-label">{% trans "Boshqa" %}</div>
+            <a href="/admin/" target="_blank">
+                <i class="fa-solid fa-shield-halved"></i> {% trans "Django admin" %}
+                <i class="fa-solid fa-arrow-up-right-from-square" style="margin-left:auto;font-size:10px;opacity:.5;"></i>
+            </a>
+            <a href="{% url 'house_list' %}" class="warn">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> {% trans "Saytga o'tish" %}
+            </a>
+            <a href="{% url 'logout' %}" class="danger">
+                <i class="fa-solid fa-right-from-bracket"></i> {% trans "Chiqish" %}
+            </a>
         </nav>
 
-        <div class="p-4">
+        <div class="ap-side-foot">
+            <div class="ap-side-foot-av">
+                {% if request.user.avatar %}
+                    <img src="{{ request.user.avatar.url }}" alt="">
+                {% else %}
+                    {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+                {% endif %}
+            </div>
+            <div class="ap-side-foot-info">
+                <div class="ap-side-foot-name">{{ request.user.get_full_name }}</div>
+                <div class="ap-side-foot-role">{% trans "Administrator" %}</div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="ap-main">
+        <header class="ap-topbar">
+            <div class="ap-topbar-left">
+                <button class="ap-burger" id="apBurger" type="button">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div>
+                    <div class="ap-topbar-title">{% block page_title %}{% trans "Dashboard" %}{% endblock %}</div>
+                    <div class="ap-topbar-sub">{% block page_subtitle %}{% trans "Tizim monitoringi" %}{% endblock %}</div>
+                </div>
+            </div>
+            <div class="ap-topbar-right">
+                <div class="ap-topbar-date">
+                    <i class="fa-regular fa-calendar"></i>
+                    {% now "d-M, Y, H:i" %}
+                </div>
+            </div>
+        </header>
+
+        <div class="ap-content">
             {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show rounded-3" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                {% endfor %}
+                <div class="ap-alerts">
+                    {% for message in messages %}
+                        <div class="ap-alert {% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% elif message.tags == 'warning' %}warning{% else %}info{% endif %}">
+                            <i class="fa-solid fa-{% if message.tags == 'error' %}circle-xmark{% elif message.tags == 'success' %}circle-check{% elif message.tags == 'warning' %}triangle-exclamation{% else %}circle-info{% endif %}"></i>
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
             {% endif %}
 
             {% block admin_content %}{% endblock %}
         </div>
-    </div>
+    </main>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const burger = document.getElementById('apBurger');
+const side = document.getElementById('apSide');
+if (burger && side) {
+    burger.addEventListener('click', () => side.classList.toggle('open'));
+    document.addEventListener('click', e => {
+        if (window.innerWidth <= 900 && !side.contains(e.target) && !burger.contains(e.target)) {
+            side.classList.remove('open');
+        }
+    });
+}
+</script>
+{% block extra_js %}{% endblock %}
 </body>
 </html>

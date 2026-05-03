@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-{% block title %}Saqlangan uylar — UyIjara{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Saqlangan uylar" %} — UyIjara{% endblock %}
 
 {% block extra_css %}
 .wl-wrap { max-width: 1220px; margin: 0 auto; padding: 28px 24px 60px; }
@@ -40,11 +41,11 @@
 
     <div class="wl-header">
         <div class="wl-header-left">
-            <h1>❤️ Saqlangan uylar</h1>
-            <p>{{ wishlist.count }} ta uy saqlangan</p>
+            <h1>❤️ {% trans "Saqlangan uylar" %}</h1>
+            <p>{% blocktrans count c=wishlist.count %}{{ c }} ta uy saqlangan{% plural %}{{ c }} ta uy saqlangan{% endblocktrans %}</p>
         </div>
         <a href="{% url 'house_list' %}" class="btn btn-secondary">
-            <i class="fa-solid fa-plus"></i> Ko'proq uylar
+            <i class="fa-solid fa-plus"></i> {% trans "Ko'proq uylar" %}
         </a>
     </div>
 
@@ -60,7 +61,7 @@
                             {% else %}
                                 <div class="wl-no-img">
                                     <i class="fa-solid fa-image" style="font-size:2rem;"></i>
-                                    <span style="font-size:11px;font-weight:600;">Rasm yo'q</span>
+                                    <span style="font-size:11px;font-weight:600;">{% trans "Rasm yo'q" %}</span>
                                 </div>
                             {% endif %}
                         {% endwith %}
@@ -69,27 +70,27 @@
                         <!-- O'chirish tugmasi — POST bilan -->
                         <button class="wl-remove"
                                 onclick="event.stopPropagation(); removeWishlist({{ item.house.pk }}, this)"
-                                title="Saqlangan ro'yxatdan o'chirish">
+                                title="{% trans 'Saqlangan ro\'yxatdan o\'chirish' %}">
                             <i class="fa-solid fa-heart"></i>
                         </button>
 
-                        <div class="wl-price-chip">${{ item.house.price_usd }}/oy</div>
+                        <div class="wl-price-chip">${{ item.house.price_usd }}/{% trans "oy" %}</div>
                     </div>
 
                     <div class="wl-body">
                         <div class="wl-loc">
                             <i class="fa-solid fa-location-dot"></i>
-                            {{ item.house.district.name }}, {{ item.house.region.name }}
+                            {{ item.house.district.display_name }}, {{ item.house.region.display_name }}
                         </div>
                         <div class="wl-addr">{{ item.house.full_address }}</div>
                         <div class="wl-foot">
                             <div class="wl-price-text">
-                                ${{ item.house.price_usd }}<span>/oy</span>
+                                ${{ item.house.price_usd }}<span>/{% trans "oy" %}</span>
                             </div>
                             <a href="{% url 'house_detail' item.house.pk %}"
                                onclick="event.stopPropagation()"
                                class="wl-view-btn">
-                                <i class="fa-solid fa-eye"></i> Ko'rish
+                                <i class="fa-solid fa-eye"></i> {% trans "Ko'rish" %}
                             </a>
                         </div>
                     </div>
@@ -103,10 +104,10 @@
             <div class="wl-empty-ico">
                 <i class="fa-solid fa-heart"></i>
             </div>
-            <h3>Saqlangan uylar yo'q</h3>
-            <p>Yoqqan uylarni saqlang va keyinroq qarang</p>
+            <h3>{% trans "Saqlangan uylar yo'q" %}</h3>
+            <p>{% trans "Yoqqan uylarni saqlang va keyinroq qarang" %}</p>
             <a href="{% url 'house_list' %}" class="btn btn-primary btn-lg">
-                <i class="fa-solid fa-house"></i> Uylarni ko'rish
+                <i class="fa-solid fa-house"></i> {% trans "Uylarni ko'rish" %}
             </a>
         </div>
     {% endif %}

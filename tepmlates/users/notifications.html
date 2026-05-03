@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% block title %}{% trans "Bildirishnomalar" %} — UyIjara{% endblock %}
+
+{% block extra_css %}
+.nf-wrap { max-width: 720px; margin: 0 auto; padding: 24px 18px 60px; }
+.nf-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+.nf-head-left { display: flex; align-items: center; gap: 10px; }
+.nf-head h1 { font-size: 20px; font-weight: 900; color: var(--primary); }
+.nf-count-badge { background: var(--accent-soft); color: var(--accent); padding: 3px 10px; border-radius: 14px; font-size: 11px; font-weight: 800; }
+
+.nf-list { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-lg); overflow: hidden; }
+.nf-item { display: flex; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border); transition: background .15s; }
+.nf-item:last-child { border-bottom: none; }
+.nf-item.unread { background: var(--accent-pale); border-left: 3px solid var(--accent); }
+.nf-item:hover { background: var(--accent-pale); }
+.nf-ico {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: var(--accent-soft); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; flex-shrink: 0;
+}
+.nf-ico.warn { background: #fef3c7; color: #d97706; }
+.nf-ico.danger { background: #fee2e2; color: #ef4444; }
+.nf-ico.success { background: #d1fae5; color: #16a34a; }
+.nf-content { flex: 1; min-width: 0; }
+.nf-title { font-weight: 800; color: var(--primary); font-size: 14px; margin-bottom: 3px; display: flex; align-items: center; gap: 8px; }
+.nf-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+.nf-msg { color: var(--text-muted); font-size: 13px; line-height: 1.5; }
+.nf-date { color: var(--text-light); font-size: 11px; margin-top: 5px; display: flex; align-items: center; gap: 5px; }
+
+.nf-empty { text-align: center; padding: 60px 24px; }
+.nf-empty-ico { width: 80px; height: 80px; margin: 0 auto 16px; border-radius: 22px; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+.nf-empty h3 { font-size: 17px; font-weight: 800; color: var(--primary); margin-bottom: 6px; }
+.nf-empty p { font-size: 13px; color: var(--text-light); }
+{% endblock %}
+
+{% block content %}
+<div class="nf-wrap">
+    <div class="nf-head">
+        <div class="nf-head-left">
+            <a href="{% url 'profile' %}" class="btn btn-outline btn-sm">
+                <i class="fa-solid fa-arrow-left"></i>
+            </a>
+            <h1>{% trans "Bildirishnomalar" %}</h1>
+            {% if unread_count %}<span class="nf-count-badge">{{ unread_count }} {% trans "yangi" %}</span>{% endif %}
+        </div>
+        {% if unread_count %}
+            <a href="{% url 'notifications_read' %}" class="btn btn-secondary btn-sm">
+                <i class="fa-solid fa-check-double"></i> {% trans "Hammasini o'qildi" %}
+            </a>
+        {% endif %}
+    </div>
+
+    {% if notifications %}
+        <div class="nf-list">
+            {% for n in notifications %}
+                <div class="nf-item {% if not n.is_read %}unread{% endif %}">
+                    <div class="nf-ico
+                        {% if n.type == 'sub_2day' or n.type == 'sub_1day' %}warn
+                        {% elif n.type == 'sub_end' or n.type == 'report' %}danger
+                        {% elif n.type == 'general' %}success{% endif %}">
+                        {% if n.type == 'sub_2day' or n.type == 'sub_1day' %}
+                            <i class="fa-solid fa-clock"></i>
+                        {% elif n.type == 'sub_end' %}
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        {% elif n.type == 'report' %}
+                            <i class="fa-solid fa-flag"></i>
+                        {% else %}
+                            <i class="fa-solid fa-bell"></i>
+                        {% endif %}
+                    </div>
+                    <div class="nf-content">
+                        <div class="nf-title">
+                            {{ n.title }}
+                            {% if not n.is_read %}<span class="nf-dot"></span>{% endif %}
+                        </div>
+                        <div class="nf-msg">{{ n.message }}</div>
+                        <div class="nf-date">
+                            <i class="fa-regular fa-clock"></i>
+                            {% blocktrans with t=n.created_at|timesince %}{{ t }} oldin{% endblocktrans %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="nf-empty">
+            <div class="nf-empty-ico"><i class="fa-regular fa-bell-slash"></i></div>
+            <h3>{% trans "Bildirishnomalar yo'q" %}</h3>
+            <p>{% trans "Tarif, hisob va e'lonlar haqidagi yangiliklar shu yerda ko'rinadi" %}</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
